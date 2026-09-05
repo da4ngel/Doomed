@@ -118,6 +118,8 @@ the chain exists for, and it is worth showing on video rather than describing.
 **TODO(human):** whether to spend a few dollars on `gpt-4o` for the final index run to
 reduce variance, given the free tier already passes all three cases.
 
+---
+
 ## ADR-003 — Authority tiers assigned directory-first
 
 **Status:** accepted · 2026-09-05 · implemented in `src/ingestion/tiers.py`
