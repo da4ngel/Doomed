@@ -37,6 +37,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.core.config import get_settings  # noqa: E402
 from src.core.llm import LLMClient, NoProviderConfiguredError  # noqa: E402
+from src.ingestion import images  # noqa: E402
 
 #: (provider, model) pairs, cheapest first. Paired because a model id is not portable:
 #: "gpt-4o-mini" is a 404 on OpenRouter, which spells it "openai/gpt-4o-mini".
@@ -73,23 +74,9 @@ def discover_free_vision_models(limit: int = 6) -> list[tuple[str, str]]:
     return sorted(found)[:limit]
 
 
-INSTRUCTION = """You are reading a figure plate from an archive. Return ONLY JSON:
-
-{
-  "kind": "bar_chart | portrait | heraldry | table | diagram | other",
-  "subject": "what this plate is about",
-  "values": [{"label": "exact label as printed", "value": "exact value as printed"}],
-  "objects_depicted": ["objects actually visible in the image"],
-  "text_visible": "every piece of text you can read, verbatim",
-  "description": "two sentences describing the plate"
-}
-
-Rules:
-- If this is a chart, `values` MUST bind every bar or row to its own label. Reference
-  lines, baselines and comparison standards are separate entries from the subject.
-- Report only what is printed. Do not infer, round, or pick the largest number.
-- If a value belongs to the plate's named subject, label it with that subject's name.
-"""
+# The prompt lives in the pipeline, not here, so the text that was validated is the
+# exact text that ships. Re-running this spike re-tests the real prompt.
+INSTRUCTION = images.INSTRUCTION
 
 
 @dataclass
