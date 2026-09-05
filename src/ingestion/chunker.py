@@ -335,6 +335,16 @@ def chunk_document(
     # sits alone before a table, say. Emit it rather than lose it.
     _flush_pending(chunks, pending_short, doc_id, authority_tier, source_type)
 
+    # Renumber in one place, at the end. `emit` computed an id from `len(chunks)` BEFORE
+    # deciding whether to append, and `_flush_pending` could append in between - so both
+    # took the same index and four chunk_ids were duplicated. Two different texts sharing
+    # an id makes a citation ambiguous, and downstream it silently cost 4 vectors when
+    # their content-derived point ids collided in Qdrant.
+    chunks = [
+        chunk.model_copy(update={"chunk_id": _chunk_id(doc_id, index)})
+        for index, chunk in enumerate(chunks)
+    ]
+
     stats.chunks += len(chunks)
     stats.documents += 1
     return chunks

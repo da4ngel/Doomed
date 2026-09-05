@@ -112,3 +112,31 @@ def test_every_block_id_on_a_chunk_resolves(corpus) -> None:
         if block_id not in blocks and block_id.rsplit(".", 1)[0] not in blocks
     ]
     assert not dangling, f"{len(dangling)} dangling block ids, e.g. {dangling[:3]}"
+
+
+def test_chunk_ids_are_unique_within_a_document() -> None:
+    """Two texts sharing a chunk_id makes every citation to it ambiguous.
+
+    `emit` computed an id from len(chunks) before deciding whether to append, and a
+    pending flush could append in between - so both took the same index. Downstream the
+    content-derived Qdrant point ids collided and 4 vectors were silently lost.
+    """
+    blocks = [
+        _block(0, "lead"),
+        _block(1, "| a | b |\n|---|---|\n| 1 | 2 |", "table"),
+        _block(2, "tail"),
+        _block(3, "| c | d |\n|---|---|\n| 3 | 4 |", "table"),
+        _block(4, "body " * 200),
+    ]
+    ids = [c.chunk_id for c in chunk_document(blocks, "d", 2, "wiki")]
+    assert len(ids) == len(set(ids)), f"duplicate ids: {ids}"
+
+
+@built
+def test_no_duplicate_chunk_ids_across_the_corpus(corpus) -> None:
+    from collections import Counter
+
+    chunks, _ = corpus
+    counts = Counter(c["chunk_id"] for c in chunks)
+    duplicates = {k: v for k, v in counts.items() if v > 1}
+    assert not duplicates, f"{len(duplicates)} duplicated chunk ids: {list(duplicates)[:5]}"
