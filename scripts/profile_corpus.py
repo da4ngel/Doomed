@@ -36,8 +36,8 @@ import re
 import sys
 import zipfile
 from collections import Counter, defaultdict
-from dataclasses import dataclass, field, asdict
-from datetime import datetime, timezone
+from dataclasses import asdict, dataclass, field
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -46,10 +46,10 @@ from typing import Any
 # here and import them from src/ingestion/ rather than duplicating the numbers.
 # --------------------------------------------------------------------------------
 
-SCANNED_CHAR_THRESHOLD = 50      # chars of extractable text below which a page is a scan
-SPARSE_CHAR_THRESHOLD = 200      # 50-200 chars: ambiguous (figure plate? title page?)
-FULLPAGE_IMAGE_COVERAGE = 0.60   # image area / page area that confirms a scan
-CHARS_PER_PAGE_ESTIMATE = 1800   # for estimating page counts of DOCX / MD / TXT
+SCANNED_CHAR_THRESHOLD = 50  # chars of extractable text below which a page is a scan
+SPARSE_CHAR_THRESHOLD = 200  # 50-200 chars: ambiguous (figure plate? title page?)
+FULLPAGE_IMAGE_COVERAGE = 0.60  # image area / page area that confirms a scan
+CHARS_PER_PAGE_ESTIMATE = 1800  # for estimating page counts of DOCX / MD / TXT
 
 TEXT_EXTS = {".md", ".markdown", ".txt", ".rst"}
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tif", ".tiff"}
@@ -58,11 +58,19 @@ IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tif", ".tiff"}
 # markers are checked first. This is a GUESS that a human must review — the output
 # report says so explicitly.
 TIER_PATTERNS: list[tuple[int, str, str]] = [
-    (5, "folkloric",   r"ballad|tavern|rumou?r|hearsay|folk|legend|song|tale|verse|ditty"),
-    (1, "codex",       r"codex|plate|datasheet|data[\s_-]?book|reference|appendix|table[\s_-]?\d|figure[\s_-]?plate"),
-    (2, "wiki",        r"wiki|encyclop|article|entry|lexicon|gazetteer"),
-    (4, "record",      r"letter|ledger|transcript|trial|dispatch|decree|order|manifest|receipt|deposition|writ|invoice|inventory"),
-    (3, "narrative",   r"novel|volume|vol[\s_.\-]?\d|chapter|book[\s_.\-]?\d|part[\s_.\-]?\d"),
+    (5, "folkloric", r"ballad|tavern|rumou?r|hearsay|folk|legend|song|tale|verse|ditty"),
+    (
+        1,
+        "codex",
+        r"codex|plate|datasheet|data[\s_-]?book|reference|appendix|table[\s_-]?\d|figure[\s_-]?plate",
+    ),
+    (2, "wiki", r"wiki|encyclop|article|entry|lexicon|gazetteer"),
+    (
+        4,
+        "record",
+        r"letter|ledger|transcript|trial|dispatch|decree|order|manifest|receipt|deposition|writ|invoice|inventory",
+    ),
+    (3, "narrative", r"novel|volume|vol[\s_.\-]?\d|chapter|book[\s_.\-]?\d|part[\s_.\-]?\d"),
 ]
 
 TIER_LABELS = {
@@ -76,14 +84,20 @@ TIER_LABELS = {
 
 CHAR_BINS = [0, 50, 200, 500, 1000, 2000, 4000, 10**9]
 CHAR_BIN_LABELS = [
-    "0-49 (scan)", "50-199 (sparse)", "200-499", "500-999",
-    "1000-1999", "2000-3999", "4000+",
+    "0-49 (scan)",
+    "50-199 (sparse)",
+    "200-499",
+    "500-999",
+    "1000-1999",
+    "2000-3999",
+    "4000+",
 ]
 
 
 # --------------------------------------------------------------------------------
 # Optional imports
 # --------------------------------------------------------------------------------
+
 
 def _try_import(name: str) -> Any:
     try:
@@ -95,7 +109,7 @@ def _try_import(name: str) -> Any:
 # PyMuPDF renamed its module: prefer `pymupdf`, fall back to the legacy `fitz`
 # name so this runs on either version without emitting a deprecation warning.
 fitz = _try_import("pymupdf") or _try_import("fitz")
-_docx_mod = _try_import("docx")     # python-docx
+_docx_mod = _try_import("docx")  # python-docx
 _PIL = _try_import("PIL")
 if _PIL is not None:
     try:
@@ -108,6 +122,7 @@ if _PIL is not None:
 # Records
 # --------------------------------------------------------------------------------
 
+
 @dataclass
 class PageProfile:
     page: int
@@ -115,7 +130,7 @@ class PageProfile:
     images: int
     max_image_coverage: float = 0.0
     tables: int = 0
-    classification: str = "digital"     # digital | scanned | sparse
+    classification: str = "digital"  # digital | scanned | sparse
 
 
 @dataclass
@@ -123,7 +138,7 @@ class FileProfile:
     path: str
     ext: str
     size_bytes: int
-    kind: str                            # pdf | docx | text | image | other
+    kind: str  # pdf | docx | text | image | other
     pages: int = 0
     pages_estimated: bool = False
     total_chars: int = 0
@@ -143,6 +158,7 @@ class FileProfile:
 # Tier guessing
 # --------------------------------------------------------------------------------
 
+
 def guess_tier(path: Path, corpus_root: Path) -> tuple[int, str]:
     """Guess an authority tier from the path. A human must review the result."""
     try:
@@ -161,10 +177,13 @@ def guess_tier(path: Path, corpus_root: Path) -> tuple[int, str]:
 # Per-format profilers
 # --------------------------------------------------------------------------------
 
+
 def profile_pdf(path: Path, want_tables: bool) -> FileProfile:
     prof = FileProfile(
-        path=str(path), ext=path.suffix.lower(),
-        size_bytes=path.stat().st_size, kind="pdf",
+        path=str(path),
+        ext=path.suffix.lower(),
+        size_bytes=path.stat().st_size,
+        kind="pdf",
     )
     if fitz is None:
         prof.error = "PyMuPDF not installed (uv add pymupdf)"
@@ -211,9 +230,12 @@ def profile_pdf(path: Path, want_tables: bool) -> FileProfile:
                     cls = "digital"
 
                 pp = PageProfile(
-                    page=pno + 1, chars=chars, images=len(images),
+                    page=pno + 1,
+                    chars=chars,
+                    images=len(images),
                     max_image_coverage=round(max_cov, 3),
-                    tables=ntables, classification=cls,
+                    tables=ntables,
+                    classification=cls,
                 )
                 prof.page_profiles.append(pp)
                 prof.total_chars += chars
@@ -240,8 +262,10 @@ def profile_pdf(path: Path, want_tables: bool) -> FileProfile:
 
 def profile_docx(path: Path) -> FileProfile:
     prof = FileProfile(
-        path=str(path), ext=path.suffix.lower(),
-        size_bytes=path.stat().st_size, kind="docx",
+        path=str(path),
+        ext=path.suffix.lower(),
+        size_bytes=path.stat().st_size,
+        kind="docx",
     )
 
     # Embedded media is readable from the zip without python-docx.
@@ -283,8 +307,10 @@ def profile_docx(path: Path) -> FileProfile:
 
 def profile_text(path: Path) -> FileProfile:
     prof = FileProfile(
-        path=str(path), ext=path.suffix.lower(),
-        size_bytes=path.stat().st_size, kind="text",
+        path=str(path),
+        ext=path.suffix.lower(),
+        size_bytes=path.stat().st_size,
+        kind="text",
     )
     try:
         raw = path.read_text(encoding="utf-8", errors="replace")
@@ -303,13 +329,18 @@ def profile_text(path: Path) -> FileProfile:
 
 def profile_image(path: Path) -> FileProfile:
     prof = FileProfile(
-        path=str(path), ext=path.suffix.lower(),
-        size_bytes=path.stat().st_size, kind="image",
-        pages=1, images=1, scanned_pages=1,
+        path=str(path),
+        ext=path.suffix.lower(),
+        size_bytes=path.stat().st_size,
+        kind="image",
+        pages=1,
+        images=1,
+        scanned_pages=1,
     )
     if _PIL is not None:
         try:
             from PIL import Image
+
             with Image.open(path) as im:
                 prof.tier_reason = f"{im.size[0]}x{im.size[1]} {im.mode}"
         except Exception as exc:  # noqa: BLE001
@@ -320,6 +351,7 @@ def profile_image(path: Path) -> FileProfile:
 # --------------------------------------------------------------------------------
 # Walk and aggregate
 # --------------------------------------------------------------------------------
+
 
 def walk_corpus(root: Path, sample: int | None) -> list[Path]:
     files: list[Path] = []
@@ -345,7 +377,10 @@ def profile_file(path: Path, corpus_root: Path, want_tables: bool) -> FileProfil
         prof = profile_image(path)
     else:
         prof = FileProfile(
-            path=str(path), ext=ext, size_bytes=path.stat().st_size, kind="other",
+            path=str(path),
+            ext=ext,
+            size_bytes=path.stat().st_size,
+            kind="other",
             error="unhandled extension — decide whether ingestion should skip it",
         )
     tier, reason = guess_tier(path, corpus_root)
@@ -384,11 +419,12 @@ def aggregate(profiles: list[FileProfile]) -> dict[str, Any]:
     errors = [p for p in profiles if p.error]
     ocr_files = sorted(
         [p for p in profiles if p.kind == "pdf" and p.scanned_pages > 0],
-        key=lambda p: p.scanned_pages, reverse=True,
+        key=lambda p: p.scanned_pages,
+        reverse=True,
     )
 
     return {
-        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "file_count": len(profiles),
         "total_pages": sum(p.pages for p in profiles),
         "total_chars": sum(p.total_chars for p in profiles),
@@ -404,7 +440,9 @@ def aggregate(profiles: list[FileProfile]) -> dict[str, Any]:
             "sparse": sparse,
             "digital": digital,
             "scanned_ratio": round(scanned / total_pdf_pages, 4) if total_pdf_pages else 0.0,
-            "ocr_candidate_ratio": round((scanned + sparse) / total_pdf_pages, 4) if total_pdf_pages else 0.0,
+            "ocr_candidate_ratio": (
+                round((scanned + sparse) / total_pdf_pages, 4) if total_pdf_pages else 0.0
+            ),
         },
         "char_histogram": dict(zip(CHAR_BIN_LABELS, hist)),
         "error_count": len(errors),
@@ -420,9 +458,9 @@ def aggregate(profiles: list[FileProfile]) -> dict[str, Any]:
 # Reporting
 # --------------------------------------------------------------------------------
 
+
 def md_table(headers: list[str], rows: list[list[Any]]) -> str:
-    out = ["| " + " | ".join(headers) + " |",
-           "|" + "|".join("---" for _ in headers) + "|"]
+    out = ["| " + " | ".join(headers) + " |", "|" + "|".join("---" for _ in headers) + "|"]
     for r in rows:
         out.append("| " + " | ".join(str(c) for c in r) + " |")
     return "\n".join(out)
@@ -433,27 +471,37 @@ def ingestion_verdict(agg: dict[str, Any]) -> str:
     ratio = pdf["ocr_candidate_ratio"]
     scanned = pdf["scanned"] + pdf["sparse"]
     if pdf["total"] == 0:
-        return ("No PDF pages found. Either the corpus path is wrong or the archive is "
-                "text-first. Confirm the path before drawing any conclusion.")
+        return (
+            "No PDF pages found. Either the corpus path is wrong or the archive is "
+            "text-first. Confirm the path before drawing any conclusion."
+        )
     if ratio < 0.05:
-        band = ("**Low.** The OCR path is an edge case, not a pillar. Build born-digital "
-                "extraction properly and give OCR a 2-hour timebox on D1. Reallocate the "
-                "saved time to the entity graph, which is the 1B spine.")
+        band = (
+            "**Low.** The OCR path is an edge case, not a pillar. Build born-digital "
+            "extraction properly and give OCR a 2-hour timebox on D1. Reallocate the "
+            "saved time to the entity graph, which is the 1B spine."
+        )
     elif ratio < 0.20:
-        band = ("**Moderate.** Budget roughly half of D1 morning for the OCR path. Tesseract "
-                "first, VLM fallback only below the confidence threshold. Report the OCR "
-                "failure rate in `limitations.md` — it is honest and it scores.")
+        band = (
+            "**Moderate.** Budget roughly half of D1 morning for the OCR path. Tesseract "
+            "first, VLM fallback only below the confidence threshold. Report the OCR "
+            "failure rate in `limitations.md` — it is honest and it scores."
+        )
     elif ratio < 0.50:
-        band = ("**High.** OCR quality is now a primary risk to answer quality, not a side "
-                "path. Give it most of D1 morning, cache aggressively, and measure OCR "
-                "confidence per page as a first-class metric. Consider making OCR quality "
-                "one of your ablation rows.")
+        band = (
+            "**High.** OCR quality is now a primary risk to answer quality, not a side "
+            "path. Give it most of D1 morning, cache aggressively, and measure OCR "
+            "confidence per page as a first-class metric. Consider making OCR quality "
+            "one of your ablation rows."
+        )
     else:
-        band = ("**Dominant.** The archive is effectively a scan corpus. Reorder D1 to put "
-                "OCR first and treat born-digital extraction as the special case. A VLM "
-                "pass over scanned pages may beat Tesseract outright — measure both on 20 "
-                "pages before committing, and record the comparison as an ADR.")
-    return (f"{scanned} of {pdf['total']} PDF pages ({ratio:.1%}) need the OCR path.\n\n{band}")
+        band = (
+            "**Dominant.** The archive is effectively a scan corpus. Reorder D1 to put "
+            "OCR first and treat born-digital extraction as the special case. A VLM "
+            "pass over scanned pages may beat Tesseract outright — measure both on 20 "
+            "pages before committing, and record the comparison as an ADR."
+        )
+    return f"{scanned} of {pdf['total']} PDF pages ({ratio:.1%}) need the OCR path.\n\n{band}"
 
 
 def render_markdown(agg: dict[str, Any], profiles: list[FileProfile], corpus: Path) -> str:
@@ -471,18 +519,23 @@ def render_markdown(agg: dict[str, Any], profiles: list[FileProfile], corpus: Pa
 
     a("## Headline")
     a("")
-    a(md_table(["Measure", "Value"], [
-        ["Files", agg["file_count"]],
-        ["Pages (actual + estimated)", agg["total_pages"]],
-        ["Characters of extractable text", f"{agg['total_chars']:,}"],
-        ["Embedded images", agg["total_images"]],
-        ["Tables detected", agg["total_tables"]],
-        ["PDF pages", pdf["total"]],
-        ["→ born-digital", f"{pdf['digital']} ({1 - pdf['ocr_candidate_ratio']:.1%})"],
-        ["→ sparse / ambiguous", pdf["sparse"]],
-        ["→ scanned", f"{pdf['scanned']} ({pdf['scanned_ratio']:.1%})"],
-        ["Files that failed inspection", agg["error_count"]],
-    ]))
+    a(
+        md_table(
+            ["Measure", "Value"],
+            [
+                ["Files", agg["file_count"]],
+                ["Pages (actual + estimated)", agg["total_pages"]],
+                ["Characters of extractable text", f"{agg['total_chars']:,}"],
+                ["Embedded images", agg["total_images"]],
+                ["Tables detected", agg["total_tables"]],
+                ["PDF pages", pdf["total"]],
+                ["→ born-digital", f"{pdf['digital']} ({1 - pdf['ocr_candidate_ratio']:.1%})"],
+                ["→ sparse / ambiguous", pdf["sparse"]],
+                ["→ scanned", f"{pdf['scanned']} ({pdf['scanned_ratio']:.1%})"],
+                ["Files that failed inspection", agg["error_count"]],
+            ],
+        )
+    )
     a("")
 
     a("## Ingestion verdict")
@@ -492,12 +545,14 @@ def render_markdown(agg: dict[str, Any], profiles: list[FileProfile], corpus: Pa
 
     a("## Embedding budget")
     a("")
-    est_tokens = int(agg["total_chars"] / 4 * 1.15)   # ~4 chars/token, +15% chunk overlap
+    est_tokens = int(agg["total_chars"] / 4 * 1.15)  # ~4 chars/token, +15% chunk overlap
     a(f"Approximately **{est_tokens:,} tokens** to embed, including chunk overlap.")
     a("")
     if est_tokens > 0:
         reindexes = 200_000_000 // max(est_tokens, 1)
-        a(f"Against Voyage's 200M free allowance that is roughly **{reindexes:,} full re-indexes**.")
+        a(
+            f"Against Voyage's 200M free allowance that is roughly **{reindexes:,} full re-indexes**."
+        )
         a("Re-indexing is effectively free — never let index cost drive a design decision.")
     a("")
 
@@ -505,8 +560,12 @@ def render_markdown(agg: dict[str, Any], profiles: list[FileProfile], corpus: Pa
     a("")
     a(md_table(["Extension", "Files"], [[k, v] for k, v in agg["by_ext"].items()]))
     a("")
-    a(md_table(["Handler", "Files", "Pages"],
-               [[k, v, agg["pages_by_kind"].get(k, 0)] for k, v in agg["by_kind"].items()]))
+    a(
+        md_table(
+            ["Handler", "Files", "Pages"],
+            [[k, v, agg["pages_by_kind"].get(k, 0)] for k, v in agg["by_kind"].items()],
+        )
+    )
     a("")
 
     a("## Authority tier — GUESS, needs human review")
@@ -530,9 +589,15 @@ def render_markdown(agg: dict[str, Any], profiles: list[FileProfile], corpus: Pa
         a("")
         a("Use these as the parser test fixtures. If ingestion works on these, it works.")
         a("")
-        a(md_table(["File", "Scanned pages", "Total pages"],
-                   [[Path(f["path"]).name, f["scanned_pages"], f["total_pages"]]
-                    for f in agg["ocr_heavy_files"]]))
+        a(
+            md_table(
+                ["File", "Scanned pages", "Total pages"],
+                [
+                    [Path(f["path"]).name, f["scanned_pages"], f["total_pages"]]
+                    for f in agg["ocr_heavy_files"]
+                ],
+            )
+        )
         a("")
 
     if agg["errors"]:
@@ -541,8 +606,7 @@ def render_markdown(agg: dict[str, Any], profiles: list[FileProfile], corpus: Pa
         a("These files broke the profiler. They will break ingestion too unless handled.")
         a("This is exactly why ingestion needs a dead-letter list rather than a hard failure.")
         a("")
-        a(md_table(["File", "Error"],
-                   [[Path(e["path"]).name, e["error"]] for e in agg["errors"]]))
+        a(md_table(["File", "Error"], [[Path(e["path"]).name, e["error"]] for e in agg["errors"]]))
         a("")
 
     a("## What to do with this")
@@ -551,8 +615,8 @@ def render_markdown(agg: dict[str, Any], profiles: list[FileProfile], corpus: Pa
     a("2. Review and correct the tier rules. Tier drives A4 conflict resolution; a wrong")
     a("   tier table produces confidently wrong conflict outcomes.")
     a("3. Take the OCR-heavy files as parser fixtures.")
-    a("4. Put the headline numbers on page 2 of the submission report. \"We profiled the")
-    a("   corpus before designing ingestion\" is *Problem understanding & insight*, and")
+    a('4. Put the headline numbers on page 2 of the submission report. "We profiled the')
+    a('   corpus before designing ingestion" is *Problem understanding & insight*, and')
     a("   these are the numbers that prove it.")
     a("")
     return "\n".join(L)
@@ -561,6 +625,7 @@ def render_markdown(agg: dict[str, Any], profiles: list[FileProfile], corpus: Pa
 # --------------------------------------------------------------------------------
 # Main
 # --------------------------------------------------------------------------------
+
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Profile the Ashen Era Archive corpus.")
@@ -576,11 +641,15 @@ def main() -> int:
         return 2
 
     if fitz is None:
-        print("warning: PyMuPDF missing — PDFs will not be profiled. `uv add pymupdf`",
-              file=sys.stderr)
+        print(
+            "warning: PyMuPDF missing — PDFs will not be profiled. `uv add pymupdf`",
+            file=sys.stderr,
+        )
     if _docx_mod is None:
-        print("warning: python-docx missing — DOCX text will not be counted. `uv add python-docx`",
-              file=sys.stderr)
+        print(
+            "warning: python-docx missing — DOCX text will not be counted. `uv add python-docx`",
+            file=sys.stderr,
+        )
 
     files = walk_corpus(corpus, args.sample)
     if not files:
@@ -602,8 +671,9 @@ def main() -> int:
 
     md_path.write_text(render_markdown(agg, profiles, corpus), encoding="utf-8")
     json_path.write_text(
-        json.dumps({"summary": agg, "files": [asdict(p) for p in profiles]},
-                   indent=2, ensure_ascii=False),
+        json.dumps(
+            {"summary": agg, "files": [asdict(p) for p in profiles]}, indent=2, ensure_ascii=False
+        ),
         encoding="utf-8",
     )
 
@@ -615,8 +685,10 @@ def main() -> int:
     print(f"  files            {agg['file_count']}", file=sys.stderr)
     print(f"  pages            {agg['total_pages']}", file=sys.stderr)
     print(f"  PDF pages        {pdf['total']}", file=sys.stderr)
-    print(f"  needing OCR      {pdf['scanned'] + pdf['sparse']} ({pdf['ocr_candidate_ratio']:.1%})",
-          file=sys.stderr)
+    print(
+        f"  needing OCR      {pdf['scanned'] + pdf['sparse']} ({pdf['ocr_candidate_ratio']:.1%})",
+        file=sys.stderr,
+    )
     print(f"  failed to read   {agg['error_count']}", file=sys.stderr)
     return 0
 

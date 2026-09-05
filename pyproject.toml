@@ -49,6 +49,12 @@ target-version = "py311"
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
+[tool.ruff.lint.per-file-ignores]
+# The D0 corpus profiler, inherited with the scaffold. Its output is verified
+# byte-identical to the original run, so it is not reformatted - a cosmetic edit
+# here would put that reproducibility claim at risk for no benefit.
+"scripts/profile_corpus.py" = ["E501", "B905"]
+
 [tool.black]
 line-length = 100
 target-version = ["py311"]
