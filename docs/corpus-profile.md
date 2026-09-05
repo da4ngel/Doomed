@@ -1,6 +1,6 @@
 # Corpus Profile — Ashen Era Archive
 
-Generated `2026-09-04T12:41:43+00:00` from `/home/claude/corpus/Ashen_Era_Archive` by `scripts/profile_corpus.py`.
+Generated `2026-09-05T08:28:55+00:00` from `data\corpus\Ashen_Era_Archive` by `scripts/profile_corpus.py`.
 
 This is the D0 gate deliverable. The scanned-page ratio below is the single number
 that determines how D1 is spent.
