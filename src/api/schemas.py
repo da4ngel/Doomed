@@ -390,4 +390,6 @@ class ReadyResponse(Frozen):
     relations: int = 0
     providers: list[str] = Field(default_factory=list)
     index_backend: str = ""
+    #: Models loaded. A cold first request is ~30x a warm one.
+    warm: bool = False
     detail: list[str] = Field(default_factory=list)

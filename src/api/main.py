@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -21,9 +22,41 @@ from src.core.config import get_settings
 
 VERSION = "0.1.0"
 
+#: Set once the retriever has loaded its models. Reported by /v1/ready, because a warm
+#: system and a cold one differ by 30x on the first request and the demo is recorded live.
+_WARM = {"retriever": False, "error": None}
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Load the embedding and rerank models before serving.
+
+    Measured: the first request in a cold process takes ~2.5s with models on disk, and
+    ~31s the very first time, when the cross-encoder is downloaded. Warm requests are
+    ~1.1s. The risk register calls for pre-warming before recording; doing it at startup
+    means nobody has to remember.
+    """
+    try:
+        from src.api.routes.search import get_retriever
+
+        retriever = get_retriever()
+        retriever.embedder.embed_query("warmup")
+        _WARM["retriever"] = True
+    except Exception as exc:  # noqa: BLE001 - a cold start is degraded, not fatal
+        _WARM["error"] = f"{type(exc).__name__}: {exc}"
+    yield
+    try:
+        from src.api.routes.search import get_retriever
+
+        get_retriever().vectors.close()
+    except Exception:  # noqa: BLE001 - shutdown must not raise
+        pass
+
+
 app = FastAPI(
     title="Ashen Era Archive Assistant",
     version=VERSION,
+    lifespan=lifespan,
     description=(
         "Evidence-first RAG over the Ashen Era Archive. "
         "1B is the spine, 1C is its search-and-sufficiency loop, 1A is its renderer."
@@ -95,6 +128,7 @@ def ready() -> ReadyResponse:
         relations=relations,
         providers=providers,
         index_backend="qdrant-embedded" if not settings.qdrant_url else "qdrant-server",
+        warm=_WARM["retriever"],
         detail=detail,
     )
 
