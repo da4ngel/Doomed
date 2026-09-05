@@ -65,6 +65,7 @@ ocr = [
 [package.dev-dependencies]
 dev = [
     { name = "black" },
+    { name = "httpx" },
     { name = "mypy" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -97,6 +98,7 @@ provides-extras = ["ocr"]
 [package.metadata.requires-dev]
 dev = [
     { name = "black", specifier = ">=24.10" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "mypy", specifier = ">=1.13" },
     { name = "pytest", specifier = ">=8.3" },
     { name = "pytest-cov", specifier = ">=5.0" },

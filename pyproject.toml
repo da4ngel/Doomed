@@ -38,6 +38,7 @@ dev = [
     "ruff>=0.7",
     "black>=24.10",
     "mypy>=1.13",
+    "httpx>=0.28.1",
 ]
 
 [tool.ruff]
