@@ -33,6 +33,7 @@ def is_scan(rel_path: str) -> bool:
     """`*.scan.pdf` - the corpus convention for a page image with no text layer."""
     return normalise(rel_path).endswith(".scan.pdf")
 
+
 FORMAT_BY_SUFFIX = {
     ".pdf": "pdf",
     ".docx": "docx",
