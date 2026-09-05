@@ -51,31 +51,72 @@ explain. Framework internals are not.
 
 ## ADR-002 — Vision model for figure understanding
 
-**Status:** proposed, **spike not yet run** · 2026-09-05
+**Status:** **accepted** · 2026-09-05 · spike run, result below
 
 **Context.** 11 of 20 dev questions are 1A and the answers exist only in the 85 PNGs.
 Roughly 55 `atmo_*` images yield literally zero OCR characters. `plate_01` is a planted
 trap: a bar chart with 800 / 2,400 / 6,000 reference values and 1,114 as the real
 Emberdeep figure, which Tesseract renders as "Ee". Flat OCR plus an LLM answers 6,000.
-
-Verified by direct inspection on 2026-09-05: the 1,114 bar is drawn **shorter** than the
-6,000 reference bar, so "pick the largest number" and "pick the longest bar" both fail.
-The requirement is figure *understanding* — binding each value to its label — not figure
-text extraction.
+Verified by direct inspection: the 1,114 bar is drawn **shorter** than the 6,000 bar, so
+"largest number" and "longest bar" both fail. The requirement is figure *understanding* —
+binding each value to its label — not figure text extraction.
 
 **Options.** (a) VLM structured description; (b) OCR plus bounding-box spatial layout,
-feeding the model `label@(x,y) = value@(x,y)` pairs; (c) OCR only, accept the loss.
+feeding `label@(x,y) = value@(x,y)` pairs; (c) OCR only, accept the loss.
 
-**Proposed decision.** (a), with (b) as the fallback if no free vision model can bind a
-chart value to its label. `spikes/vlm_plate_spike.py` is written and armed to decide
-this; it asserts Emberdeep → 1,114, Greyfell → 3,695, and Ignatz → a scroll.
+**Decision.** (a). Measured, not assumed.
 
-**BLOCKED:** no provider credentials are configured yet. Run the spike and record the
-result — pass or fail — before writing any image pipeline code.
+### Spike result — `minimax/minimax-m3:free` via OpenRouter, 2026-09-05
 
-**TODO(human):** the measured outcome, the model that won, and what we rejected and why.
+| Case | Expected | Result |
+|---|---|---|
+| `plate_01` Emberdeep (the trap) | 1,114 | **PASS** — 1,284 in / 270 out, 5,643 ms |
+| `plate_09` Greyfell Citadel | 3,695 | **PASS** — 1,284 in / 179 out, 3,457 ms |
+| `atmo_portrait` Ignatz Ashgrove | a scroll | **PASS** — 1,723 in / 235 out, 10,014 ms |
 
----
+Cost: **$0.00** — the whole ladder stayed on the free tier.
+
+The trap is defeated by structure, not luck. The model returned every bar bound to its
+own label and marked which one is the subject:
+
+```json
+[{"label": "Old Imperial minimum",  "value": "800"},
+ {"label": "Border-march standard", "value": "2,400"},
+ {"label": "Great Keep standard",   "value": "6,000"},
+ {"label": "Emberdeep",             "value": "1,114"}]
+```
+
+That is why the prompt demands `values[]` as label/value pairs rather than prose. A prose
+description of this plate would contain all four numbers with nothing distinguishing the
+answer from the reference bars, and the composer would pick wrong.
+
+### What the first run cost us, honestly
+
+The spike failed three times before producing this. Each failure was a real defect:
+
+1. **Every hardcoded model id had been retired.** `qwen2.5-vl-72b`,
+   `llama-3.2-90b-vision` and `gemma-3-27b` all 404 on OpenRouter now. Fixed by adding
+   `--discover`, which re-derives the free vision tier from the live catalogue instead of
+   trusting a list that silently rots.
+2. **The circuit breaker was keyed on the provider alone.** One retired model id opened
+   the circuit for OpenRouter entirely, so the escalation ladder never ran — every later
+   model reported "circuit open, not attempted". Now keyed on provider **and** model.
+3. **A non-retryable 4xx was tripping the breaker.** A 404 for a bad model id is *our*
+   bug, not the provider being unhealthy. Tripping on it disables a provider that is
+   perfectly fine. `call_with_retry` no longer records a breaker failure for errors it
+   will not retry.
+
+A fourth issue was masked by all three: `raise_for_status()` discarded the response body,
+so "404 Not Found" was all we saw. The body said "model not found" the whole time. Errors
+now carry the provider's own explanation.
+
+**Consequence for the design.** The fallback chain earned its place on first contact: in
+the successful run, `google/gemma-4-31b-it:free` returned 429 ("rate-limited upstream"),
+the ladder escalated, and the next model answered. That is precisely the demo-day failure
+the chain exists for, and it is worth showing on video rather than describing.
+
+**TODO(human):** whether to spend a few dollars on `gpt-4o` for the final index run to
+reduce variance, given the free tier already passes all three cases.
 
 ## ADR-003 — Authority tiers assigned directory-first
 

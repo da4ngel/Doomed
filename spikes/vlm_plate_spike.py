@@ -38,12 +38,40 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.core.config import get_settings  # noqa: E402
 from src.core.llm import LLMClient, NoProviderConfiguredError  # noqa: E402
 
-#: Free vision models on OpenRouter, in the order the plan says to try them.
-CANDIDATE_MODELS = [
-    "qwen/qwen2.5-vl-72b-instruct:free",
-    "meta-llama/llama-3.2-90b-vision-instruct:free",
-    "google/gemma-3-27b-it:free",
+#: (provider, model) pairs, cheapest first. Paired because a model id is not portable:
+#: "gpt-4o-mini" is a 404 on OpenRouter, which spells it "openai/gpt-4o-mini".
+#:
+#: These ids ROT. The first run of this spike failed with three 404s because every
+#: hardcoded free model had been retired. Use --discover to re-derive the free tier
+#: from the live catalogue instead of trusting this list.
+CANDIDATE_MODELS: list[tuple[str, str]] = [
+    ("openrouter", "google/gemma-4-31b-it:free"),
+    ("openrouter", "minimax/minimax-m3:free"),
+    ("openrouter", "thinkingmachines/inkling:free"),
+    ("openai", "gpt-4o-mini"),
+    ("openai", "gpt-4o"),
 ]
+
+
+def discover_free_vision_models(limit: int = 6) -> list[tuple[str, str]]:
+    """Ask OpenRouter which free models actually accept image input, right now."""
+    import httpx
+
+    settings = get_settings()
+    response = httpx.get(
+        "https://openrouter.ai/api/v1/models",
+        headers={"Authorization": f"Bearer {settings.openrouter_api_key}"},
+        timeout=60.0,
+    )
+    response.raise_for_status()
+    found = [
+        ("openrouter", m["id"])
+        for m in response.json()["data"]
+        if "image" in (m.get("architecture") or {}).get("input_modalities", [])
+        and m["id"].endswith(":free")
+    ]
+    return sorted(found)[:limit]
+
 
 INSTRUCTION = """You are reading a figure plate from an archive. Return ONLY JSON:
 
@@ -98,15 +126,21 @@ CASES = [
 ]
 
 
-def run_case(client: LLMClient, case: Case, model: str) -> dict[str, object]:
+def run_case(client: LLMClient, case: Case, provider: str, model: str) -> dict[str, object]:
     path = get_settings().corpus_root / case.relative_path
     if not path.exists():
         return {"case": case.relative_path, "error": f"missing image: {path}"}
 
     try:
-        response = client.describe_image(path, INSTRUCTION, model=model, json_mode=True)
+        response = client.describe_image(
+            path, INSTRUCTION, model=model, provider=provider, json_mode=True
+        )
     except Exception as exc:  # noqa: BLE001 - a spike reports failures, it does not raise
-        return {"case": case.relative_path, "model": model, "error": f"{type(exc).__name__}: {exc}"}
+        return {
+            "case": case.relative_path,
+            "model": f"{provider}:{model}",
+            "error": f"{type(exc).__name__}: {exc}",
+        }
 
     blob = response.text
     try:
@@ -178,10 +212,13 @@ def report(results: list[dict[str, object]]) -> bool:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", help="single model to test")
+    parser.add_argument("--provider", default="openrouter", help="provider for --model")
+    parser.add_argument("--all-models", action="store_true", help="walk the escalation ladder")
     parser.add_argument(
-        "--all-models", action="store_true", help="walk the free-model escalation ladder"
+        "--discover",
+        action="store_true",
+        help="re-derive free vision models from the live catalogue instead of the list",
     )
-    parser.add_argument("--no-cache", action="store_true", help="force fresh calls")
     args = parser.parse_args()
 
     try:
@@ -195,18 +232,30 @@ def main() -> int:
         return 2
     print(f"providers configured: {', '.join(client.available_providers())}")
 
-    models = (
-        [args.model]
-        if args.model
-        else (CANDIDATE_MODELS if args.all_models else [get_settings().llm_model_vision])
-    )
+    if args.model:
+        ladder = [(args.provider, args.model)]
+    elif args.discover:
+        ladder = discover_free_vision_models()
+        print(f"discovered {len(ladder)} free vision models from the live catalogue")
+    elif args.all_models:
+        ladder = CANDIDATE_MODELS
+    else:
+        ladder = [("openrouter", get_settings().llm_model_vision)]
 
-    for model in models:
-        print(f"\n### model: {model}")
-        results = [run_case(client, case, model) for case in CASES]
+    # Only try providers that actually have credentials, so the ladder does not spend
+    # its steps on 401s from a provider we never configured.
+    available = set(client.available_providers())
+    ladder = [(p, m) for p, m in ladder if p in available]
+    if not ladder:
+        print("\nNo candidate model matches a configured provider.\n")
+        return 2
+
+    for provider, model in ladder:
+        print(f"\n### {provider} : {model}")
+        results = [run_case(client, case, provider, model) for case in CASES]
         if report(results):
             return 0
-        if model != models[-1]:
+        if (provider, model) != ladder[-1]:
             print("\n>>> escalating to the next model in the ladder\n")
 
     return 1

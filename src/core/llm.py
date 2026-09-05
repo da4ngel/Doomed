@@ -75,6 +75,22 @@ class LLMResponse:
         return json.loads(text)
 
 
+def raise_with_body(response: httpx.Response) -> None:
+    """raise_for_status, but keep the provider's explanation in the message.
+
+    A bare "404 Not Found" for a chat endpoint is nearly useless - the body is what
+    says "model not found", which is the difference between a five-minute fix and an
+    hour of guessing at the wrong layer.
+    """
+    if response.is_error:
+        detail = response.text[:400].replace("\n", " ")
+        raise httpx.HTTPStatusError(
+            f"{response.status_code} from {response.request.url}: {detail}",
+            request=response.request,
+            response=response,
+        )
+
+
 def _cost(model: str, tokens_in: int, tokens_out: int) -> float:
     price_in, price_out = _PRICES.get(model, (0.0, 0.0))
     return (tokens_in * price_in + tokens_out * price_out) / 1_000_000
@@ -151,7 +167,58 @@ class OpenRouterProvider:
                 },
                 json=body,
             )
-            response.raise_for_status()
+            raise_with_body(response)
+            data = response.json()
+
+        usage = data.get("usage") or {}
+        tokens_in = int(usage.get("prompt_tokens", 0))
+        tokens_out = int(usage.get("completion_tokens", 0))
+        return LLMResponse(
+            text=data["choices"][0]["message"]["content"] or "",
+            model=model,
+            provider=self.name,
+            tokens_in=tokens_in,
+            tokens_out=tokens_out,
+            latency_ms=int((time.perf_counter() - started) * 1000),
+            cost_usd=_cost(model, tokens_in, tokens_out),
+            raw=data,
+        )
+
+
+class OpenAIProvider(OpenRouterProvider):
+    """OpenAI direct. Same wire format as OpenRouter, different host and auth.
+
+    Worth having alongside OpenRouter rather than only through it: when a free model
+    is retired or throttled, a paid vision model on a separate account is the fallback
+    that keeps the demo recording. 70 unique images is cents, not dollars.
+    """
+
+    name = "openai"
+    endpoint = "https://api.openai.com/v1/chat/completions"
+
+    def __init__(self, settings: Settings) -> None:
+        self._key = settings.openai_api_key
+
+    def complete(self, model: str, messages: list[dict[str, Any]], **params: Any) -> LLMResponse:
+        body: dict[str, Any] = {
+            "model": model,
+            "messages": [
+                {"role": m["role"], "content": self._content(m["parts"])} for m in messages
+            ],
+        }
+        if params.get("max_tokens"):
+            body["max_completion_tokens"] = params["max_tokens"]
+        if params.get("json_mode"):
+            body["response_format"] = {"type": "json_object"}
+
+        started = time.perf_counter()
+        with httpx.Client(timeout=params.get("timeout", 120.0)) as client:
+            response = client.post(
+                self.endpoint,
+                headers={"Authorization": f"Bearer {self._key}"},
+                json=body,
+            )
+            raise_with_body(response)
             data = response.json()
 
         usage = data.get("usage") or {}
@@ -213,7 +280,7 @@ class GeminiProvider:
                 headers={"x-goog-api-key": self._key or ""},
                 json=body,
             )
-            response.raise_for_status()
+            raise_with_body(response)
             data = response.json()
 
         candidates = data.get("candidates") or []
@@ -337,10 +404,14 @@ class LLMClient:
         self.cache = cache or ResponseCache(self.settings.cache_db)
         self.providers: list[Provider] = providers or [
             OpenRouterProvider(self.settings),
+            OpenAIProvider(self.settings),
             GeminiProvider(self.settings),
             BedrockProvider(self.settings),
         ]
-        self._breakers = {p.name: CircuitBreaker(failure_threshold=3) for p in self.providers}
+        # Keyed by provider AND model. A breaker keyed on the provider alone means one
+        # bad model id opens the circuit for every other model on that provider, which
+        # silently disables the escalation ladder the fallback chain depends on.
+        self._breakers: dict[tuple[str, str], CircuitBreaker] = {}
         self.usage: list[LLMResponse] = []
 
     def available_providers(self) -> list[str]:
@@ -356,11 +427,23 @@ class LLMClient:
         messages: list[dict[str, Any]],
         *,
         model: str | None = None,
+        provider: str | None = None,
         use_cache: bool = True,
         **params: Any,
     ) -> LLMResponse:
+        """Run one completion, falling back through providers on failure.
+
+        `provider` pins a single provider. It is required whenever the model id is
+        provider-specific: "gpt-4o-mini" is meaningful to OpenAI and a 404 on
+        OpenRouter, which expects "openai/gpt-4o-mini". Fanning one id across every
+        provider only makes sense for ids they genuinely share.
+        """
         model = model or self.settings.llm_model_synthesis
         candidates = [p for p in self.providers if p.available()]
+        if provider is not None:
+            candidates = [p for p in candidates if p.name == provider]
+            if not candidates:
+                raise NoProviderConfiguredError
         if not candidates:
             raise NoProviderConfiguredError
 
@@ -376,10 +459,13 @@ class LLMClient:
         last: Exception | None = None
         for index, provider in enumerate(candidates):
             try:
+                breaker = self._breakers.setdefault(
+                    (provider.name, model), CircuitBreaker(failure_threshold=3)
+                )
                 response = call_with_retry(
                     lambda p=provider: p.complete(model, messages, **params),
                     policy=RetryPolicy(max_attempts=4),
-                    breaker=self._breakers[provider.name],
+                    breaker=breaker,
                     description=f"{provider.name}:{model}",
                 )
             except Exception as exc:  # noqa: BLE001 - try the next provider
@@ -398,8 +484,19 @@ class LLMClient:
         raise last
 
     def describe_image(
-        self, image_path: str | Path, instruction: str, *, model: str | None = None, **params: Any
+        self,
+        image_path: str | Path,
+        instruction: str,
+        *,
+        model: str | None = None,
+        provider: str | None = None,
+        **params: Any,
     ) -> LLMResponse:
         """One vision call. Cached on image bytes, so re-runs of ingestion are free."""
         messages = [{"role": "user", "parts": [text_part(instruction), image_part(image_path)]}]
-        return self.complete(messages, model=model or self.settings.llm_model_vision, **params)
+        return self.complete(
+            messages,
+            model=model or self.settings.llm_model_vision,
+            provider=provider,
+            **params,
+        )

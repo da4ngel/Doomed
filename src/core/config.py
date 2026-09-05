@@ -32,6 +32,7 @@ class Settings(BaseSettings):
 
     # --- providers -------------------------------------------------------
     openrouter_api_key: str | None = None
+    openai_api_key: str | None = None
     gemini_api_key: str | None = None
     aws_region: str = "us-east-1"
     aws_profile: str | None = None
@@ -68,6 +69,8 @@ class Settings(BaseSettings):
         present = []
         if self.openrouter_api_key:
             present.append("openrouter")
+        if self.openai_api_key:
+            present.append("openai")
         if self.gemini_api_key:
             present.append("gemini")
         if self.aws_profile or Path.home().joinpath(".aws", "credentials").exists():

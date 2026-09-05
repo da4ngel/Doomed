@@ -132,8 +132,11 @@ def call_with_retry(
         except Exception as exc:  # noqa: BLE001 - re-raised below unless retryable
             last = exc
             if not _is_retryable(exc):
-                if breaker is not None:
-                    breaker.record_failure()
+                # Deliberately does NOT trip the breaker. A 404 for a retired model id
+                # or a 400 for a malformed body is *our* bug, not the provider being
+                # unhealthy, and tripping on it makes the breaker block every later
+                # call to a provider that is actually fine. That is exactly how a
+                # stale model id took out a whole escalation ladder.
                 raise
             if attempt == policy.max_attempts:
                 break
