@@ -218,3 +218,64 @@ figures, citation chips and the live trace panel. No build step, no `node_module
 evidence-graph visualisation stays cut-line #2. A judge runs the UI with no npm install.
 
 **TODO(human):** confirm or overturn once the second builder joins.
+
+---
+
+## ADR-007 — Qdrant as a Docker service, with an embedded fallback in one code path
+
+**Status:** accepted · 2026-09-06 · implemented in `src/indexing/qdrant_store.py`
+
+**Context.** The vector store had to be chosen with Docker Desktop switched off on the
+build machine. Embedded Qdrant was verified working first (insert, query, and
+`authority_tier` payload filtering all pass with no daemon), so both options were live.
+
+**Options.** (a) Docker service; (b) embedded file; (c) no vector DB, brute-force numpy
+over ~2,400 × 384 floats, which at this scale is genuinely instant.
+
+**Decision.** (a) Docker service via `QDRANT_URL`, with (b) as the fallback when that
+variable is unset — **one class, one code path, chosen by config**. The team runs the
+service; the test suite and CI use the embedded file so neither needs a running daemon.
+
+**What decided it in practice.** Embedded Qdrant is single-process. During development an
+index build held the lock and a second process could not open the store — `Device or
+resource busy` — and a stale builder had to be killed before work could continue. On demo
+day, with the API running and an index rebuild wanted, that is a deadlock. The service
+removes it. This is the concrete argument, not a theoretical preference for "production
+parity".
+
+**Consequences.** Docker Desktop must be running for ingestion and the demo, which is a
+real operational cost and is stated in the README. `/v1/ready` reports which backend is
+live, and `QdrantUnavailableError` names the fix rather than surfacing a connection trace.
+
+**TODO(human):** what we rejected and why — in particular whether option (c) would have
+been the more defensible choice at 2,400 chunks, given "no framework" is our stated
+principle elsewhere.
+
+---
+
+## ADR-008 — Chunk size is set by the embedding model's context window
+
+**Status:** accepted · 2026-09-06 · implemented in `src/ingestion/chunker.py`
+
+**Context.** The master plan specified ~600-token chunks. That number was chosen as a
+round figure, before an embedding model had been selected.
+
+**The measurement that changed it.** `BAAI/bge-small-en-v1.5` truncates input at **512
+tokens**. With a 600-token target, **173 chunks (8.8%) exceeded the window** — their tails
+were stored in `chunks.jsonl` and returned by BM25, but never embedded. Text present in
+the index yet unreachable by dense retrieval, with no error and no symptom: recall would
+simply have been lower than it should be, and nothing would have said why.
+
+**Decision.** `TARGET_TOKENS = 450`, derived as *model context (512) minus room for the
+overlap the chunker prepends*. `EMBED_CONTEXT_TOKENS` is a named constant so the
+relationship is explicit rather than folklore.
+
+**Measured consequence.** Chunks over the window fell from 173 to **1**, and that one is
+an atomic table kept whole by rule 1 — a stated trade-off rather than a leak.
+
+**Consequence for the ablation.** The chunk-size sweep becomes 300 / 450 / 600, and the
+600 row now has a known mechanism for any loss it shows rather than being a mystery. A
+larger-context embedder would move this number; that is the point of deriving it.
+
+**TODO(human):** what we rejected and why — including whether to switch to an embedder
+with a 8k window and drop the constraint entirely.
