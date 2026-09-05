@@ -19,7 +19,11 @@ from src.indexing.qdrant_store import QdrantStore, QdrantUnavailableError
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--batch", type=int, default=256)
-    parser.add_argument("--parallel", type=int, default=0, help="0 = all cores")
+    # Bounded, not "all cores". Each fastembed worker loads its own copy of the ONNX
+    # model, so parallel=0 on a 12-core machine spawned 12 copies and the run was
+    # killed for memory at 1,536 of 2,444 chunks. Four workers is roughly 4x the
+    # single-process rate and leaves the machine usable.
+    parser.add_argument("--parallel", type=int, default=4, help="embedding workers (0 = all cores)")
     parser.add_argument("--skip-dense", action="store_true", help="BM25 only")
     args = parser.parse_args()
 
