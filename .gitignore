@@ -1,0 +1,40 @@
+# Secrets — never commit
+.env
+.env.local
+.env.*.local
+
+# Corpus is READ-ONLY, 123MB, and supplied by the competition. Never in git.
+data/corpus/
+data/assets/
+data/index/
+data/cache/
+
+# Local stores
+*.db
+*.sqlite
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# Node / UI
+node_modules/
+
+# Models cached by fastembed
+.fastembed_cache/
+
+# Misc
+*.log
+.DS_Store
+Thumbs.db
