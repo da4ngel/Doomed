@@ -8,6 +8,9 @@ data/corpus/
 data/assets/
 data/index/
 data/cache/
+# Downloaded ONNX embedding weights (~65MB). Reproducible via fastembed on first run,
+# and the submission ships the full .git history - a binary blob here bloats it forever.
+data/models/
 
 # Local stores
 *.db

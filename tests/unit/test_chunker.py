@@ -15,6 +15,7 @@ from src.api.schemas import Block
 from src.core.config import get_settings
 from src.ingestion.adapters.base import estimate_tokens
 from src.ingestion.chunker import (
+    EMBED_CONTEXT_TOKENS,
     MIN_TOKENS,
     TARGET_TOKENS,
     chunk_document,
@@ -148,12 +149,31 @@ def corpus_chunks():
 
 
 @built
-def test_corpus_chunks_respect_the_target(corpus_chunks) -> None:
-    oversized = [c for c in corpus_chunks if c["token_count"] > TARGET_TOKENS]
-    # Only an atomic table may exceed the target, by rule 1.
-    assert all(
-        len(c["block_ids"]) == 1 for c in oversized
-    ), f"{len(oversized)} multi-block chunks over target"
+def test_no_chunk_is_silently_truncated_by_the_embedding_model(corpus_chunks) -> None:
+    """The invariant that actually matters.
+
+    BGE-small truncates at 512 tokens, so a chunk longer than that is indexed but only
+    partly embedded - text present in the store yet unreachable by dense retrieval, which
+    is invisible from the outside. A 600-token target left 173 such chunks (8.8%). Only an
+    atomic table may exceed the window, by rule 1, and that is a stated trade-off.
+    """
+    truncated = [
+        c
+        for c in corpus_chunks
+        if c["token_count"] > EMBED_CONTEXT_TOKENS and len(c["block_ids"]) > 1
+    ]
+    assert not truncated, f"{len(truncated)} multi-block chunks exceed the model window"
+
+
+@built
+def test_corpus_chunks_stay_close_to_the_target(corpus_chunks) -> None:
+    """Chunks may overshoot slightly: the fragment merge appends text after the size
+    check, deliberately, because losing corpus text is worse than a 10-token overshoot.
+    The allowance is asserted so it cannot drift into something larger.
+    """
+    allowance = int(TARGET_TOKENS * 1.05)
+    strays = [c for c in corpus_chunks if c["token_count"] > allowance and len(c["block_ids"]) > 1]
+    assert not strays, f"{len(strays)} multi-block chunks more than 5% over target"
 
 
 @built

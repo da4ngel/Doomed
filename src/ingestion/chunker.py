@@ -29,8 +29,13 @@ from src.api.schemas import Block, Chunk
 from src.core.config import Settings, get_settings
 from src.ingestion.adapters.base import estimate_tokens
 
-#: Target chunk size. Swept in the ablation; the rules above are not.
-TARGET_TOKENS = 600
+#: Target chunk size, set by the EMBEDDING MODEL'S context window rather than a round
+#: number. BGE-small-en-v1.5 truncates at 512 tokens, so a 600-token target silently
+#: dropped the tail of 173 chunks (8.8%) - the text was indexed but never embedded, an
+#: invisible recall hole. 450 leaves room for the overlap the chunker prepends.
+#: Swept in the ablation (300/450/600); the three rules above are not.
+EMBED_CONTEXT_TOKENS = 512
+TARGET_TOKENS = 450
 
 #: Fraction of the target carried into the next chunk.
 OVERLAP_RATIO = 0.15
@@ -146,6 +151,37 @@ def _group_by_section(blocks: list[Block]) -> list[list[Block]]:
     return groups
 
 
+def _flush_pending(
+    chunks: list[Chunk],
+    pending: list[Chunk],
+    doc_id: str,
+    authority_tier: int,
+    source_type: str,
+) -> None:
+    """Emit held-back short chunks as one chunk of their own, then clear the buffer.
+
+    Undersized, but present. Dropping them loses corpus text and forcing them into an
+    unrelated chunk breaks either the size target or rule 1.
+    """
+    if not pending:
+        return
+    text = "\n\n".join(c.text for c in pending)
+    chunks.append(
+        Chunk(
+            chunk_id=_chunk_id(doc_id, len(chunks)),
+            doc_id=doc_id,
+            block_ids=[b for c in pending for b in c.block_ids],
+            text=text,
+            page_span=pending[0].page_span,
+            section_path=pending[0].section_path,
+            authority_tier=authority_tier,
+            source_type=source_type,
+            token_count=estimate_tokens(text),
+        )
+    )
+    pending.clear()
+
+
 def chunk_document(
     blocks: list[Block],
     doc_id: str,
@@ -184,16 +220,34 @@ def chunk_document(
             else:
                 pending_short.append(chunk)
             return
+        pending_tokens = sum(c.token_count for c in pending_short)
+        if pending_short and (atomic or pending_tokens + chunk.token_count > TARGET_TOKENS):
+            # Held-back text cannot join this chunk: either the chunk is atomic (rule 1)
+            # or the merge would push it past the target. Emit it on its own instead of
+            # forcing it in - held text accumulates, and one run produced a 566-token
+            # chunk against a 450 target this way.
+            _flush_pending(chunks, pending_short, doc_id, authority_tier, source_type)
+
         if pending_short and not atomic:
             # Attach any held-back heading to the chunk that follows it, which is the
             # content that heading actually introduces. Never to a table or figure -
             # rule 1 says those stand alone, and prepending prose to a table chunk is
             # exactly the contamination the rule exists to prevent.
             head = "\n\n".join(c.text for c in pending_short)
+            carried_blocks = [b for c in pending_short for b in c.block_ids]
             pending_short.clear()
             merged = head + "\n\n" + chunk.text
             chunk = chunk.model_copy(
-                update={"text": merged, "token_count": estimate_tokens(merged)}
+                update={
+                    "text": merged,
+                    # block_ids MUST travel with the text. Merging one without the other
+                    # left chunks holding 566 tokens of text while listing blocks summing
+                    # to 385 - a citation from that chunk would point at blocks that do
+                    # not contain the quoted words, which is a fabricated citation with
+                    # every field looking valid.
+                    "block_ids": carried_blocks + chunk.block_ids,
+                    "token_count": estimate_tokens(merged),
+                }
             )
         if atomic:
             atomic_chunk_ids.add(chunk.chunk_id)
@@ -212,10 +266,18 @@ def chunk_document(
 
         for block in expanded:
             if block.block_type == "table":
-                # Rule 1: a table is emitted alone, whatever it costs the token budget.
-                emit(buffer)
-                buffer, buffer_tokens = [], 0
-                emit([block])
+                # Rule 1 forbids merging unrelated PROSE into a table chunk, but a
+                # heading immediately above a table is the table's own title - "Catalogue
+                # of Lots" belongs with the lots. Splitting them stranded 98 useless
+                # heading-only chunks AND left the table unfindable by its own name.
+                heading_lead = [b for b in buffer if b.block_type == "heading"]
+                if heading_lead and len(heading_lead) == len(buffer):
+                    buffer, buffer_tokens = [], 0
+                    emit([*heading_lead, block])
+                else:
+                    emit(buffer)
+                    buffer, buffer_tokens = [], 0
+                    emit([block])
                 stats.table_chunks += 1
                 if block.token_count > target_tokens:
                     stats.oversized_tables += 1
@@ -269,25 +331,9 @@ def chunk_document(
                 buffer = []
         emit(buffer)
 
-    if pending_short:
-        # Anything still held back never found a chunk to join - a short paragraph that
-        # sits alone before a table, say. Emit it rather than lose it: an undersized
-        # chunk is a minor cost, silently dropping corpus text is not.
-        text = "\n\n".join(c.text for c in pending_short)
-        chunks.append(
-            Chunk(
-                chunk_id=_chunk_id(doc_id, len(chunks)),
-                doc_id=doc_id,
-                block_ids=[b for c in pending_short for b in c.block_ids],
-                text=text,
-                page_span=pending_short[0].page_span,
-                section_path=pending_short[0].section_path,
-                authority_tier=authority_tier,
-                source_type=source_type,
-                token_count=estimate_tokens(text),
-            )
-        )
-        pending_short.clear()
+    # Anything still held back never found a chunk to join - a short paragraph that
+    # sits alone before a table, say. Emit it rather than lose it.
+    _flush_pending(chunks, pending_short, doc_id, authority_tier, source_type)
 
     stats.chunks += len(chunks)
     stats.documents += 1

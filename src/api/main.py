@@ -15,6 +15,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 
+from src.api.routes import search as search_routes
 from src.api.schemas import HealthResponse, ReadyResponse
 from src.core.config import get_settings
 
@@ -28,6 +29,9 @@ app = FastAPI(
         "1B is the spine, 1C is its search-and-sufficiency loop, 1A is its renderer."
     ),
 )
+
+
+app.include_router(search_routes.router)
 
 
 @app.get("/v1/health", response_model=HealthResponse, tags=["00 Health"])
