@@ -103,3 +103,61 @@ text retrieval is.
 | `chart_reading` suite | 4 bar charts | **3 figure grammars**: bar+reference, single value, gauge (Finding 9) |
 | Ablation argument for BM25 | generic "rare proper nouns" | **the Edge/Lantern pair, measurable** (Finding 8) |
 | A1 normalisation | correct against entity vocabulary | **also: never rewrite an unknown unit** (Finding 7) |
+
+---
+
+## Finding 12 — the wiki infobox vocabulary is a long tail, not 13 clean fields
+
+Finding 3 showed a tidy example (`Member of`, `Commands`, `Wields`, `Mentor of`) and
+concluded the graph parses deterministically. That conclusion holds, but the
+implementation is not a lookup on 13 field names. Across the 95 articles there are
+**over 100 distinct infobox field labels**, and the target predicates are spread thin:
+
+| Predicate | Surface forms actually present |
+|---|---|
+| `member_of` | Member of (14), Membership (10), Affiliation (12), Members (3), Member (1), Known members (1), Allegiance (1) |
+| `commands` | Command (11), Commands (1), Castellan (1) |
+| `wields` | Wielded relic (3), Wields (2), Weapon (2), Relic (2), Wielded weapon (1), Weapon or Relic (1) |
+| `ruled_by` | Ruled by (17), Ruler (6), Ruling power (1) |
+| `housed_at` | Housed in (11), Place of housing (1) |
+| `mentor_of` | Mentor of (3), Mentor (3), Mentorship (3) |
+
+Some labels even carry the value inside the field name — `Serves at Emberdeep`,
+`Serving at Crookvale`, `Personnel serving at Hollowreach`.
+
+So the extractor needs a **surface-form → predicate map plus a field-name value
+fallback**. Still deterministic, still zero LLM cost, still zero hallucination risk —
+but a parser keyed on the 13 canonical names would silently capture a small fraction of
+the graph and nobody would notice, because a sparse graph fails quietly.
+
+Also: **89 of 95 articles have an Infobox section**, not all 95. The remaining 6 need
+the prose/wikilink path alone.
+
+## Finding 13 — plated locations and wiki-garrison locations are disjoint by design
+
+The 8 locations with a garrison plate and the 17 wiki articles carrying a
+`Garrison strength` infobox row are **completely non-overlapping** (verified: zero
+intersection).
+
+| Plated (image only) | Nearest wiki name with a garrison figure |
+|---|---|
+| Greyfell Citadel — 3,695 | Ironfell **Citadel** — 1,096 |
+| Embercrag Fortress | Vharen**crag Fortress** — 9,478 |
+| Hollowreach / Marrowwatch / Mournwatch | Gloam**reach** — 2,483 |
+| Emberdeep — 1,114 | Crookvale — 1,004 · Embermarch — 4,063 |
+
+This is the most dangerous trap in the corpus, and it is not a vision problem at all.
+A system that fuzzy-matches an unfamiliar proper noun, or that settles for "a wiki
+article about a similar-sounding place", returns a garrison number that is **fluent,
+plausible, and carries a genuine citation to a real document**. It fails in exactly the
+way a judge cannot catch by reading the answer alone.
+
+Two direct consequences:
+
+1. **Entity-aware normalisation (differentiator 6) is defensive, not cosmetic.** A1 must
+   correct only against the entity vocabulary and must never map Emberdeep onto
+   Embermarch. Every correction is shown and reversible.
+2. **This is the strongest concrete argument for hybrid retrieval in the ablation.** BM25
+   on exact rare proper nouns separates `greyfell` from `ironfell`; dense similarity
+   actively pulls them together. Row 1 versus row 4 of the ablation table can be
+   explained with this example rather than in the abstract.
