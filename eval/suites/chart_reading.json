@@ -1,0 +1,95 @@
+{
+  "suite": "chart_reading",
+  "description": "The single test most likely to separate this system from teams that OCR and hope. Every case asserts that the answer is the value bound to the plate's named SUBJECT - never the largest number on the plate, never the longest bar, never an axis endpoint. Covers three figure grammars so a fix cannot pass by special-casing one layout.",
+  "authored_by": "human, read from the images",
+  "authored_at": "2026-09-05",
+  "assertion": "answer == subject_value AND answer NOT IN forbidden_answers",
+  "cases": [
+    {
+      "case_id": "chart_bar_reference_emberdeep",
+      "qid": "1a_001",
+      "asset": "images/plate_01_location_emberdeep.png",
+      "figure_grammar": "bar_chart_with_reference_bars",
+      "subject": "Emberdeep",
+      "subject_value": "1114",
+      "reference_values": [
+        {"label": "Old Imperial minimum", "value": "800"},
+        {"label": "Border-march standard", "value": "2400"},
+        {"label": "Great Keep standard", "value": "6000"}
+      ],
+      "forbidden_answers": ["800", "2400", "6000"],
+      "why": "Tesseract read the three reference values cleanly and rendered 1,114 as 'Ee'. Flat OCR plus an LLM answers 6,000. The 1,114 bar is drawn shorter than the 6,000 bar, so 'longest bar' fails as well."
+    },
+    {
+      "case_id": "chart_bar_reference_thrice_bound_edge",
+      "qid": "1a_004",
+      "asset": "images/plate_04_artifact_the_thrice_bound_edge.png",
+      "figure_grammar": "bar_chart_with_reference_bars",
+      "subject": "The Thrice-Bound Edge",
+      "subject_value": "94",
+      "reference_values": [
+        {"label": "Novice tolerance", "value": "20"},
+        {"label": "Adept tolerance", "value": "55"},
+        {"label": "Master tolerance", "value": "85"}
+      ],
+      "forbidden_answers": ["20", "55", "85", "None recorded"],
+      "why": "Also a contradiction case: wiki/the_thrice_bound_edge.md asserts 'no attunement cost' six times and outranks the plate on dense retrieval. 'None recorded' is therefore a forbidden answer, not merely a wrong one."
+    },
+    {
+      "case_id": "chart_bar_reference_thrice_bound_lantern",
+      "qid": "1a_007",
+      "asset": "images/plate_07_artifact_the_thrice_bound_lantern.png",
+      "figure_grammar": "bar_chart_with_reference_bars",
+      "subject": "The Thrice-Bound Lantern",
+      "subject_value": "55",
+      "reference_values": [
+        {"label": "Novice tolerance", "value": "20"},
+        {"label": "Adept tolerance", "value": "55"},
+        {"label": "Master tolerance", "value": "85"}
+      ],
+      "forbidden_answers": ["20", "85", "94"],
+      "why": "The subject value collides exactly with this plate's own Adept tolerance reference bar, so a correct answer must come from label binding rather than number extraction. 94 is forbidden because it belongs to the near-identically named Thrice-Bound Edge - retrieving the wrong plate is the failure this case detects.",
+      "requires_correct_asset": true
+    },
+    {
+      "case_id": "chart_bar_reference_cinder_wrought_aegis",
+      "qid": "1a_013",
+      "asset": "images/plate_13_artifact_the_cinder_wrought_aegis.png",
+      "figure_grammar": "bar_chart_with_reference_bars",
+      "subject": "The Cinder-Wrought Aegis",
+      "subject_value": "34",
+      "reference_values": [
+        {"label": "Novice tolerance", "value": "20"},
+        {"label": "Adept tolerance", "value": "55"},
+        {"label": "Master tolerance", "value": "85"}
+      ],
+      "forbidden_answers": ["20", "55", "85"],
+      "why": "Two of the three reference bars exceed the answer, so both 'largest number' and 'longest bar' heuristics fail."
+    },
+    {
+      "case_id": "chart_gauge_weeping_lurker",
+      "qid": "1a_008",
+      "asset": "images/plate_08_creature_weeping_lurker.png",
+      "figure_grammar": "gauge",
+      "subject": "Weeping Lurker",
+      "subject_value": "3",
+      "reference_values": [
+        {"label": "scale minimum", "value": "0"},
+        {"label": "scale maximum", "value": "10"}
+      ],
+      "forbidden_answers": ["10", "0"],
+      "why": "Proves the trap generalises past bar charts. The axis endpoints are rendered as text and the caption says 'of 10', so flat OCR yields 3, 0 and 10 with no structure."
+    },
+    {
+      "case_id": "chart_single_value_greyfell",
+      "qid": "1a_009",
+      "asset": "images/plate_09_location_greyfell_citadel.png",
+      "figure_grammar": "single_value_plate",
+      "subject": "Greyfell Citadel",
+      "subject_value": "3695",
+      "reference_values": [],
+      "forbidden_answers": [],
+      "why": "Control case with no distractors. A failure here means the pipeline cannot read plates at all, which distinguishes a chart-comprehension bug from a total figure-pipeline failure."
+    }
+  ]
+}
