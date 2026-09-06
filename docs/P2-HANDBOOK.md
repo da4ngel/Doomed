@@ -164,12 +164,19 @@ Everything else is disjoint by directory. There is no other file both of us touc
 
 ```json
 { "query": "...", "mode": "hybrid|dense|sparse", "k": 10, "rerank": true,
+  "expand": true, "expand_mode": "graph|section|both",
   "filters": { "authority_tier": [1,2], "source_type": ["figure_plate"], "doc_id": [] } }
 ```
 
 Returns `hits[]` with `chunk_id`, `doc_id`, `text`, `score`, `page`, `section_path`,
 `source_type`, `authority_tier`, `asset_ids`, and `dense_rank` / `sparse_rank` /
 `rerank_score` so you can see which retriever found what.
+
+A hit with `score: 0.0` and all three rank fields `null` arrived by **expansion**, not by
+a retriever. `expanded` says how many, and `expansion_reasons` maps each such chunk id to
+the reason it was added - "reached via `The Iron-Ring Cartel -won-> The Purge of
+Blackport`". Put that string in the trace: it is the hop chain your 1B answer quotes to
+show its working, and a chunk that cannot explain itself should not reach A5.
 
 ### When to set `rerank` — measured, and it is not always true
 
@@ -186,13 +193,30 @@ multi-hop question needs documents that are individually weak matches and collec
 necessary - the second hop's article often does not name the question's subject at all -
 so the reranker correctly demotes exactly the evidence the answer requires.
 
-**So the router sets it per intent, and this is the reason A1 classifies intent at all:**
+**But graph expansion beats it outright on multi-hop, and costs 20 ms instead of 2.4 s:**
 
-| A1 intent | `rerank` |
-|---|---|
-| `direct`, `visual`, `comparison` | `true` |
-| `multi_hop`, `exploratory` | **`false`** |
-| `contradiction` | **unresolved - measure it, do not guess** |
+| 1B, k=10 | recall | coverage |
+|---|---|---|
+| Hybrid RRF | 0.714 | 0.429 |
+| + cross-encoder rerank (2.4 s) | 0.500 | 0.143 |
+| **+ graph expand (20 ms)** | **0.905** | **0.714** |
+
+**So the router sets both per intent, and this is the reason A1 classifies intent at all:**
+
+| A1 intent | `rerank` | `expand` / `expand_mode` |
+|---|---|---|
+| `direct`, `visual`, `comparison` | `true` | `true` / `graph` |
+| `multi_hop`, `exploratory` | **`false`** | **`true` / `graph`** |
+| `contradiction` | unresolved - measure it, do not guess | `true` / `graph` |
+
+`expand_mode: "graph"` is safe to leave on for everything: it is a large win on 1B and
+**exactly neutral** on `rich_1a` and `contradiction_1c` (identical numbers with and
+without). Rerank is the one that needs gating.
+
+**Never use `expand_mode: "section"`.** It is measured and it is worse than doing nothing
+- 1B coverage 0.429 -> 0.286 - because it can only add chunks from documents already
+retrieved, so under a fixed k it spends slots it cannot repay. It exists as an ablation row,
+not as an option. `"both"` is also worse than `"graph"` alone, for the same reason.
 
 The `contradiction` row is honestly open. On `contradiction_1c` rerank *recovers*
 coverage (0.500 -> 1.000) while halving MRR (0.500 -> 0.250) - but that suite is **two
@@ -204,6 +228,14 @@ before trusting either setting.
 It also costs ~2.4 s of p95 and buys **no recall at all** (1A recall@10 is 0.773 either
 way). It buys rank position. If A3 is about to loop anyway, spending 2.4 s to reorder a
 list you are going to re-retrieve is the wrong trade.
+
+**One more thing this makes urgent.** Graph expansion seeds on entities named in the
+question, matched exactly. On the `paraphrase` suite, questions that name no canonical
+entity ("the great worm of the marrow-fens") get **nothing** from it: 0 of 2 covered.
+Rewording costs about 0.29 of coverage overall. That makes your A1 normalisation against
+`GET /v1/graph/entities` load-bearing rather than cosmetic - it is the only thing that can
+turn an oblique question into one the graph can seed from. Against the published
+vocabulary only, never fuzzily.
 
 Full table and mechanism: `docs/reports/ablation.md`. The numbers are recorded in
 `eval/baseline.json` and `make gate` fails on any drop, so run it after anything that

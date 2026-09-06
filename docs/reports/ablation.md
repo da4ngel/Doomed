@@ -1,10 +1,15 @@
 # Retrieval ablation — measured
 
-Run 2026-09-06 (UTC) against the full index: 236 documents, 2,474 chunks, 2,474 dense vectors,
-BM25 over the same chunks. Gold is hand-authored (`eval/suites/`), k = 10.
+Run 2026-09-07 against the full index: 236 documents, 2,474 chunks, 2,474 dense vectors,
+BM25 over the same chunks, and the **wiki-only graph** (198 entities, 379 relations).
+Gold is hand-authored (`eval/suites/`), k = 10.
 
-Four configurations of **one** `Retriever.search` function, differing only by request —
+Seven configurations of **one** `Retriever.search` function, differing only by request —
 so each row measures one change, not two.
+
+Rows 5–7 spend the **same k** as row 3: expansion evicts the weakest base hits rather than
+extending the list (ADR-009). Appending would have scored row 6 on more evidence than
+row 3 and credited the graph for the difference.
 
 ---
 
@@ -15,20 +20,26 @@ so each row measures one change, not two.
 | # | Config | recall@10 | **coverage@10** | nDCG@10 | MRR | p95 ms |
 |---|---|---|---|---|---|---|
 | 1 | BM25 only | 0.595 | 0.143 | 0.535 | 0.655 | 0 |
-| 2 | Dense only | 0.476 | 0.000 | 0.509 | 0.833 | 136 |
-| 3 | **Hybrid RRF** | **0.714** | **0.429** | **0.590** | 0.762 | 144 |
-| 4 | Hybrid + rerank | 0.500 | 0.143 | 0.475 | 0.714 | 2,513 |
+| 2 | Dense only | 0.476 | 0.000 | 0.509 | 0.833 | 127 |
+| 3 | Hybrid RRF | 0.714 | 0.429 | 0.590 | 0.762 | 124 |
+| 4 | Hybrid + rerank | 0.500 | 0.143 | 0.475 | 0.714 | 2,463 |
+| 5 | + section expand | 0.643 | 0.286 | 0.556 | 0.762 | 135 |
+| 6 | **+ graph expand** | **0.905** | **0.714** | **0.684** | 0.762 | 144 |
+| 7 | + both expands | 0.881 | 0.714 | 0.677 | 0.762 | 123 |
 
 ### `rich_1a` — 11 questions, answers inside images
 
 | # | Config | recall@10 | coverage@10 | nDCG@10 | MRR | p95 ms |
 |---|---|---|---|---|---|---|
-| 1 | BM25 only | 0.727 | 0.545 | 0.664 | 0.730 | 1 |
-| 2 | Dense only | 0.773 | 0.545 | 0.693 | 0.780 | 148 |
-| 3 | Hybrid RRF | 0.773 | 0.545 | 0.715 | 0.803 | 151 |
-| 4 | **Hybrid + rerank** | 0.773 | 0.545 | **0.779** | **0.939** | 2,772 |
+| 1 | BM25 only | 0.727 | 0.545 | 0.664 | 0.730 | 0 |
+| 2 | Dense only | 0.773 | 0.545 | 0.693 | 0.780 | 129 |
+| 3 | Hybrid RRF | 0.773 | 0.545 | 0.715 | 0.803 | 127 |
+| 4 | **Hybrid + rerank** | 0.773 | 0.545 | **0.779** | **0.939** | 2,572 |
+| 5 | + section expand | 0.727 | 0.545 | 0.691 | 0.780 | 152 |
+| 6 | + graph expand | 0.773 | 0.545 | 0.715 | 0.803 | 160 |
+| 7 | + both expands | 0.727 | 0.545 | 0.691 | 0.780 | 143 |
 
-### `contradiction_1c` — 2 questions (n is small; treat as directional)
+### `contradiction_1c` — 2 questions (n is 2; directional only)
 
 | # | Config | recall@10 | coverage@10 | nDCG@10 | MRR |
 |---|---|---|---|---|---|
@@ -36,83 +47,123 @@ so each row measures one change, not two.
 | 2 | Dense only | 1.000 | 1.000 | 0.566 | 0.417 |
 | 3 | Hybrid RRF | 0.500 | 0.500 | 0.500 | 0.500 |
 | 4 | Hybrid + rerank | 1.000 | 1.000 | 0.431 | 0.250 |
+| 5–7 | any expansion | 0.500 | 0.500 | 0.500 | 0.500 |
+
+### `paraphrase` — 19 re-askings of questions we already know the answers to
+
+| # | Config | recall@10 | coverage@10 | nDCG@10 | MRR |
+|---|---|---|---|---|---|
+| 1 | BM25 only | 0.561 | 0.263 | 0.496 | 0.595 |
+| 3 | Hybrid RRF | 0.553 | 0.263 | 0.527 | 0.695 |
+| 4 | Hybrid + rerank | 0.517 | 0.210 | 0.507 | 0.693 |
+| 5 | + section expand | 0.474 | 0.158 | 0.491 | 0.684 |
+| 6 | **+ graph expand** | **0.693** | **0.474** | **0.600** | 0.695 |
+| 7 | + both expands | 0.614 | 0.368 | 0.569 | 0.684 |
 
 `unanswerable` and `adversarial` carry no gold documents by construction — they score
-refusal behaviour, not retrieval, and are excluded from this table rather than reported
-as zeros.
+refusal behaviour, not retrieval, and are named rather than reported as zeros.
 
 ---
 
 ## What the numbers say
 
-### 1. Hybrid beats both of its own components on multi-hop
+### 1. Graph expansion is the single biggest win in the project
 
-**recall 0.714 against 0.595 (BM25) and 0.476 (dense); coverage 0.429 against 0.143 and
-0.000.** This is the clearest result in the table and it is not a small margin — hybrid
-covers three times as many 1B questions as BM25 alone and infinitely more than dense
-alone, which covers none.
+**`coverage@10` on multi-hop: 0.429 → 0.714. Recall: 0.714 → 0.905. Cost: 20 ms.**
 
-The mechanism is visible in the per-question failures. Dense alone loses `1b_009` because
-"Iron-Ring Cartel" and "Purge of Blackport" are lexically distinctive and semantically
-bland; BM25 alone loses `1b_006` and `1b_005` because "the faction that won" is a
-semantic relation with no shared vocabulary. Each retriever fails on what the other is
-for.
+Three of seven 1B questions had all their evidence in the top 10 before; five do now.
 
-### 2. Reranking helps 1A and *actively harms* 1B — the most useful finding here
+The mechanism is the reason the graph exists. A 1B question names one entity and needs a
+second document that often does not contain the question's subject in any form either
+retriever scores highly — "who won the War of Drowned Light, and who is in that faction"
+retrieves the war's article, and the answer lives in the faction's. Walking one edge
+reaches it deterministically, and the hop chain is quotable in the answer.
+
+For comparison, the cross-encoder costs **2,463 ms** and makes this suite *worse*. Graph
+expansion costs **20 ms** and is the best row in the table. That is the ordering to defend
+when asked why a graph rather than a bigger reranker.
+
+### 2. Reranking helps 1A and harms 1B — still true, and no longer the only option
 
 | | 1A nDCG | 1A MRR | 1B recall | 1B coverage |
 |---|---|---|---|---|
 | Hybrid RRF | 0.715 | 0.803 | 0.714 | 0.429 |
-| Hybrid + rerank | **0.779** | **0.939** | **0.500** | **0.143** |
+| Hybrid + rerank | **0.779** | **0.939** | 0.500 | 0.143 |
+| Hybrid + graph expand | 0.715 | 0.803 | **0.905** | **0.714** |
 
-On 1A the cross-encoder is worth having: MRR 0.803 → 0.939 means the right plate moves to
-rank 1 almost every time.
+A cross-encoder scores each document's relevance to the query *independently*. A multi-hop
+question needs documents that are individually weak matches and collectively necessary, so
+the reranker correctly demotes exactly the evidence the answer requires.
+`docs/evaluation.md` §9 asked for this number specifically; this is it.
 
-On 1B it destroys coverage — 0.429 → 0.143, a two-thirds loss.
+**Router rule, derived from measurement:** rerank on for figure and single-lookup intents,
+off for multi-hop; graph expansion on by default, since it is a large win on 1B and
+*exactly neutral* on 1A and 1C.
 
-**Why, mechanically:** a cross-encoder scores each document's relevance *to the query,
-independently*. A multi-hop question needs documents that are individually weak matches
-but collectively necessary — the second hop's article often does not mention the
-question's subject at all. Reranking correctly identifies those as less relevant and
-demotes them out of the top-k. It is optimising exactly the wrong objective for
-`coverage@k`.
+### 3. Section expansion hurts, and it was always going to
 
-**Consequence for the router:** rerank should be **on for figure and single-lookup
-intents, off for multi-hop**. That is a routing rule derived from a measurement, not a
-preference — and it is why the router takes `intent` from A1 rather than always applying
-the strongest pipeline.
+0.429 → 0.286 on 1B; 0.715 → 0.691 nDCG on 1A. The only row in the table that is worse
+than doing nothing.
 
-### 3. Rerank costs ~2.4 seconds of p95 and buys nothing on recall
+Section expansion can only add chunks from documents the base retrieval already returned,
+so under a fixed k it spends slots it cannot repay in coverage — a doc-level metric. That
+is not a surprise, it is arithmetic, and the row exists to state the arithmetic with a
+number instead of an argument. It is also why rows 5 and 6 are separate: bundled, section
+expansion would have inherited the graph's gain.
 
-p95 goes from ~150 ms to ~2,500 ms. On 1A it buys ranking quality (nDCG, MRR) and no
-recall at all — recall@10 is 0.773 in both rows. If latency matters more than the top
-position, rows 3 and 4 retrieve the same documents.
+Row 7 confirms it from the other side — adding section expansion *to* graph expansion
+lowers recall (0.905 → 0.881), because the two compete for the same budget.
 
-### 4. `coverage@k` earns its place
+### 4. Hybrid still beats both of its own components
 
-On 1B, recall@10 of 0.595 (BM25) sounds survivable. `coverage@10` of **0.143** says one
-question in seven actually has all of its evidence present — the other six are
-unanswerable no matter how good the composer is.
+recall 0.714 against 0.595 (BM25) and 0.476 (dense); coverage 0.429 against 0.143 and
+0.000. Dense alone covers **no** multi-hop question. Each retriever fails on what the
+other exists for, which is the case for fusing them.
 
-Those two numbers describe the same run. Reporting only recall would have hidden the
-problem the graph layer exists to solve.
+### 5. Paraphrasing costs about 0.29 of coverage, and the graph does not rescue it
+
+On the 1B subset of `paraphrase` (n = 14), against identical gold documents:
+
+| | original wording | paraphrased |
+|---|---|---|
+| Hybrid RRF | 0.429 | 0.143 |
+| + graph expand | 0.714 | 0.429 |
+
+Graph expansion recovers roughly the same amount either way — it just starts lower. 1A is
+untouched (0.600 both ways): a plate lookup does not care how the question is worded.
+
+By style, under graph expansion: colloquial 5/9, formal 2/3, terse 2/5, **oblique 0/2**.
+
+The oblique failures are the useful part, and the suite predicted them. Those two questions
+deliberately name no canonical entity ("the great worm of the marrow-fens"), so graph
+expansion finds no seed and contributes nothing — the question falls back to base
+retrieval, which was already failing it.
+
+**Consequence: A1's normalisation is load-bearing, not cosmetic.** Multi-hop strength
+depends on the question naming an entity we can match exactly. Turning a paraphrase into a
+canonical name is worth real effort — against the published vocabulary only, never fuzzily
+(Finding 13).
+
+### 6. `coverage@k` earns its place
+
+On 1B, BM25's recall@10 of 0.595 sounds survivable. Its `coverage@10` of **0.143** says one
+question in seven actually has all its evidence present. Same run, same numbers. Reporting
+recall alone would have hidden the problem the graph layer was built to solve — and would
+then have hidden the fix working.
 
 ---
 
 ## What is still missing from this table
 
-Rows 5–9 of the planned ablation need components that are not built yet:
-
-| Row | Blocked on |
+| Row | Status |
 |---|---|
-| 5. + neighbour/section expansion | `expand.py` |
-| 6. + graph expansion (1B) | wiring `/v1/graph/*` into retrieval |
-| 7. + agentic loop (1C) | P2's orchestrator |
-| 8. + conflict layer | A4 exists; needs the answer path to consume it |
-| 9. chunk 300 / 450 / 600 sweep | one re-index per size, ~20 min each |
+| 8. + conflict layer | A4 exists; needs the answer path to consume it (P2) |
+| 9. chunk 300 / 450 / 600 | running — `scripts/chunk_sweep.py`, into `docs/reports/chunk-sweep.json` |
+| agentic loop (1C) | P2's orchestrator |
 
-Row 6 is the one to watch: **coverage@10 = 0.429 is the number graph expansion has to
-beat**, and it is the reason the graph exists at all.
+The graph in this run is **wiki-only**. LLM extraction over `chronicles/` and `ephemera/`
+(`src/graph/extract.py`) is running over 849 narrative passages and will add edges, so
+every row 6 and 7 number here is a floor rather than a ceiling.
 
 ---
 
@@ -121,6 +172,7 @@ beat**, and it is the reason the graph exists at all.
 ```bash
 uv run python -m eval.runner --suite all --ablation --out docs/reports/ablation-retrieval.json
 uv run python -m eval.runner --suite multihop_1b --ablation --failures
+uv run python -m eval.runner --suite all --ablation --gate     # fails on any drop
 ```
 
 The harness refuses to score a configuration whose index is empty. An earlier run of this

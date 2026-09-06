@@ -11,6 +11,9 @@ data/cache/
 # Downloaded ONNX embedding weights (~65MB). Reproducible via fastembed on first run,
 # and the submission ships the full .git history - a binary blob here bloats it forever.
 data/models/
+# Chunk-size sweep builds three throwaway indexes plus its own copy of the ONNX weights.
+# The numbers live in docs/reports/chunk-sweep.json; the indexes are rebuildable and huge.
+data/sweep/
 
 # Local stores
 *.db

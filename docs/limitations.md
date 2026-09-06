@@ -39,7 +39,11 @@ collectively necessary — the second hop's article often does not mention the q
 subject at all. The reranker correctly judges those less relevant and demotes exactly the
 evidence the answer requires.
 
-**Status: measured, not yet mitigated.** The fix is intent-conditioned rerank — on for
+**Status: measured, and no longer the only option.** Graph expansion reaches 0.905
+recall / 0.714 coverage on the same suite at 20 ms, against the reranker's 0.500 /
+0.143 at 2.4 s - so the multi-hop path does not need the cross-encoder at all.
+
+The remaining fix is intent-conditioned rerank — on for
 `figure` and `lookup`, off for `multihop` — which is why the router takes `intent` from A1
 rather than always applying the strongest pipeline. Until that lands, the default config
 (`4. Hybrid + rerank`) is the wrong default for 1B, and we know it.
@@ -48,17 +52,18 @@ Full table and per-question failures: `docs/reports/ablation.md`.
 
 ---
 
-## 3. Multi-hop coverage is 0.429, and that is the headline weakness
+## 3. Multi-hop coverage is 0.714 — better, and still the headline weakness
 
-Under the best current config, **3 of 7 multi-hop questions have all their gold documents
-in the top 10.** The other four cannot be answered correctly however good the composer is:
-`1b_022`, `1b_007`, `1b_013`, `1b_003`.
+Graph expansion moved this from 0.429 to **0.714** (recall 0.714 -> 0.905). Five of seven
+multi-hop questions now have all their gold documents in the top 10.
 
-recall@10 on the same run is 0.714, which sounds survivable. It is the same run. Reporting
-recall alone would have hidden this — which is the argument for `coverage@k` existing.
+**Two still do not**, and no composer can answer those correctly. That is 29% of the
+sub-track this system calls its spine.
 
-Graph expansion (ablation row 6) exists to fix precisely this and **is not yet wired into
-the retrieval path**. 0.429 is the number it has to beat.
+The ceiling is structural rather than incidental: graph expansion seeds on entities named
+in the question, so a question that names none gets nothing from it (see section 12). The
+next lever is LLM-extracted edges over `chronicles/` and `ephemera/`, which widen what one
+hop can reach.
 
 ---
 
@@ -81,28 +86,38 @@ Consequences, stated plainly:
 
 ---
 
-## 5. The chunk-size sweep was never run
+## 5. The chunk-size sweep has not produced a number yet
 
 ADR-008 sets 450 tokens from the embedding model's 512-token context, not from a sweep.
 The evidence for changing was a *defect*, not a comparison: at 600 tokens, **173 chunks
 (8.8%) were indexed but only partly embedded** — present in the store, unreachable by
 dense retrieval, with nothing logged.
 
-That justifies leaving 600. It does not establish that 450 beats 300 or 400. Ablation row
-9 (300 / 450 / 600) is unrun; each size costs one ~20-minute re-index.
+That justifies leaving 600. It does not establish that 450 beats 300 or 400.
+
+**Status: `scripts/chunk_sweep.py` now runs it**, into isolated indexes so the working one
+is never at risk. Results land in `docs/reports/chunk-sweep.json`. Until they do, 450
+remains a defensible derivation rather than a measured winner - and if 300 turns out to
+beat it, that is a finding to report rather than a number to bury.
 
 ---
 
-## 6. The graph only knows what the wiki states
+## 6. The graph's vocabulary is wiki-derived, and only the vocabulary
 
-**198 entities, 379 relations, all from 95 wiki articles.** `chronicles/` (four novels)
-and `ephemera/` (46 records) contribute **zero** edges — LLM extraction over them is
-specified and not built.
+**198 entities and 379 relations, all from 95 wiki articles**, at the time the ablation in
+`docs/reports/ablation.md` was run. `chronicles/` (four novels) and `ephemera/` (46
+records) contributed **zero** edges.
 
-An entity whose only relationship is asserted in a novel or a letter is therefore absent
-from the graph, and graph-based multi-hop cannot reach it. Building deterministic and free
-before probabilistic and expensive was the right order (ADR-005). It is still a coverage
-hole.
+`src/graph/extract.py` now closes this, over 849 narrative passages naming two or more
+known entities. It is closed-vocabulary in both directions - endpoints must be entities the
+wiki already knows and that are already named in the passage, predicates must come from the
+frozen list - so the model is never asked who exists, only how the entities in front of it
+relate.
+
+**What that does not fix:** an entity that appears *only* in a novel is still absent
+entirely, because the vocabulary itself is wiki-derived. Extraction adds edges between
+known entities; it does not discover new ones. That is a deliberate trade - discovering
+entities from prose is where invented proper nouns get invented - and it is still a hole.
 
 Entity resolution is **article-stripping and nothing else**: "The Iron-Ring Cartel" and
 "Iron-Ring Cartel" merge, nothing else does. Deliberate — broader fuzzy matching is what
@@ -188,6 +203,42 @@ vector count on `/v1/ready` are that incident turned into a guard.
 
 ---
 
+## 12. Multi-hop strength depends on the question naming an entity we know
+
+The `paraphrase` suite re-asks questions whose answers we already have, in wordings we
+did not write, against identical gold documents. On the 1B subset (n = 14):
+
+| | original wording | paraphrased |
+|---|---|---|
+| Hybrid RRF | 0.429 | 0.143 |
+| + graph expand | 0.714 | **0.429** |
+
+**Rewording costs about 0.29 of coverage.** Graph expansion recovers roughly the same
+amount either way; it just starts from a lower base. 1A is untouched (0.600 both ways) -
+a plate lookup does not care how the question is phrased.
+
+By style, under graph expansion: colloquial 5/9, formal 2/3, terse 2/5, **oblique 0/2**.
+
+The oblique cases are the honest weakness. Those two questions deliberately name no
+canonical entity - "the great worm of the marrow-fens" instead of "the Gravemaw Wyrm" -
+so graph expansion finds no seed and contributes **nothing**. The question falls back to
+base retrieval, which was already failing it.
+
+This is structural, not a tuning problem. Expansion seeds on exact, article-insensitive
+entity matches and there is no fuzzy fallback, because a fuzzy fallback is how
+`greyfell_citadel` becomes `ironfell_citadel` (Finding 13). So the system is strong on
+multi-hop **when the question names something we can match** and no better than plain
+hybrid retrieval when it does not.
+
+Two consequences worth stating before a judge finds them:
+
+- A1's normalisation against the published vocabulary is load-bearing. It is the only
+  thing that can turn an oblique question into one the graph can seed from.
+- A hidden set phrased more obliquely than ours would move these numbers down, and we
+  have measured how far: to roughly the hybrid-only baseline.
+
+---
+
 ## Approaches abandoned, and the number that killed each
 
 | Abandoned | Killed by |
@@ -210,7 +261,14 @@ else finds:
 - the agent loop without the redundancy guard (`evaluation.md` §9) — the loop is P2's and
   is not built
 - `success@budget`, `avg_steps`, `gain_per_step` — same reason
-- paraphrase robustness: every gold question is phrased once, by us
-- ablation rows 5–9 (context expansion, graph expansion, agent loop, conflict layer, chunk
-  sweep)
+- ablation row 8, the conflict layer: A4 exists and is tested, but nothing consumes it into
+  an answer yet, so its effect on an answer is unmeasured
 - end-to-end 1A answer accuracy; only *retrieval of the right plate* is measured today
+- the quality of LLM-extracted graph edges: the five validators are tested and the drop
+  counts are reported, but no human has checked a sample of the KEPT edges against their
+  source passages. Precision on what survives validation is therefore unknown, which is
+  the same gap section 7 admits for conflicts
+
+Measured since this file was first written, and no longer on this list: paraphrase
+robustness (section 12), ablation rows 5–7 (`docs/reports/ablation.md`), and row 9, which
+is running.
