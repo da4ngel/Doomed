@@ -64,7 +64,7 @@ uv run uvicorn tests.reasoning.demo_app:create_app --factory --port 8001
 npx --yes newman@6.2.1 run tests/postman/Reasoning.postman_collection.json --env-var base_url=http://127.0.0.1:8001
 ```
 
-That page says TEST FIXTURE, uses scripted answers and a one-pixel placeholder, and must never be represented as a real competition demo. The fixture API and served HTML were checked locally, and UI JavaScript passed `node --check`. Browser discovery returned no available browser, so visual/interactivity QA is pending. Local Newman installation was blocked by `UNABLE_TO_VERIFY_LEAF_SIGNATURE` even with system trust enabled; TLS verification was not disabled. CI includes the Newman collection, but a green remote run is not assumed.
+That page says TEST FIXTURE, uses scripted answers and a one-pixel placeholder, and must never be represented as a real competition demo. The fixture API and served HTML were checked locally, and UI JavaScript passed `node --check`. Browser discovery returned no available browser, so visual/interactivity QA is pending. Local Newman installation was blocked by `UNABLE_TO_VERIFY_LEAF_SIGNATURE` even with system trust enabled; TLS verification was not disabled. The hosted CI run for code commit `537e2e2` subsequently passed lint/type checks, the scoped test suite, and the Newman collection ([run 34039321239](https://github.com/da4ngel/Doomed/actions/runs/34039321239)). This validates the scripted API contracts, not real-corpus answer accuracy.
 
 The report, real-corpus eval table, authentic multi-hop trace diagram, and competition video need actual data/model runs. They are not fabricated from these fixtures. The original handbook's submission time also differs from `CLAUDE.md`; confirm the real deadline independently.
 
