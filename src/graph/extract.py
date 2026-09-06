@@ -103,6 +103,25 @@ Rules:
 """
 
 
+#: Extracted edges are RECORDED here and committed. They are the one part of this
+#: pipeline that is neither deterministic nor free to reproduce, so a judge with no API
+#: key still gets the full graph via `--apply-only`. It also makes the graph recoverable
+#: in one command if the store is rebuilt - `store.py --build` calls `replace_all`, which
+#: drops every extracted edge by design.
+DEFAULT_OUT = "data/graph/llm_relations.jsonl"
+
+
+def load_recorded(path: Path) -> list[Relation]:
+    """Read edges recorded by an earlier run. No model, no key, no network."""
+    if not path.exists():
+        raise FileNotFoundError(f"no recorded edges at {path}; run extraction first")
+    return [
+        Relation(**json.loads(line))
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+
+
 @dataclass
 class ExtractionStats:
     """Counted, not estimated. Every drop reason is a separate number because 'the model
@@ -355,8 +374,24 @@ def main() -> int:
     parser.add_argument("--limit", type=int, help="only the first N candidate passages")
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--write", action="store_true", help="merge the edges into the graph")
-    parser.add_argument("--out", default="data/index/graph_llm_relations.jsonl")
+    parser.add_argument(
+        "--apply-only",
+        action="store_true",
+        help="merge the recorded edges into the graph without calling any model",
+    )
+    parser.add_argument("--out", default=DEFAULT_OUT)
     args = parser.parse_args()
+
+    if args.apply_only:
+        relations = load_recorded(Path(args.out))
+        store = GraphStore()
+        before = store.counts()
+        added = store.add_relations(relations)
+        print(
+            f"applied {len(relations)} recorded edges: {before[1]} -> {store.counts()[1]} "
+            f"({added} new)"
+        )
+        return 0
 
     relations, stats = run(limit=args.limit, workers=args.workers)
     print_stats(stats, relations)

@@ -7,7 +7,7 @@
 # (~20 min of CPU embedding), so it is a separate target on purpose.
 
 .PHONY: help setup up down ingest images graph chunk index serve test lint fmt check \
-        search ready ocr-report clean-index documents eval ablation gate record-baseline
+        search ready ocr-report clean-index documents eval ablation gate record-baseline extract
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -42,8 +42,12 @@ documents:  ## Corpus -> documents.jsonl + blocks.jsonl (~20s)
 images:  ## Describe the 70 unique images with a vision model (cached)
 	uv run python -m src.ingestion.images
 
-graph:  ## Build the entity graph from the wiki (deterministic, no LLM)
+graph:  ## Build the entity graph: wiki edges, then the recorded extracted ones
 	uv run python -m src.graph.store --build
+	uv run python -m src.graph.extract --apply-only
+
+extract:  ## Re-derive the LLM edges from the corpus (needs a key; --apply-only does not)
+	uv run python -m src.graph.extract --workers 3 --write
 
 chunk: documents  ## Blocks -> chunks.jsonl
 	uv run python -m src.ingestion.chunker
