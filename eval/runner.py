@@ -179,6 +179,60 @@ def print_table(rows: list[SuiteResult]) -> None:
         )
 
 
+#: How far a metric may fall before the gate fails. Retrieval scoring is deterministic -
+#: same index, same query, same ranks - so a moved number means changed behaviour, not
+#: noise. The tolerance absorbs rounding, not drift.
+GATE_TOLERANCE = 0.001
+
+#: Latency is deliberately NOT gated. It is a property of the machine the run happened on,
+#: and a gate that fails on a busy laptop is a gate somebody disables the week before the
+#: deadline.
+GATED_METRICS = ("recall@", "coverage@", "ndcg@", "mrr")
+
+BASELINE = Path(__file__).resolve().parent / "baseline.json"
+
+
+def _gated(summary: dict) -> dict[str, float]:
+    return {
+        key: float(value)
+        for key, value in summary.items()
+        if any(key.startswith(prefix) for prefix in GATED_METRICS)
+    }
+
+
+def compare_to_baseline(payload: dict, baseline: dict) -> tuple[list[str], list[str]]:
+    """Return (regressions, improvements) as printable lines.
+
+    WHY improvements are reported and not silently passed: a gate that only ever says
+    "ok" teaches people to stop reading it. A gain is also the moment to re-record the
+    baseline, and it should say so out loud.
+    """
+    regressions: list[str] = []
+    improvements: list[str] = []
+
+    for suite, rows in payload.items():
+        recorded = {row["config"]: row for row in baseline.get(suite, [])}
+        for row in rows:
+            was = recorded.get(row["config"])
+            if was is None:
+                regressions.append(f"{suite} / {row['config']}: not in baseline - re-record it")
+                continue
+            for metric, now in _gated(row).items():
+                before = float(was.get(metric, 0.0))
+                delta = now - before
+                if delta < -GATE_TOLERANCE:
+                    regressions.append(
+                        f"{suite} / {row['config']} / {metric}: "
+                        f"{before:.3f} -> {now:.3f} ({delta:+.3f})"
+                    )
+                elif delta > GATE_TOLERANCE:
+                    improvements.append(
+                        f"{suite} / {row['config']} / {metric}: "
+                        f"{before:.3f} -> {now:.3f} ({delta:+.3f})"
+                    )
+    return regressions, improvements
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--suite", default="all", help="suite name, or 'all'")
@@ -187,7 +241,21 @@ def main() -> int:
     parser.add_argument("--config", default="4. Hybrid + rerank")
     parser.add_argument("--failures", action="store_true", help="list uncovered questions")
     parser.add_argument("--out", help="write JSON results here")
+    parser.add_argument(
+        "--gate",
+        action="store_true",
+        help="compare against eval/baseline.json and exit 1 on any regression",
+    )
+    parser.add_argument(
+        "--write-baseline",
+        action="store_true",
+        help="record this run as the new baseline",
+    )
     args = parser.parse_args()
+
+    if args.gate and not BASELINE.exists():
+        print(f"no baseline at {BASELINE}; run with --write-baseline first")
+        return 2
 
     suites = (
         [s.stem for s in sorted(SUITES.glob("*.json")) if s.stem != "chart_reading"]
@@ -228,6 +296,31 @@ def main() -> int:
         print(f"\nwrote {args.out}")
 
     retriever.vectors.close()
+
+    if args.write_baseline:
+        BASELINE.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        print()
+        print(f"recorded baseline: {BASELINE}")
+
+    if args.gate:
+        baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
+        regressions, improvements = compare_to_baseline(payload, baseline)
+        print()
+        print("=== regression gate ===")
+        for line in improvements:
+            print(f"  improved  {line}")
+        if regressions:
+            for line in regressions:
+                print(f"  REGRESSED {line}")
+            print()
+            print(
+                f"{len(regressions)} regression(s) beyond {GATE_TOLERANCE}. "
+                "Either the change is wrong, or it is right and the baseline needs "
+                "re-recording with --write-baseline in the same commit."
+            )
+            return 1
+        print(f"  no metric fell more than {GATE_TOLERANCE}.")
+
     return 0
 
 

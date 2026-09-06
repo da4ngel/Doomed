@@ -242,8 +242,30 @@ its chunks were silently truncated at embed time.
 
 ## 8. Regression gate
 
-A 10-question smoke suite runs in CI and fails the build if `recall@10` or `groundedness`
-drops more than 3 points from `eval/baseline.json`.
+**Implemented** as `uv run python -m eval.runner --suite all --ablation --gate`
+(`make gate`). It scores every suite under every retrieval config and exits 1 if any
+gated metric fell below `eval/baseline.json`.
+
+Gated: `recall@k`, `coverage@k`, `ndcg@k`, `mrr` - on every config, not just the
+default, because a change that helps the default and quietly breaks `sparse` is still a
+change we want to see.
+
+**Not gated: latency.** It is a property of the machine the run happened on, and a gate
+that fails on a busy laptop is a gate somebody disables the week before the deadline.
+
+**Tolerance is 0.001, not the 3 points originally specified here.** Retrieval scoring is
+deterministic - same index, same query, same ranks - so a number that moves means
+behaviour changed, and the wide band would have hidden exactly the regressions worth
+catching. The band was written before we knew the run was reproducible; it is now,
+byte-for-byte across two full runs. Answer-level metrics are stochastic and will need
+their own wider band when A5/A6 land, at which point this section gets a second row
+rather than a looser number.
+
+A gain is reported, not failed - and it is the moment to re-record:
+`make record-baseline`, committed **with** the change that moved the number, so the diff
+shows the cause and the effect together.
+
+The baseline recorded 2026-09-06 (UTC) is the ablation in `docs/reports/ablation.md`.
 
 ## 9. What we expect to fail, and will report
 
