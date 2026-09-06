@@ -257,7 +257,7 @@ graph in Infobox tables and `[[wikilinks]]`.
 LLM extraction only for `chronicles/` and `ephemera/`, where relations are genuinely prose.
 
 **Measured consequence.** 198 entities and 379 deterministic relations across all 14
-predicates (572 once LLM-extracted edges are merged), at zero
+predicates (742 once LLM-extracted edges are merged), at zero
 LLM cost and zero hallucination risk. Every edge cites the infobox row or prose sentence
 it came from. All three dev 1B chains resolve end to end.
 

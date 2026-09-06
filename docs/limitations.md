@@ -115,7 +115,7 @@ nDCG, the silent partial index would have looked fine.
 
 ## 6. The graph's vocabulary is wiki-derived, and only the vocabulary
 
-**198 entities and 572 relations** - 379 read deterministically off wiki infobox rows, 193
+**198 entities and 742 relations** - 379 read deterministically off wiki infobox rows, 363
 extracted by `src/graph/extract.py` from narrative passages. Extraction has covered 200 of
 849 candidate passages; the rest is more of the same, not a different kind of work.
 
@@ -126,7 +126,7 @@ Three limitations, in order of how much they cost:
 tier-3 novel chunks were displacing gold the base retriever had already found. They remain
 available to `/v1/graph/neighbors` and `/paths`, where an answer can traverse and cite them;
 they are excluded from retrieval expansion, where their cost is measured and their benefit
-is not. So the 193 edges are, for retrieval purposes, currently worth nothing - an honest
+is not. So the 363 edges are, for retrieval purposes, currently worth nothing - an honest
 reading of a feature that took real effort to build.
 
 **Extraction adds edges between known entities; it does not discover new ones.** The

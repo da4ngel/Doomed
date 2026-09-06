@@ -43,7 +43,7 @@ docker compose up -d qdrant
 uv run python -m src.ingestion.pipeline     # ~20 s   documents -> blocks
 uv run python -m src.ingestion.images       # ~3 min  70 images described (cached after)
 uv run python -m src.graph.store --build    # ~2 s    wiki -> entity graph (379 edges)
-uv run python -m src.graph.extract --apply-only   # +193 recorded edges, no API key
+uv run python -m src.graph.extract --apply-only   # +363 recorded edges, no API key
 uv run python -m src.ingestion.chunker      # ~10 s   blocks -> chunks
 uv run python -m src.indexing.build         # ~20 min chunks -> Qdrant + BM25
 
@@ -58,7 +58,7 @@ fast enough to re-run freely. Full detail in **`docs/RUNBOOK.md`**.
 ```bash
 curl -s localhost:8000/v1/ready
 # status: ready · warm: true
-# documents 236 · chunks 2474 · images 70 · entities 198 · relations 572
+# documents 236 · chunks 2474 · images 70 · entities 198 · relations 742
 ```
 
 ```bash
@@ -121,7 +121,7 @@ corpus (READ-ONLY)
    │
    ├── images ─────► 70 described (VLM)  ──► label→value pairs, entity-linked
    │
-   ├── graph ──────► 198 entities, 572 relations, every edge citing its source
+   ├── graph ──────► 198 entities, 742 relations, every edge citing its source
    │
    └── indexing ───► Qdrant (dense) + BM25 (sparse)
                          │

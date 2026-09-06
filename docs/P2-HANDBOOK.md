@@ -18,7 +18,7 @@ on it, and you will never merge against it.
 | 236 logical documents | format twins collapsed, tiers assigned, zero dead-letter |
 | 3,134 blocks · 2,474 chunks | tables kept whole, page + bbox for citations |
 | 70 images described | **gold recovery 11/11** on the 1A dev questions |
-| 198 entities · 572 relations | 379 from infobox rows, 193 extracted and gated |
+| 198 entities · 742 relations | 379 from infobox rows, 363 extracted and gated |
 | Hybrid retrieval | dense + BM25 + RRF + rerank, 1.1 s warm |
 | 202 unit tests · 56 Postman assertions | all green |
 

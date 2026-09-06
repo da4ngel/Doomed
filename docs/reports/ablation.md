@@ -1,8 +1,8 @@
 # Retrieval ablation — measured
 
 Run 2026-09-07 against the full index: 236 documents, 2,474 chunks, 2,474 dense vectors,
-BM25 over the same chunks, and a graph of 198 entities and **572 relations** — 379
-deterministic wiki edges plus 193 LLM-extracted ones. Expansion spends slots on the wiki
+BM25 over the same chunks, and a graph of 198 entities and **742 relations** — 379
+deterministic wiki edges plus 363 LLM-extracted ones. Expansion spends slots on the wiki
 edges only; §6 explains why, with the number. Gold is hand-authored (`eval/suites/`),
 k = 10.
 
@@ -171,6 +171,10 @@ authoritative edge for the same triple — but neither was this bug. Worth recor
 because the reflex on seeing a regression was to reorder something rather than to isolate
 the variable.
 
+**Confirmed since.** Extraction later reached 400 passages and the graph grew to 742 edges
+(363 extracted). Row 6 re-ran at **exactly** 0.905 / 0.714 — unchanged to three decimals.
+The gate does what it claims: the graph can keep growing without moving retrieval at all.
+
 The actual fix is `MIN_EXPANSION_CONFIDENCE = 1.0`: only deterministic wiki edges may
 spend a slot. The extracted edges stay in the graph, where `/v1/graph/neighbors` and
 `/paths` use them to answer and to render hop chains. They are excluded from *retrieval*,
@@ -193,8 +197,8 @@ then have hidden the fix working.
 | 9. chunk 300 / 450 / 600 | running — `scripts/chunk_sweep.py`, into `docs/reports/chunk-sweep.json` |
 | agentic loop (1C) | P2's orchestrator |
 
-LLM extraction has covered 200 of the 849 candidate narrative passages so far. Extending
-it grows the graph, but §6 is the reason that does not automatically grow these numbers.
+LLM extraction has covered 400 of the 849 candidate narrative passages. Extending it grows
+the graph; §6 is the reason that does not automatically grow these numbers.
 
 ---
 

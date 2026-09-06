@@ -134,11 +134,11 @@ subject matching a wiki article. So all 70 link into the graph at zero cost.
 
 ## 4. Graph — the 1B spine
 
-**198 entities, 572 relations.** 379 come from wiki Infobox rows and
+**198 entities, 742 relations.** 379 come from wiki Infobox rows and
 `[[wikilinks]]` with **zero LLM calls**, so every one cites the row it came from: *"how do
 you know this edge is real?"* has a line-number answer.
 
-The other 193 are extracted from narrative passages by an LLM that is never asked who
+The other 363 are extracted from narrative passages by an LLM that is never asked who
 exists — only how the entities already named in front of it relate, using predicates from
 the frozen vocabulary. Five validators drop anything else; the strictest requires the model
 to quote the sentence verbatim, and a quote the passage does not contain is a fabrication

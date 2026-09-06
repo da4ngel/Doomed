@@ -124,7 +124,7 @@ def test_the_whole_wiki_graph_persists(corpus_graph) -> None:
 
 
 @corpus
-def test_recorded_extracted_edges_merge_without_a_model(corpus_graph, tmp_path) -> None:
+def test_recorded_extracted_edges_merge_without_a_model(tmp_path) -> None:
     """The committed edges must restore the full graph with no key and no network.
 
     `make graph` runs `--build` (which drops them) and then `--apply-only`, so if this
@@ -137,6 +137,12 @@ def test_recorded_extracted_edges_merge_without_a_model(corpus_graph, tmp_path) 
     if not path.exists():
         pytest.skip("no recorded edges committed")
 
+    # Its OWN store, not the module-scoped fixture. Merging into a shared graph
+    # changes what every later test in this module walks - which is the exact bug
+    # this suite just fixed in `corpus_graph`, reintroduced one test later.
+    build(get_settings().model_copy(update={"index_dir": tmp_path}))
+    graph = GraphStore(tmp_path / "graph.sqlite")
+
     recorded = load_recorded(path)
     assert recorded, "the file exists but holds no edges"
     assert all(r.confidence < 1.0 for r in recorded), (
@@ -145,13 +151,13 @@ def test_recorded_extracted_edges_merge_without_a_model(corpus_graph, tmp_path) 
     )
     assert all(r.evidence_chunk_id for r in recorded), "no unsourced edges, ever"
 
-    before = corpus_graph.counts()[1]
-    added = corpus_graph.add_relations(recorded)
-    assert corpus_graph.counts()[1] == before + added
+    before = graph.counts()[1]
+    added = graph.add_relations(recorded)
+    assert graph.counts()[1] == before + added
 
     # Idempotent: the primary key makes a second apply a no-op, which is what lets
     # `make graph` be safe to re-run.
-    assert corpus_graph.add_relations(recorded) == 0
+    assert graph.add_relations(recorded) == 0
 
 
 @corpus

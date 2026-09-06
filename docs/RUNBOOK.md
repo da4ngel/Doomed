@@ -37,7 +37,7 @@ it is fast enough to re-run freely.
 
 **Both graph steps are needed, in that order.** `--build` extracts 379 deterministic wiki
 edges and calls `replace_all`, which deletes everything else in the table; `--apply-only`
-then merges the 193 recorded LLM-extracted edges from `data/graph/llm_relations.jsonl`,
+then merges the 363 recorded LLM-extracted edges from `data/graph/llm_relations.jsonl`,
 committed so this needs no API key and no network. `make graph` runs both. Running
 `--build` alone leaves you with a graph missing a third of its edges and nothing saying
 so - which is why a test walks this exact path.
@@ -61,7 +61,7 @@ curl -s localhost:8000/v1/ready | python -m json.tool
 ```
 
 Expect `status: ready`, `warm: true`, and:
-`documents 236 · chunks 2474 · images 70 · entities 198 · relations 572`
+`documents 236 · chunks 2474 · images 70 · entities 198 · relations 742`
 
 ## The two searches that prove it works
 

@@ -95,9 +95,7 @@ def test_a_predicate_outside_the_frozen_vocabulary_is_dropped() -> None:
 
 def test_a_self_loop_is_dropped() -> None:
     stats = ExtractionStats()
-    kept = validate(
-        [_relation(object_id="ent_sabelle_mournvale")], _candidate(), stats
-    )
+    kept = validate([_relation(object_id="ent_sabelle_mournvale")], _candidate(), stats)
     assert kept == []
     assert stats.dropped_self_loop == 1
 
