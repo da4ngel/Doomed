@@ -27,7 +27,8 @@ jobs:
           node-version: '22'
       - name: Start explicit scripted API fixture
         run: |
-          uv run uvicorn tests.reasoning.demo_app:create_app --factory --port 8001 > /tmp/reasoning-fixture.log 2>&1 &
+          .venv/bin/uvicorn tests.reasoning.demo_app:create_app --factory --port 8001 > /tmp/reasoning-fixture.log 2>&1 &
+          echo $! > /tmp/reasoning-fixture.pid
           for attempt in $(seq 1 30); do
             if curl --fail --silent http://127.0.0.1:8001/ > /dev/null; then exit 0; fi
             sleep 1
@@ -36,3 +37,9 @@ jobs:
           exit 1
       - name: Newman reasoning contracts (scripted fixture)
         run: npx --yes newman@6.2.1 run tests/postman/Reasoning.postman_collection.json --env-var base_url=http://127.0.0.1:8001
+      - name: Stop scripted API fixture before cache cleanup
+        if: always()
+        run: |
+          if [ -f /tmp/reasoning-fixture.pid ]; then
+            kill "$(cat /tmp/reasoning-fixture.pid)" 2>/dev/null || true
+          fi

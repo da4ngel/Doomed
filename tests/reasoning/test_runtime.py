@@ -61,10 +61,12 @@ def test_llm_wait_is_bounded_and_usage_timeout_is_explicit(tmp_path):
 
 def test_http_timeout_does_not_retry_after_deadline(knowledge):
     calls = []
-    budget = Budget(max_wall_ms=20)
+    clock = [0.0]
+    budget = Budget(max_wall_ms=1000, clock=lambda: clock[0])
 
     def handler(request):
         calls.append(request)
+        clock[0] = 2.0  # The first failed attempt consumes the deadline deterministically.
         raise httpx.ConnectError("offline")
 
     with pytest.raises(BudgetExceeded):
