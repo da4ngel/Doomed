@@ -382,6 +382,18 @@ an atomic table kept whole by rule 1 — a stated trade-off rather than a leak.
 600 row now has a known mechanism for any loss it shows rather than being a mystery. A
 larger-context embedder would move this number; that is the point of deriving it.
 
+**Measured 2026-09-07** (`docs/reports/chunk-sweep.md`). 450 wins or ties on every suite:
+on `multihop_1b` with graph expansion, 0.905 / 0.714 against 0.857 / 0.571 at both 300
+and 600. The derivation was argued as *safe*; it turns out to be optimal as well, which
+is a stronger claim than this ADR originally made and is now backed by a run rather than
+by reasoning.
+
+The sweep also reproduced the defect independently: 176 of 2,028 chunks (8.7%) over the
+window at a 600-token target. And it surfaced something this ADR did not anticipate - 600
+loses coverage but marginally *wins* nDCG, because BM25 indexes the full text of a chunk
+whose dense vector is truncated, so hybrid fusion hides most of the damage. Had we shipped
+600 and watched only nDCG, the silent partial index would have looked fine.
+
 **DRAFT - review.** *What we rejected and why.* We rejected switching to a
 larger-context embedder, which would have removed the constraint rather than managed it
 and let us keep 600-token chunks with no truncation.

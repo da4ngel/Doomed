@@ -235,7 +235,7 @@ is for and whether it has run.
 | 6 | + graph expansion (1B) | run — **best row**, 0.429 -> 0.714 at 20 ms |
 | 7 | + both expansions | run — worse than 6 alone; they compete for one budget |
 | 8 | + conflict layer | blocked: A4 exists, no answer path consumes it yet |
-| 9 | chunk 300 / 450 / 600 sweep | `scripts/chunk_sweep.py`, isolated indexes |
+| 9 | chunk 300 / 450 / 600 sweep | run — **450 wins or ties everywhere** |
 | — | + agentic loop (1C) | blocked: P2's orchestrator |
 
 The answer-side columns originally planned here — `grounded`, `correct`, failure split,

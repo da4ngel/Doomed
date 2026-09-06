@@ -86,19 +86,30 @@ Consequences, stated plainly:
 
 ---
 
-## 5. The chunk-size sweep has not produced a number yet
+## 5. The chunk-size sweep tested three sizes, not the curve
 
 ADR-008 sets 450 tokens from the embedding model's 512-token context, not from a sweep.
 The evidence for changing was a *defect*, not a comparison: at 600 tokens, **173 chunks
 (8.8%) were indexed but only partly embedded** — present in the store, unreachable by
 dense retrieval, with nothing logged.
 
-That justifies leaving 600. It does not establish that 450 beats 300 or 400.
+**Now run** (`docs/reports/chunk-sweep.md`). 450 wins or ties on every suite: on
+`multihop_1b` with graph expansion it reaches 0.905 / 0.714 against 0.857 / 0.571 at both
+300 and 600. The derivation turned out to be the empirical optimum too.
 
-**Status: `scripts/chunk_sweep.py` now runs it**, into isolated indexes so the working one
-is never at risk. Results land in `docs/reports/chunk-sweep.json`. Until they do, 450
-remains a defensible derivation rather than a measured winner - and if 300 turns out to
-beat it, that is a finding to report rather than a number to bury.
+What the sweep does **not** settle:
+
+- Only 300 / 450 / 600 were tested. 400 and 500 are unmeasured and the curve between the
+  points is assumed smooth, which is untested.
+- Every number is downstream of one embedding model's 512-token window. A larger-context
+  embedder would move the whole table.
+- Retrieval only. Whether larger chunks help or hurt the *composer* is unmeasured, and
+  larger chunks mean more tokens per citation - a cost this table cannot see.
+
+One result is uncomfortable enough to state plainly: **600 loses coverage but marginally
+wins nDCG**, despite 8.7% of its chunks being partly unembedded. BM25 indexes the full
+text, so hybrid fusion hides most of the damage. Had we shipped 600 and watched only
+nDCG, the silent partial index would have looked fine.
 
 ---
 
