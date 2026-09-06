@@ -171,6 +171,45 @@ Returns `hits[]` with `chunk_id`, `doc_id`, `text`, `score`, `page`, `section_pa
 `source_type`, `authority_tier`, `asset_ids`, and `dense_rank` / `sparse_rank` /
 `rerank_score` so you can see which retriever found what.
 
+### When to set `rerank` — measured, and it is not always true
+
+**Rerank is a win on single-lookup and figure questions and a two-thirds loss of
+coverage on multi-hop.** Measured 2026-09-06 across every gold suite:
+
+| | 1A nDCG@10 | 1A MRR | 1B recall@10 | 1B coverage@10 |
+|---|---|---|---|---|
+| `rerank: false` | 0.715 | 0.803 | **0.714** | **0.429** |
+| `rerank: true` | **0.779** | **0.939** | 0.500 | 0.143 |
+
+A cross-encoder scores each document's relevance to the query *independently*. A
+multi-hop question needs documents that are individually weak matches and collectively
+necessary - the second hop's article often does not name the question's subject at all -
+so the reranker correctly demotes exactly the evidence the answer requires.
+
+**So the router sets it per intent, and this is the reason A1 classifies intent at all:**
+
+| A1 intent | `rerank` |
+|---|---|
+| `direct`, `visual`, `comparison` | `true` |
+| `multi_hop`, `exploratory` | **`false`** |
+| `contradiction` | **unresolved - measure it, do not guess** |
+
+The `contradiction` row is honestly open. On `contradiction_1c` rerank *recovers*
+coverage (0.500 -> 1.000) while halving MRR (0.500 -> 0.250) - but that suite is **two
+questions**, so one question is worth 0.500 of coverage and the result is directional at
+best. Do not read the multi-hop rule onto 1C: contradiction questions are two-sided
+lookups, not two-hop chains, and they may genuinely behave like 1A. Add 1C questions
+before trusting either setting.
+
+It also costs ~2.4 s of p95 and buys **no recall at all** (1A recall@10 is 0.773 either
+way). It buys rank position. If A3 is about to loop anyway, spending 2.4 s to reorder a
+list you are going to re-retrieve is the wrong trade.
+
+Full table and mechanism: `docs/reports/ablation.md`. The numbers are recorded in
+`eval/baseline.json` and `make gate` fails on any drop, so run it after anything that
+changes what reaches the composer. **Wiring `make gate` into GitHub Actions is yours
+(section 4) - it is not running in CI yet.**
+
 ### Graph — `POST /v1/graph/neighbors` and `/paths`
 
 ```json
@@ -194,8 +233,8 @@ GET /v1/graph/entities?type=Character&limit=1000
 "Veyra Sunder" into something real and destroys retrieval; correcting only against names
 that exist is what stops "Greyfel Citadell" becoming Ironfell Citadel.
 
-203 entities. Filter by `type` — `Character` (36), `Faction` (5), `Location` (24),
-`Artifact` (12), `Event` (6), `Component` (10). The `Title` type is a catch-all that also
+198 entities. Filter by `type` — `Character` (36), `Faction` (5), `Location` (24),
+`Artifact` (12), `Event` (6), `Component` (10). The remaining 105 are `Title`, a catch-all that also
 holds literals (years like "315 AS", secret text), so **normalise against the typed
 entities, not against everything**.
 
