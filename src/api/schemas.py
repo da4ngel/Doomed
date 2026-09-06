@@ -458,3 +458,17 @@ class GraphPathsResponse(Frozen):
     to_id: str
     resolved: bool
     paths: list[GraphPath] = Field(default_factory=list)
+
+
+class EntityVocabularyResponse(Frozen):
+    """The full entity vocabulary, for A1's normalisation.
+
+    A1 must correct a misspelled proper noun ONLY against names that actually exist -
+    `greyfell_citadel` and `ironfell_citadel` are different places with different garrison
+    figures, so a general-purpose spell-corrector is actively dangerous here. That agent
+    therefore needs the whole vocabulary up front, which neither graph endpoint provides
+    because both take a known entity as input.
+    """
+
+    total: int
+    entities: list[Entity] = Field(default_factory=list)

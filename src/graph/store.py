@@ -273,6 +273,32 @@ class GraphStore:
                 break
         return list(grouped.values())
 
+    def all_entities(
+        self, entity_type: str | None = None, limit: int = 1000
+    ) -> tuple[int, list[Entity]]:
+        """The whole vocabulary, for A1's normalisation. Returns (total, page).
+
+        NOTE for callers: type `Title` is the catch-all and holds literals as well as
+        names - years like "315 AS" and secret text become object nodes. A1 should
+        normalise against the typed entities (Character, Faction, Location, Artifact,
+        Event, Component), not against everything.
+        """
+        with self._connect() as conn:
+            if entity_type:
+                total = conn.execute(
+                    "SELECT COUNT(*) FROM entities WHERE type = ?", (entity_type,)
+                ).fetchone()[0]
+                rows = conn.execute(
+                    "SELECT * FROM entities WHERE type = ? ORDER BY canonical_name LIMIT ?",
+                    (entity_type, limit),
+                ).fetchall()
+            else:
+                total = conn.execute("SELECT COUNT(*) FROM entities").fetchone()[0]
+                rows = conn.execute(
+                    "SELECT * FROM entities ORDER BY canonical_name LIMIT ?", (limit,)
+                ).fetchall()
+        return int(total), [_row_to_entity(r) for r in rows]
+
     def names(self) -> dict[str, str]:
         with self._connect() as conn:
             rows = conn.execute("SELECT entity_id, canonical_name FROM entities").fetchall()

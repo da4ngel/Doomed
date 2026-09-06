@@ -18,6 +18,7 @@ from functools import lru_cache
 from fastapi import APIRouter
 
 from src.api.schemas import (
+    EntityVocabularyResponse,
     GraphEdgeOut,
     GraphNeighborsRequest,
     GraphNeighborsResponse,
@@ -124,3 +125,18 @@ def paths(request: GraphPathsRequest) -> GraphPathsResponse:
             for chain, evidence in found
         ],
     )
+
+
+@router.get("/v1/graph/entities", response_model=EntityVocabularyResponse)
+def entities(type: str | None = None, limit: int = 1000) -> EntityVocabularyResponse:
+    """The entity vocabulary A1 normalises against.
+
+    Exists because both other graph endpoints take a known entity as *input*, so an agent
+    holding only a user's misspelling has no way in. Correcting against this list rather
+    than a dictionary is what stops "Greyfel Citadell" becoming Ironfell Citadel.
+
+    Filter by `type` to skip the `Title` catch-all, which holds literals (years, secret
+    text) alongside names.
+    """
+    total, found = get_store().all_entities(entity_type=type, limit=limit)
+    return EntityVocabularyResponse(total=total, entities=found)
