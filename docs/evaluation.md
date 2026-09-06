@@ -248,10 +248,12 @@ drops more than 3 points from `eval/baseline.json`.
 ## 9. What we expect to fail, and will report
 
 `docs/limitations.md` records these with numbers as they are measured, not on D5 from
-memory:
+memory. **Written 2026-09-06 (UTC)** - it now carries the rerank result, the 0.429
+coverage ceiling, the unmeasured answer layer and the seven abandoned approaches with
+the number that killed each:
 
-- chunk size sweep — what won and by how much
-- naive top-k without rerank on multi-hop specifically
+- chunk size sweep — what won and by how much. **Not run.** 450 was set from the embedder's context window after 600 silently truncated 8.8% of chunks (ADR-008), which is a defect argument, not a comparison
+- naive top-k without rerank on multi-hop specifically - **measured: rerank COSTS us here.** 1B coverage@10 0.429 -> 0.143, recall 0.714 -> 0.500, while 1A nDCG 0.715 -> 0.779. Rerank belongs behind the intent router, not on by default
 - Tesseract on the plates, against the VLM (`scripts/ocr_vs_vlm.py`)
 - the agent loop without the redundancy guard — the churn rate measured, then fixed
 - any approach abandoned, with the number that killed it
