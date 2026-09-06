@@ -1,5 +1,8 @@
 # Work split — two builders, one seam
 
+> **P2's operational plan is `docs/P2-HANDBOOK.md`.** This file is the boundary; that
+> file is the day-by-day work.
+
 **Written 6 Sep (D2).** Freeze **Wed 9 Sep 12:00**, submit **20:00**. Three and a half
 working days.
 
@@ -43,6 +46,8 @@ a frozen, tested interface — the best possible shape for someone joining mid-p
 | `src/api/routes/chat.py` | `POST /v1/chat` returning the answer packet |
 | `ui/` | single-file page: inline `[FIG:id]` figures, citation chips, live trace |
 | `.github/workflows/ci.yml` | lint, tests, Newman |
+| `src/core/trace.py` `usage.py` | interface fixed by P1, yours to extend |
+| **Delivery (D5)** | report, video, diagrams, README, `ai_usage/` export |
 | Postman folders `04`–`08` | chat, router, edge cases |
 
 ### Reads but never edits
@@ -88,6 +93,7 @@ a frozen, tested interface — the best possible shape for someone joining mid-p
 | `src/synthesis/conflicts.py` | A4 conflict detection — **the one file inside P2's folder that P1 owns** |
 | `src/ingestion/` | OCR backfill for the 15 scan-only documents |
 | `docs/` | architecture, evaluation, limitations, corpus findings |
+| **Evidence (D5)** | the ablation table and every number in it |
 
 ### Why A4 sits on this side
 
@@ -115,7 +121,7 @@ Nobody, after the first hour.
 | **D2 (today)** | eval harness: recall@k, coverage@k, first ablation rows | setup, read specs, A1 Analyst + A5 Composer skeleton |
 | **D3 Mon** | LLM graph extraction; A4 conflicts; gold set for 1B/1C | A3 Critic + orchestrator loop; **Mode A answering with real figures** |
 | **D4 Tue** | full ablation table; failure taxonomy; OCR backfill | router, A6 Verifier, `missing_information`, UI, CI |
-| **D5 Wed** | evaluation.md, limitations.md, report | clean-clone check, Postman green, video support |
+| **D5 Wed** | evaluation.md, limitations.md, ablation table | **report, diagrams, video**, clean-clone check, Postman green |
 
 P2 can build the entire answer path against `/v1/search` **before** A4 conflicts exist —
 just render `conflicts: []` until the function lands, then render what it returns.
