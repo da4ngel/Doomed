@@ -1,8 +1,10 @@
 # Retrieval ablation — measured
 
 Run 2026-09-07 against the full index: 236 documents, 2,474 chunks, 2,474 dense vectors,
-BM25 over the same chunks, and the **wiki-only graph** (198 entities, 379 relations).
-Gold is hand-authored (`eval/suites/`), k = 10.
+BM25 over the same chunks, and a graph of 198 entities and **572 relations** — 379
+deterministic wiki edges plus 193 LLM-extracted ones. Expansion spends slots on the wiki
+edges only; §6 explains why, with the number. Gold is hand-authored (`eval/suites/`),
+k = 10.
 
 Seven configurations of **one** `Retriever.search` function, differing only by request —
 so each row measures one change, not two.
@@ -144,7 +146,37 @@ depends on the question naming an entity we can match exactly. Turning a paraphr
 canonical name is worth real effort — against the published vocabulary only, never fuzzily
 (Finding 13).
 
-### 6. `coverage@k` earns its place
+### 6. More graph edges made retrieval *worse*, and the fix is not what I expected
+
+LLM extraction added 193 edges from novels and records (`src/graph/extract.py`), taking
+the graph from 379 to 572 relations. Re-running row 6:
+
+| graph | 1B recall@10 | 1B coverage@10 |
+|---|---|---|
+| 379 wiki edges | **0.905** | **0.714** |
+| 572 edges (wiki + extracted) | 0.833 | 0.571 |
+
+Isolated by filtering edges at query time — same code, same index, only the graph
+differed — so this is the graph doing it, not a coincidence.
+
+**The edges are not wrong. The budget is.** An expansion slot evicts a base hit, and with
+wiki edges alone part of the budget went unspent. The extracted edges filled those slots
+with tier-3 novel chunks, which displaced gold documents the base retriever had already
+found. More edges is not better under a fixed budget; better edges first is.
+
+Two fixes were tried before measuring properly, and neither moved the number: sorting
+candidates by confidence, then deduplicating after sorting instead of before. Both were
+kept — deduplicating first really did let a 0.6-confidence duplicate shadow the
+authoritative edge for the same triple — but neither was this bug. Worth recording,
+because the reflex on seeing a regression was to reorder something rather than to isolate
+the variable.
+
+The actual fix is `MIN_EXPANSION_CONFIDENCE = 1.0`: only deterministic wiki edges may
+spend a slot. The extracted edges stay in the graph, where `/v1/graph/neighbors` and
+`/paths` use them to answer and to render hop chains. They are excluded from *retrieval*,
+where their cost is measured and their benefit is not.
+
+### 7. `coverage@k` earns its place
 
 On 1B, BM25's recall@10 of 0.595 sounds survivable. Its `coverage@10` of **0.143** says one
 question in seven actually has all its evidence present. Same run, same numbers. Reporting
@@ -161,9 +193,8 @@ then have hidden the fix working.
 | 9. chunk 300 / 450 / 600 | running — `scripts/chunk_sweep.py`, into `docs/reports/chunk-sweep.json` |
 | agentic loop (1C) | P2's orchestrator |
 
-The graph in this run is **wiki-only**. LLM extraction over `chronicles/` and `ephemera/`
-(`src/graph/extract.py`) is running over 849 narrative passages and will add edges, so
-every row 6 and 7 number here is a floor rather than a ceiling.
+LLM extraction has covered 200 of the 849 candidate narrative passages so far. Extending
+it grows the graph, but §6 is the reason that does not automatically grow these numbers.
 
 ---
 

@@ -104,20 +104,29 @@ beat it, that is a finding to report rather than a number to bury.
 
 ## 6. The graph's vocabulary is wiki-derived, and only the vocabulary
 
-**198 entities and 379 relations, all from 95 wiki articles**, at the time the ablation in
-`docs/reports/ablation.md` was run. `chronicles/` (four novels) and `ephemera/` (46
-records) contributed **zero** edges.
+**198 entities and 572 relations** - 379 read deterministically off wiki infobox rows, 193
+extracted by `src/graph/extract.py` from narrative passages. Extraction has covered 200 of
+849 candidate passages; the rest is more of the same, not a different kind of work.
 
-`src/graph/extract.py` now closes this, over 849 narrative passages naming two or more
-known entities. It is closed-vocabulary in both directions - endpoints must be entities the
-wiki already knows and that are already named in the passage, predicates must come from the
-frozen list - so the model is never asked who exists, only how the entities in front of it
-relate.
+Three limitations, in order of how much they cost:
 
-**What that does not fix:** an entity that appears *only* in a novel is still absent
-entirely, because the vocabulary itself is wiki-derived. Extraction adds edges between
-known entities; it does not discover new ones. That is a deliberate trade - discovering
-entities from prose is where invented proper nouns get invented - and it is still a hole.
+**The extracted edges do not improve retrieval, and are gated out of it.** Adding them took
+1B coverage@10 *down* from 0.714 to 0.571, because an expansion slot evicts a base hit and
+tier-3 novel chunks were displacing gold the base retriever had already found. They remain
+available to `/v1/graph/neighbors` and `/paths`, where an answer can traverse and cite them;
+they are excluded from retrieval expansion, where their cost is measured and their benefit
+is not. So the 193 edges are, for retrieval purposes, currently worth nothing - an honest
+reading of a feature that took real effort to build.
+
+**Extraction adds edges between known entities; it does not discover new ones.** The
+vocabulary is wiki-derived, so an entity appearing *only* in a novel is absent from the
+graph entirely and no amount of extraction reaches it. Deliberate - discovering entities
+from prose is where invented proper nouns get invented - and still a hole.
+
+**Nobody has hand-checked the kept edges.** Five validators are tested and the drop counts
+reported (45 of 65 drops on one batch were `quote not in text`, so the free model fabricates
+quotes and the validator is carrying real weight). Precision on what *survives* validation
+is unmeasured.
 
 Entity resolution is **article-stripping and nothing else**: "The Iron-Ring Cartel" and
 "Iron-Ring Cartel" merge, nothing else does. Deliberate — broader fuzzy matching is what
