@@ -22,6 +22,8 @@ from src.core.config import Settings, get_settings
 
 log = logging.getLogger(__name__)
 
+#: Default collection. `Settings.qdrant_collection` overrides it; this remains the
+#: name everything uses unless an experiment says otherwise.
 COLLECTION = "ashen_chunks"
 
 #: Namespace for deriving stable point ids from chunk ids.
@@ -49,6 +51,7 @@ class QdrantStore:
         self.settings = settings or get_settings()
         self.dimensions = dimensions
         self._client: Any = None
+        self.collection = self.settings.qdrant_collection or COLLECTION
 
     @property
     def mode(self) -> str:
@@ -79,18 +82,18 @@ class QdrantStore:
         from qdrant_client.models import Distance, VectorParams
 
         client = self.client()
-        if client.collection_exists(COLLECTION):
-            client.delete_collection(COLLECTION)
+        if client.collection_exists(self.collection):
+            client.delete_collection(self.collection)
         client.create_collection(
-            COLLECTION,
+            self.collection,
             vectors_config=VectorParams(size=self.dimensions, distance=Distance.COSINE),
         )
 
     def count(self) -> int:
         client = self.client()
-        if not client.collection_exists(COLLECTION):
+        if not client.collection_exists(self.collection):
             return 0
-        return int(client.count(COLLECTION).count)
+        return int(client.count(self.collection).count)
 
     def upsert(self, chunks: list[Chunk], vectors: list[list[float]]) -> None:
         """Store vectors with the payload the filters need.
@@ -123,7 +126,7 @@ class QdrantStore:
         ]
         client = self.client()
         for start in range(0, len(points), 256):
-            client.upsert(COLLECTION, points[start : start + 256])
+            client.upsert(self.collection, points[start : start + 256])
 
     @staticmethod
     def _to_filter(filters: SearchFilters | None):
@@ -149,10 +152,10 @@ class QdrantStore:
     ) -> list[tuple[str, float, dict]]:
         """Return (chunk_id, score, payload), best first."""
         client = self.client()
-        if not client.collection_exists(COLLECTION):
+        if not client.collection_exists(self.collection):
             return []
         result = client.query_points(
-            COLLECTION,
+            self.collection,
             query=vector,
             limit=k,
             query_filter=self._to_filter(filters),
