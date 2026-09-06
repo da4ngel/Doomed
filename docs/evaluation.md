@@ -219,24 +219,37 @@ retrieved context it is `retrieval`; if present and the answer is wrong it is `s
 
 ## 7. The ablation table
 
-Nine configurations of one retrieval function, not nine implementations — otherwise a row
-measures two changes at once.
+Every row is one configuration of one retrieval function, never a second
+implementation — otherwise a row measures two changes at once.
 
-| # | Config | recall@10 | coverage@10 | nDCG@10 | grounded | correct | retr. fail | synth. fail | p95 ms | $/q |
-|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | BM25 only | | | | | | | | | |
-| 2 | Dense only | | | | | | | | | |
-| 3 | Hybrid RRF | | | | | | | | | |
-| 4 | Hybrid + rerank | | | | | | | | | |
-| 5 | + neighbour expansion | | | | | | | | | |
-| 6 | + graph expansion (1B) | | | | | | | | | |
-| 7 | + agentic loop (1C) | | | | | | | | | |
-| 8 | + conflict layer | | | | | | | | | |
-| 9 | chunk 300 / 450 / 600 sweep | | | | | | | | | |
+Filled numbers live in **`docs/reports/ablation.md`**; this table records what each row
+is for and whether it has run.
+
+| # | Config | status |
+|---|---|---|
+| 1 | BM25 only | run |
+| 2 | Dense only | run |
+| 3 | Hybrid RRF | run |
+| 4 | Hybrid + rerank | run — **worse on multi-hop**, coverage 0.429 -> 0.143 |
+| 5 | + section expansion | run — **worse everywhere**, 0.429 -> 0.286 |
+| 6 | + graph expansion (1B) | run — **best row**, 0.429 -> 0.714 at 20 ms |
+| 7 | + both expansions | run — worse than 6 alone; they compete for one budget |
+| 8 | + conflict layer | blocked: A4 exists, no answer path consumes it yet |
+| 9 | chunk 300 / 450 / 600 sweep | `scripts/chunk_sweep.py`, isolated indexes |
+| — | + agentic loop (1C) | blocked: P2's orchestrator |
+
+The answer-side columns originally planned here — `grounded`, `correct`, failure split,
+$/q — are deliberately absent rather than blank. Nothing produces a real answer yet, so
+every one of them would be a synthetic number in a table a reader would take as measured.
+
+Rows 5-7 spend the same k as row 3: expansion evicts the weakest base hits rather than
+extending the list (ADR-009). Appending would make row 6 unable to lose and credit the
+graph for what is really just more evidence.
 
 Row 9 is a sweep rather than a config: chunk size is derived from the embedding model's
 512-token context (ADR-008), and the 600 row is expected to lose recall because 8.8% of
-its chunks were silently truncated at embed time.
+its chunks were silently truncated at embed time. It builds into throwaway indexes and
+its own Qdrant collection, so it never risks the index the API is serving.
 
 ---
 
