@@ -42,7 +42,8 @@ docker compose up -d qdrant
 
 uv run python -m src.ingestion.pipeline     # ~20 s   documents -> blocks
 uv run python -m src.ingestion.images       # ~3 min  70 images described (cached after)
-uv run python -m src.graph.store --build    # ~2 s    wiki -> entity graph
+uv run python -m src.graph.store --build    # ~2 s    wiki -> entity graph (379 edges)
+uv run python -m src.graph.extract --apply-only   # +193 recorded edges, no API key
 uv run python -m src.ingestion.chunker      # ~10 s   blocks -> chunks
 uv run python -m src.indexing.build         # ~20 min chunks -> Qdrant + BM25
 
@@ -57,7 +58,7 @@ fast enough to re-run freely. Full detail in **`docs/RUNBOOK.md`**.
 ```bash
 curl -s localhost:8000/v1/ready
 # status: ready · warm: true
-# documents 236 · chunks 2474 · images 70 · entities 198 · relations 379
+# documents 236 · chunks 2474 · images 70 · entities 198 · relations 572
 ```
 
 ```bash
@@ -69,7 +70,7 @@ The top hit must be `plate_09_location_greyfell_citadel.png`. That answer exists
 pixels — if you see it, the whole knowledge layer is working.
 
 ```bash
-uv run pytest                    # 278 tests, no Docker or API keys required
+uv run pytest                    # 329 tests, no Docker or API keys required
 npx newman run tests/postman/AshenEra.postman_collection.json \
     -e tests/postman/local.postman_environment.json     # 56 contract assertions
 ```
@@ -92,9 +93,23 @@ tolerance: a number that moves means behaviour changed. It refuses to score an e
 index rather than reporting 0.000 — that guard exists because a full run once printed a
 table of zeros when the vectors were in a different Qdrant store.
 
-What the numbers say, including where the system is weak, is in
-**`docs/limitations.md`** — the answer layer is unmeasured, multi-hop coverage@10 is
-0.429, and reranking makes multi-hop retrieval worse.
+The headline result:
+
+| multihop_1b, k=10 | recall | coverage |
+|---|---|---|
+| BM25 only | 0.595 | 0.143 |
+| Dense only | 0.476 | 0.000 |
+| Hybrid RRF | 0.714 | 0.429 |
+| Hybrid + cross-encoder rerank (2.4 s) | 0.500 | 0.143 |
+| **Hybrid + graph expansion (20 ms)** | **0.905** | **0.714** |
+
+Reranking makes multi-hop *worse*; a one-hop graph walk is the largest win in the
+project and costs almost nothing. Full table: **`docs/reports/ablation.md`**.
+
+Where the system is weak is in **`docs/limitations.md`**, and it leads with the three
+that would cost us most: the answer layer is entirely unmeasured, two of seven multi-hop
+questions still have no path to a correct answer, and rewording a question costs about
+0.29 of coverage.
 
 ## Architecture
 
@@ -167,7 +182,7 @@ tests/            202 unit + integration, Postman collection
 ## Status
 
 **Knowledge layer complete and measured.** Gold recovery 11/11 on the 1A dev questions;
-all three 1B hop chains resolve with evidence; 278 tests; retrieval gated against a
+all three 1B hop chains resolve with evidence; 329 tests; retrieval gated against a
 recorded baseline.
 
 **Reasoning layer in progress** — agents, `/v1/chat` and the UI, see
