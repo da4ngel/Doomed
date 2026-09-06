@@ -76,6 +76,10 @@ def test_full_figure_packet_and_durable_trace(tmp_path, knowledge, chunk, asset)
     reopened = TraceStore(tmp_path / "traces.sqlite")
     assert reopened.result(packet.trace_id)["packet"]["answer_markdown"] == packet.answer_markdown
     assert reopened.result(packet.trace_id)["verification"]["claims_checked"] == 1
+    evidence = reopened.get(packet.trace_id)["retrieval_evidence"]
+    assert len(evidence) == 1 and evidence[0]["step"] == 2
+    assert evidence[0]["chunks"] == [{"chunk_id": chunk.chunk_id, "doc_id": chunk.doc_id}]
+    assert evidence[0]["action"]["action"] == "figure_search"
 
 
 def test_missing_p1_detector_remains_visible(tmp_path, knowledge, chunk, asset):

@@ -22,6 +22,7 @@ import httpx
 from src.api.schemas import AnswerPacket, EntityVocabularyResponse
 from src.core.cache import ResponseCache
 from src.core.retry import RetryPolicy, call_with_retry
+from tests.reasoning.trajectory import score_trajectory
 
 SUITES = Path(__file__).resolve().parents[2] / "eval/suites"
 
@@ -173,6 +174,7 @@ def run_question(chat: LiveHTTP, row: dict, directory: Path, timeout: float = 90
             (directory / "answer.md").write_text(packet.answer_markdown)
             return {
                 **score_packet(packet, row),
+                **score_trajectory(trace, row),
                 "trace_id": trace_id,
                 "latency_ms": round((time.monotonic() - started) * 1000),
             }

@@ -55,6 +55,13 @@ CREATE TABLE IF NOT EXISTS trace_usage (
 CREATE INDEX IF NOT EXISTS idx_steps_trace ON trace_steps(trace_id);
 CREATE INDEX IF NOT EXISTS idx_usage_trace ON trace_usage(trace_id);
 
+CREATE TABLE IF NOT EXISTS trace_evidence (
+    trace_id TEXT NOT NULL,
+    step INTEGER NOT NULL,
+    payload TEXT NOT NULL,
+    PRIMARY KEY (trace_id, step)
+);
+
 CREATE TABLE IF NOT EXISTS trace_results (
     trace_id TEXT PRIMARY KEY,
     packet TEXT,
@@ -107,6 +114,22 @@ class TraceStore:
                 "INSERT OR REPLACE INTO trace_steps (trace_id, step, payload) VALUES (?, ?, ?)",
                 (trace_id, step.step, step.model_dump_json()),
             )
+
+    def record_evidence(self, trace_id: str, step: int, payload: dict) -> None:
+        """Keep observed retrieval identities outside the frozen TraceStep contract."""
+        with self._connect() as conn:
+            conn.execute(
+                "INSERT OR REPLACE INTO trace_evidence VALUES (?, ?, ?)",
+                (trace_id, step, json.dumps(payload)),
+            )
+
+    def evidence(self, trace_id: str) -> list[dict]:
+        with self._connect() as conn:
+            rows = conn.execute(
+                "SELECT step, payload FROM trace_evidence WHERE trace_id=? ORDER BY step",
+                (trace_id,),
+            ).fetchall()
+        return [{**json.loads(row["payload"]), "step": row["step"]} for row in rows]
 
     def record_usage(self, trace_id: str, usage: UsageRecord) -> None:
         """Append one model call's cost and latency."""
@@ -190,6 +213,7 @@ class TraceStore:
             "ended_at": row["ended_at"],
             "iterations": len(steps),
             "reasoning_trace": [s.model_dump() for s in steps],
+            "retrieval_evidence": self.evidence(trace_id),
             "usage": [u.model_dump() for u in usage],
             "total_cost_usd": round(sum(u.cost_usd for u in usage), 6),
             "total_tokens": sum(u.tokens_in + u.tokens_out for u in usage),
@@ -206,7 +230,7 @@ class TraceStore:
         return [dict(r) for r in rows]
 
     def gain_per_step(self, trace_id: str) -> list[int]:
-        """New gold documents found at each step - the 1C metric.
+        """Legacy novelty counts; these are not gold relevance without evaluation labels.
 
         A loop that churns returns zeros after step 1. A loop that reasons keeps finding
         documents it could not have reached without what the previous step taught it.

@@ -258,6 +258,15 @@ class Orchestrator:
             new_gold_docs=result.new_gold_docs,
             latency_ms=result.latency_ms,
         )
+        self.traces.record_evidence(
+            trace_id,
+            state.sequence,
+            {
+                "action": action.model_dump(),
+                "chunks": [{"chunk_id": c.chunk_id, "doc_id": c.doc_id} for c in result.chunks],
+                "edges": [e.model_dump() for e in result.edges],
+            },
+        )
         return result
 
     def _record(
