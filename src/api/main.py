@@ -108,15 +108,30 @@ def ready() -> ReadyResponse:
     entities = _count_table(graph_db, "entities")
     relations = _count_table(graph_db, "relations")
 
+    vectors = 0
+    try:
+        from src.indexing.qdrant_store import QdrantStore
+
+        vectors = QdrantStore(settings).count()
+    except Exception:  # noqa: BLE001 - an unreachable store is reported, not raised
+        vectors = -1
+
     providers = settings.configured_providers()
     if not providers:
         detail.append("no LLM provider configured - vision and synthesis unavailable")
     if not chunks:
         detail.append("no chunks indexed - run `make ingest`")
+    if vectors == 0:
+        detail.append(
+            f"chunks exist but the {'server' if settings.qdrant_url else 'embedded'} "
+            "vector store is EMPTY - run `python -m src.indexing.build`"
+        )
+    elif vectors == -1:
+        detail.append("vector store unreachable - is `docker compose up -d qdrant` running?")
     if not images:
         detail.append("no images described - run `make images`")
 
-    if chunks and providers:
+    if chunks and providers and vectors > 0:
         status: str = "ready"
     elif documents or chunks or images:
         status = "degraded"
@@ -133,6 +148,7 @@ def ready() -> ReadyResponse:
         providers=providers,
         index_backend="qdrant-embedded" if not settings.qdrant_url else "qdrant-server",
         warm=_WARM["retriever"],
+        vectors=vectors,
         detail=detail,
     )
 

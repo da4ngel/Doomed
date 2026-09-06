@@ -392,6 +392,9 @@ class ReadyResponse(Frozen):
     index_backend: str = ""
     #: Models loaded. A cold first request is ~30x a warm one.
     warm: bool = False
+    #: Dense vectors present. 0 with chunks indexed means the vector store was
+    #: written elsewhere - the usual cause is switching QDRANT_URL on or off.
+    vectors: int = 0
     detail: list[str] = Field(default_factory=list)
 
 
