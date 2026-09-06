@@ -49,7 +49,7 @@ uv run python -m src.indexing.build         # ~20 min chunks -> Qdrant + BM25
 uv run uvicorn src.api.main:app --port 8000
 ```
 
-Only the last build step is slow — 2,444 chunks embedded on CPU. Everything before it is
+Only the last build step is slow — 2,474 chunks embedded on CPU at ~1.6/s. Everything before it is
 fast enough to re-run freely. Full detail in **`docs/RUNBOOK.md`**.
 
 ## Verify it works
@@ -57,7 +57,7 @@ fast enough to re-run freely. Full detail in **`docs/RUNBOOK.md`**.
 ```bash
 curl -s localhost:8000/v1/ready
 # status: ready · warm: true
-# documents 236 · chunks 2444 · images 70 · entities 203 · relations 379
+# documents 236 · chunks 2474 · images 70 · entities 198 · relations 379
 ```
 
 ```bash
@@ -69,10 +69,32 @@ The top hit must be `plate_09_location_greyfell_citadel.png`. That answer exists
 pixels — if you see it, the whole knowledge layer is working.
 
 ```bash
-uv run pytest                    # 202 tests, no Docker or API keys required
+uv run pytest                    # 278 tests, no Docker or API keys required
 npx newman run tests/postman/AshenEra.postman_collection.json \
     -e tests/postman/local.postman_environment.json     # 56 contract assertions
 ```
+
+## Reproduce the numbers
+
+Every figure in `docs/` comes from a command in this repo. With the index built:
+
+```bash
+uv run python -m eval.runner --suite all --ablation \
+    --out docs/reports/ablation-retrieval.json     # the table in docs/reports/ablation.md
+
+uv run python -m eval.runner --suite all --ablation --gate   # exits 1 on any drop
+
+uv run python scripts/ocr_vs_vlm.py                # docs/reports/ocr-vs-vlm.md
+```
+
+The ablation reproduced byte-for-byte across two full runs, so `--gate` uses a 0.001
+tolerance: a number that moves means behaviour changed. It refuses to score an empty
+index rather than reporting 0.000 — that guard exists because a full run once printed a
+table of zeros when the vectors were in a different Qdrant store.
+
+What the numbers say, including where the system is weak, is in
+**`docs/limitations.md`** — the answer layer is unmeasured, multi-hop coverage@10 is
+0.429, and reranking makes multi-hop retrieval worse.
 
 ## Architecture
 
@@ -144,6 +166,10 @@ tests/            202 unit + integration, Postman collection
 
 ## Status
 
-**Knowledge layer complete.** Gold recovery 11/11 on the 1A dev questions; all three 1B
-hop chains resolve with evidence. Reasoning layer (agents, `/v1/chat`, UI) in progress —
-see `docs/P2-HANDBOOK.md`.
+**Knowledge layer complete and measured.** Gold recovery 11/11 on the 1A dev questions;
+all three 1B hop chains resolve with evidence; 278 tests; retrieval gated against a
+recorded baseline.
+
+**Reasoning layer in progress** — agents, `/v1/chat` and the UI, see
+`docs/P2-HANDBOOK.md`. Until it lands, no answer-level metric in this repo has been
+produced from a real answer, and `docs/limitations.md` says so first rather than last.
