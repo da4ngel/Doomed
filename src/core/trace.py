@@ -25,7 +25,7 @@ import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
-from src.api.schemas import TraceStep, UsageRecord
+from src.api.schemas import AnswerPacket, TraceStep, UsageRecord
 from src.core.config import Settings, get_settings
 
 _SCHEMA = """
@@ -54,6 +54,12 @@ CREATE TABLE IF NOT EXISTS trace_usage (
 
 CREATE INDEX IF NOT EXISTS idx_steps_trace ON trace_steps(trace_id);
 CREATE INDEX IF NOT EXISTS idx_usage_trace ON trace_usage(trace_id);
+
+CREATE TABLE IF NOT EXISTS trace_results (
+    trace_id TEXT PRIMARY KEY,
+    packet TEXT,
+    verification TEXT
+);
 """
 
 
@@ -120,6 +126,35 @@ class TraceStore:
                 "UPDATE traces SET ended_at = ?, status = ? WHERE trace_id = ?",
                 (datetime.now(UTC).isoformat(timespec="seconds"), status, trace_id),
             )
+
+    def save_result(self, trace_id: str, packet: AnswerPacket) -> None:
+        """Persist the final frozen packet so job polling survives process restarts."""
+        with self._connect() as conn:
+            conn.execute(
+                "INSERT INTO trace_results (trace_id, packet) VALUES (?, ?) "
+                "ON CONFLICT(trace_id) DO UPDATE SET packet=excluded.packet",
+                (trace_id, packet.model_dump_json()),
+            )
+
+    def save_verification(self, trace_id: str, report: dict) -> None:
+        with self._connect() as conn:
+            conn.execute(
+                "INSERT INTO trace_results (trace_id, verification) VALUES (?, ?) "
+                "ON CONFLICT(trace_id) DO UPDATE SET verification=excluded.verification",
+                (trace_id, json.dumps(report)),
+            )
+
+    def result(self, trace_id: str) -> dict:
+        with self._connect() as conn:
+            row = conn.execute(
+                "SELECT packet, verification FROM trace_results WHERE trace_id=?", (trace_id,)
+            ).fetchone()
+        if row is None:
+            return {"packet": None, "verification": None}
+        return {
+            "packet": json.loads(row["packet"]) if row["packet"] else None,
+            "verification": json.loads(row["verification"]) if row["verification"] else None,
+        }
 
     # -- reading ---------------------------------------------------------
 

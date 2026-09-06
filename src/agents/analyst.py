@@ -16,10 +16,11 @@ from typing import Literal
 import httpx
 from pydantic import Field
 
+from src.agents.runtime import CompletionClient
 from src.api.schemas import Entity, EntityType, Frozen, QueryIntent
 from src.core.cache import ResponseCache
 from src.core.config import get_settings
-from src.core.llm import LLMClient, text_part
+from src.core.llm import text_part
 from src.core.retry import RetryPolicy, call_with_retry
 
 _WORD = re.compile(r"[^\W\d_]+(?:[-’'][^\W\d_]+)*", re.UNICODE)
@@ -181,6 +182,10 @@ def _corrections(question: str, names: dict[str, list[Entity]]) -> list[Correcti
                     end=end,
                 )
             )
+    return _non_overlapping(proposals)
+
+
+def _non_overlapping(proposals: list[Correction]) -> list[Correction]:
     accepted: list[Correction] = []
     for item in sorted(proposals, key=lambda c: (-c.score, -(c.end - c.start))):
         if not any(item.start < c.end and item.end > c.start for c in accepted):
@@ -193,7 +198,9 @@ def _intent(question: str, seeds: list[SeedEntity]) -> QueryIntent:
     if re.search(r"\b(agree|disagree|contradict\w*|conflicting|true year|actual year)\b", lower):
         return "contradiction"
     if re.search(
-        r"\b(figure|plate|diagram|map|table|look like|looks like|appearance|seal)\b", lower
+        r"\b(figure|plate|diagram|map|table|look like|looks like|appearance|seal|portrait|"
+        r"banner|emblem|illustration|engraved|motif)\b",
+        lower,
     ):
         return "visual"
     if re.search(r"\b(compare|comparison|versus|difference|differ)\b", lower):
@@ -222,7 +229,7 @@ class QueryAnalyst:
         base_url: str = "http://localhost:8000",
         vocabulary_loader: Callable[[], list[Entity]] | None = None,
         cache: ResponseCache | None = None,
-        llm: LLMClient | None = None,
+        llm: CompletionClient | None = None,
     ) -> None:
         self._loader = vocabulary_loader or (lambda: _load_entities(base_url, cache))
         self._entities: list[Entity] | None = None

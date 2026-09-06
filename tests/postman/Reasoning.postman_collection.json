@@ -1,0 +1,185 @@
+{
+  "info": {
+    "name": "Reasoning contracts \u2014 SCRIPTED FIXTURE",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Run against tests.reasoning.demo_app. These assertions test contracts, not real-corpus accuracy."
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8001"
+    }
+  ],
+  "item": [
+    {
+      "name": "04 Rich answer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/v1/chat",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"question\": \"According to the figure plate, what is the garrison of Greyfell Citadel?\", \"mode\": \"rich\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200',()=>pm.response.to.have.status(200));",
+              "const p=pm.response.json(); pm.environment.set('trace_id',p.trace_id);",
+              "pm.test('claim citations resolve',()=>{pm.expect(p.claims.length).above(0);for(const c of p.claims) for(const id of c.citation_ids) pm.expect(p.citations.some(x=>x.id===id)).true;});",
+              "pm.test('figures resolve',()=>{pm.expect(p.visuals.length).above(0);for(const m of p.answer_markdown.matchAll(/\\[FIG:([^\\]]+)\\]/g))pm.expect(p.visuals.some(v=>v.id===m[1])).true;});",
+              "pm.test('finite grounded confidence',()=>pm.expect(p.confidence).within(0,1));",
+              "pm.test('trace includes verification',()=>pm.expect(p.reasoning_trace.some(s=>s.agent==='A6')).true);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Auto routing",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/v1/chat",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"question\": \"According to the figure plate, what is the garrison of Greyfell Citadel?\", \"mode\": \"auto\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('auto chooses rich',()=>pm.expect(pm.response.json().mode).eql('rich'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 Durable trace",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/v1/traces/{{trace_id}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('trace exists',()=>pm.response.to.have.status(200));",
+              "pm.test('verification and result persisted',()=>{const t=pm.response.json();pm.expect(t.packet.claims.length).above(0);pm.expect(t.verification.claims_checked).above(0);});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 Unanswerable",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/v1/chat",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"question\": \"Name the unseen fourth house on the moon.\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('partial with concrete gap',()=>{const p=pm.response.json();pm.expect(p.partial).true;pm.expect(p.missing_information.length).above(0);pm.expect(p.claims.filter(c=>c.support==='corroborated')).empty;});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 Invalid mode",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/v1/chat",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"question\": \"A question\", \"mode\": \"invalid\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('422 invalid mode',()=>pm.response.to.have.status(422));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 Empty input",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/v1/chat",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"question\": \"   \"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('clarification without claims',()=>{const p=pm.response.json();pm.expect(p.claims).empty;pm.expect(p.missing_information.length).above(0);});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

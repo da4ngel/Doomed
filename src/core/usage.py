@@ -27,7 +27,7 @@ def to_usage_record(response: LLMResponse, step: int, routing_reason: str) -> Us
         tokens_in=response.tokens_in,
         tokens_out=response.tokens_out,
         latency_ms=response.latency_ms,
-        cost_usd=response.cost_usd,
+        cost_usd=0.0 if response.cached else response.cost_usd,
         cache="hit" if response.cached else "miss",
         fallback_used=response.fallback_used,
     )
