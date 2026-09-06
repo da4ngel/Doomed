@@ -20,9 +20,7 @@ SUITES = Path(__file__).resolve().parents[2] / "eval" / "suites"
 INDEX = get_settings().index_dir
 
 corpus = pytest.mark.skipif(not CORPUS_ROOT.exists(), reason="corpus not present")
-indexed = pytest.mark.skipif(
-    not (INDEX / "chunks.jsonl").exists(), reason="index not built"
-)
+indexed = pytest.mark.skipif(not (INDEX / "chunks.jsonl").exists(), reason="index not built")
 
 
 def _suite(name: str) -> dict:
@@ -54,9 +52,7 @@ def chunks() -> list[dict]:
     if not path.exists():
         pytest.skip("index not built")
     return [
-        json.loads(line)
-        for line in path.read_text(encoding="utf-8").splitlines()
-        if line.strip()
+        json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()
     ]
 
 
@@ -136,7 +132,7 @@ def test_1b_hop_chains_walk_in_the_real_graph(graph) -> None:
 
 @indexed
 def test_1b_victors_are_reachable_backwards(graph) -> None:
-    """"Who won X" walks the `won` edge from object to subject."""
+    """ "Who won X" walks the `won` edge from object to subject."""
     for war, victor in [
         ("The War of Drowned Light", "The Silent Choir"),
         ("The Purge of Blackport", "The Iron-Ring Cartel"),
