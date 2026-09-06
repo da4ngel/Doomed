@@ -395,3 +395,82 @@ download size and latency on a corpus where retrieval is already the fast part.
 What we would revisit with more time: measuring 300 / 450 / 600 against a larger-context
 model as a further ablation row, to separate "600 was too big for BGE-small" from "600 is
 too big".
+
+---
+
+## ADR-009 — Context expansion is additive, and it spends the same k budget
+
+**Status:** accepted · 2026-09-07 · implemented in `src/retrieval/expand.py`
+
+**Context.** `coverage@10` on `multihop_1b` is **0.429** under the best retrieval config.
+Four of seven multi-hop questions do not have all their gold documents in the top 10, so
+they are unanswerable regardless of how good the composer is. Ablation rows 5 and 6 exist
+to fix exactly this, and the graph — 198 entities, 379 sourced relations — was built for
+it and was not wired into retrieval.
+
+**Decision 1 — two expansions, measured separately.** Section expansion (row 5) pulls the
+chunks either side of a hit. Graph expansion (row 6) walks relations out from entities
+named in the query and collects the `evidence_chunk_id` that licenses each hop.
+
+They are separate functions with separate ablation rows because they cannot do the same
+job: **section expansion can only add chunks from documents the base retrieval already
+found, so it is arithmetically incapable of improving `coverage@k`**, which is measured on
+document ids. Bundling the two under one flag would let a section-expansion row inherit
+credit for a graph-expansion gain.
+
+**Decision 2 — expansion spends the same `k`, it does not extend it.** Up to `k // 2`
+slots are reserved for expanded chunks and taken from the *bottom* of the base ranking.
+The response still holds `k` hits.
+
+This is the decision most worth defending. The alternative — appending expanded chunks
+after the base top-k — cannot lose, and that is precisely what is wrong with it: row 6
+would then be scored on 22 chunks against row 3's 10, and the "gain" would be mostly the
+extra evidence, not the graph. Reserving from the same budget makes it a real trade — the
+weakest base hits are evicted in favour of graph-reached ones — so a coverage gain is
+attributable to the graph and a loss is visible instead of masked.
+
+**Decision 3 — the schema change.** `SearchRequest` and `SearchResponse` are frozen, and
+this adds `expand_mode` to the request and `expanded` / `expansion_reasons` to the
+response.
+
+Every addition is optional and defaulted, so a request written before this ADR produces
+byte-identical behaviour — `expand` already existed and already defaulted to false. The
+seam is not renegotiated, only extended. `expansion_reasons` maps each added chunk id to a
+one-line justification ("reached via `Purge of Blackport -won-> Iron-Ring Cartel`"),
+because a chunk that reached the evidence bundle without a retriever score and without an
+explanation is exactly the kind of thing that ends up cited in an answer nobody can
+defend.
+
+**Decision 4 — query entity matching stays exact.** Entities are matched against the
+vocabulary by verbatim containment under the same article-insensitive rule as
+`entity_id()`, longest name first. No fuzzy matching, no edit distance. Finding 13 is the
+reason: `greyfell_citadel` (garrison 3,695) and `ironfell_citadel` (1,096) are one edit
+apart, and a near-miss here returns a wrong number carrying a real citation. Correcting a
+misspelling is A1's job, against the published vocabulary, before the request is made.
+
+Names shorter than four characters are not matched at all — they appear inside ordinary
+words and would attach an entity to nearly every question.
+
+**Consequence.** Rows 5 and 6 of the ablation become runnable, and 0.429 is the number
+they have to beat. If graph expansion does not beat it, that is a reportable result about
+this corpus rather than a reason to change the metric.
+
+**DRAFT - review.** *What we rejected and why.* We rejected expanding by embedding
+similarity to the hit — fetching the nearest chunks to each result rather than its graph
+neighbours or its section neighbours.
+
+We rejected it because it adds no information. The nearest neighbours of a chunk the dense
+retriever already ranked highly are, by construction, chunks the dense retriever nearly
+ranked highly — so it deepens the existing result rather than reaching what the retriever
+missed, which is the entire failure mode on multi-hop. It is also unexplainable: "this
+chunk is similar to another chunk we retrieved" is not a justification a judge can check,
+whereas a hop chain is.
+
+We also rejected always walking two hops. Two hops from a hub entity reaches most of the
+graph, and the cap would then decide the evidence bundle rather than the question. One hop
+answers the shape every dev 1B question actually has ("who won X, and who are they"), and
+two remains available per request.
+
+What we would revisit with more time: letting A3 request a second hop only after the first
+proves insufficient, which is the sufficiency loop doing its job rather than a fixed depth
+guessing in advance.

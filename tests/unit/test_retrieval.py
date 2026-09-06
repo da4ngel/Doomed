@@ -183,10 +183,41 @@ def test_search_contract_is_reachable_in_the_openapi_schema() -> None:
     assert "post" in schema["paths"]["/v1/search"]
 
 
-def test_search_response_shape_is_stable() -> None:
-    """The frozen seam: P2 codes against these fields."""
+#: The seam as P2 first coded against it. A field may be ADDED (ADR-009) but never
+#: removed or renamed, so this list only ever grows - and it grows in the same commit
+#: as the ADR that justifies it.
+ORIGINAL_RESPONSE_FIELDS = {"hits", "total", "mode", "reranked", "latency_ms"}
+ORIGINAL_REQUEST_FIELDS = {"query", "mode", "k", "rerank", "expand", "filters"}
+
+
+def test_the_seam_never_removes_a_field() -> None:
+    """The frozen seam: P2 codes against these fields.
+
+    Asserting a superset rather than equality is deliberate. Exact equality failed on
+    an additive, defaulted change that broke nobody, which trains people to edit the
+    test rather than read it. What actually matters to a caller is that nothing they
+    already use disappears.
+    """
     response = SearchResponse(hits=[], total=0, mode="hybrid", reranked=False, latency_ms=1)
-    dumped = response.model_dump()
-    assert set(dumped) == {"hits", "total", "mode", "reranked", "latency_ms"}
+    assert ORIGINAL_RESPONSE_FIELDS <= set(response.model_dump())
+    assert ORIGINAL_REQUEST_FIELDS <= set(SearchRequest(query="x").model_dump())
+
+
+def test_every_field_added_since_the_freeze_is_optional() -> None:
+    """The other half of the guarantee: a request written before a field existed must
+    still validate, and must still mean what it meant. A required addition would break
+    every caller silently at deploy time.
+    """
     request = SearchRequest(query="x")
-    assert set(request.model_dump()) == {"query", "mode", "k", "rerank", "expand", "filters"}
+    for field in set(request.model_dump()) - ORIGINAL_REQUEST_FIELDS:
+        assert not SearchRequest.model_fields[field].is_required(), field
+
+    response = SearchResponse()
+    for field in set(response.model_dump()) - ORIGINAL_RESPONSE_FIELDS:
+        assert not SearchResponse.model_fields[field].is_required(), field
+
+
+def test_expansion_defaults_to_off_so_old_requests_behave_identically() -> None:
+    request = SearchRequest(query="x")
+    assert request.expand is False
+    assert SearchResponse().expanded == 0

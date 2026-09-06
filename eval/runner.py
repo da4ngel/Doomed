@@ -41,21 +41,36 @@ class Config:
     name: str
     mode: str = "hybrid"
     rerank: bool = False
+    expand: bool = False
+    expand_mode: str = "both"
     k: int = 10
 
     def request(self, query: str, k: int) -> SearchRequest:
         return SearchRequest(
-            query=query, mode=self.mode, k=k, rerank=self.rerank, filters=SearchFilters()
+            query=query,
+            mode=self.mode,
+            k=k,
+            rerank=self.rerank,
+            expand=self.expand,
+            expand_mode=self.expand_mode,
+            filters=SearchFilters(),
         )
 
 
-#: The retrieval rows of the ablation table. Rows 5-9 need the graph expansion, the agent
-#: loop and the conflict layer, which land later; they are absent rather than faked.
+#: The retrieval rows of the ablation table. Rows 8-9 need the conflict layer in the
+#: answer path and one re-index per chunk size; they are absent rather than faked.
+#:
+#: Rows 5-7 spend the SAME k as row 3 (ADR-009) - expansion evicts the weakest base
+#: hits rather than extending the list. Appending instead would score row 6 on more
+#: evidence than row 3 and credit the graph for the difference.
 ABLATION: list[Config] = [
     Config("1. BM25 only", mode="sparse", rerank=False),
     Config("2. Dense only", mode="dense", rerank=False),
     Config("3. Hybrid RRF", mode="hybrid", rerank=False),
     Config("4. Hybrid + rerank", mode="hybrid", rerank=True),
+    Config("5. + section expand", mode="hybrid", expand=True, expand_mode="section"),
+    Config("6. + graph expand", mode="hybrid", expand=True, expand_mode="graph"),
+    Config("7. + both expands", mode="hybrid", expand=True, expand_mode="both"),
 ]
 
 

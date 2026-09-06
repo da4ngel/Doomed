@@ -126,6 +126,18 @@ class BM25Store:
         self._load()
         return self._meta.get(chunk_id, {})
 
+    @property
+    def chunk_ids(self) -> list[str]:
+        """Every chunk id in index order, which is document order.
+
+        Section expansion needs to know which chunk sits either side of a hit, and
+        this list is the only ordering the index actually guarantees - reconstructing
+        it by parsing `doc:cN` ids would encode a naming convention as a data
+        structure and break the moment an id scheme changes.
+        """
+        self._load()
+        return self._chunk_ids
+
 
 def load_chunks(settings: Settings | None = None) -> list[Chunk]:
     settings = settings or get_settings()

@@ -42,6 +42,10 @@ QueryIntent = Literal["direct", "visual", "comparison", "multi_hop", "contradict
 AnswerMode = Literal["auto", "rich", "graph", "agent"]
 
 SearchMode = Literal["dense", "sparse", "hybrid"]
+#: Which expansion runs when `expand` is true. Separate from SearchMode because they
+#: are independent axes - expansion is applied on top of whatever retrieved the base
+#: list - and because rows 5 and 6 of the ablation must be isolated from each other.
+ExpandMode = Literal["graph", "section", "both"]
 
 #: Read off the real dev questions and the wiki infobox fields (corpus findings 3).
 RelationPredicate = Literal[
@@ -339,6 +343,9 @@ class SearchRequest(Frozen):
     k: int = Field(default=10, ge=1, le=100)
     rerank: bool = True
     expand: bool = False
+    #: Only meaningful when `expand` is true. Additive and defaulted, so every request
+    #: written before it existed behaves identically (ADR-009).
+    expand_mode: ExpandMode = "both"
     filters: SearchFilters = Field(default_factory=SearchFilters)
 
 
@@ -367,6 +374,12 @@ class SearchResponse(Frozen):
     mode: SearchMode = "hybrid"
     reranked: bool = False
     latency_ms: int = 0
+    #: How many hits came from expansion rather than from a retriever, and why each
+    #: was added. An expanded hit that cannot explain itself has no business being in
+    #: an evidence bundle, so the reason travels with the response rather than being
+    #: reconstructable only from the trace (ADR-009).
+    expanded: int = 0
+    expansion_reasons: dict[str, str] = Field(default_factory=dict)
 
 
 class ChatRequest(Frozen):
