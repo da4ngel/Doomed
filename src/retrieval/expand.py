@@ -222,7 +222,7 @@ def graph_expand(
             result.chunk_ids.append(chunk_id)
             result.hops.append(hop)
             result.reasons[chunk_id] = (
-                f"reached via {hop.as_text(names)} — evidence {hop.evidence_chunk_id}"
+                f"reached via {hop.as_text(names)} | evidence {hop.evidence_chunk_id}"
             )
             break
         if len(result.chunk_ids) >= max_chunks:
