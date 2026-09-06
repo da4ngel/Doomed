@@ -256,7 +256,8 @@ graph in Infobox tables and `[[wikilinks]]`.
 **Decision.** Parse the skeleton deterministically from the 95 wiki articles first. Use
 LLM extraction only for `chronicles/` and `ephemera/`, where relations are genuinely prose.
 
-**Measured consequence.** 203 entities and 379 relations across all 14 predicates, at zero
+**Measured consequence.** 198 entities and 379 deterministic relations across all 14
+predicates (572 once LLM-extracted edges are merged), at zero
 LLM cost and zero hallucination risk. Every edge cites the infobox row or prose sentence
 it came from. All three dev 1B chains resolve end to end.
 
@@ -340,7 +341,7 @@ live, and `QdrantUnavailableError` names the fix rather than surfacing a connect
 
 **DRAFT - review.** *What we rejected and why.* Option (c), brute-force numpy, is the
 choice most consistent with our stated principles, and we came close to taking it. At
-2,444 vectors of 384 dimensions the whole matrix is about 3.7 MB and a cosine scan is
+2,474 vectors of 384 dimensions the whole matrix is about 3.8 MB and a cosine scan is
 sub-millisecond - genuinely faster than a round trip to Qdrant, with zero dependencies
 and code any team member could derive on a whiteboard.
 

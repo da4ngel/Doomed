@@ -72,7 +72,7 @@ pixels — if you see it, the whole knowledge layer is working.
 ```bash
 uv run pytest                    # 329 tests, no Docker or API keys required
 npx newman run tests/postman/AshenEra.postman_collection.json \
-    -e tests/postman/local.postman_environment.json     # 56 contract assertions
+    -e tests/postman/local.postman_environment.json     # 69 contract assertions
 ```
 
 ## Reproduce the numbers
@@ -116,12 +116,12 @@ questions still have no path to a correct answer, and rewording a question costs
 ```
 corpus (READ-ONLY)
    │
-   ├── ingestion ──► 236 logical documents ──► 3,095 blocks ──► 2,444 chunks
+   ├── ingestion ──► 236 logical documents ──► 3,134 blocks ──► 2,474 chunks
    │                 (format twins collapsed)   (tables atomic, page + bbox)
    │
    ├── images ─────► 70 described (VLM)  ──► label→value pairs, entity-linked
    │
-   ├── graph ──────► 203 entities, 379 relations, every edge citing its source
+   ├── graph ──────► 198 entities, 572 relations, every edge citing its source
    │
    └── indexing ───► Qdrant (dense) + BM25 (sparse)
                          │

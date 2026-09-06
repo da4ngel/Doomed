@@ -61,7 +61,7 @@ curl -s localhost:8000/v1/ready | python -m json.tool
 ```
 
 Expect `status: ready`, `warm: true`, and:
-`documents 236 · chunks 2444 · images 70 · entities 203 · relations 379`
+`documents 236 · chunks 2474 · images 70 · entities 198 · relations 572`
 
 ## The two searches that prove it works
 

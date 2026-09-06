@@ -7,7 +7,7 @@
 # (~20 min of CPU embedding), so it is a separate target on purpose.
 
 .PHONY: help setup up down ingest images graph chunk index serve test lint fmt check \
-        search ready ocr-report clean-index documents eval ablation gate record-baseline extract
+        search ready ocr-report clean-index documents eval ablation gate record-baseline extract postman
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -101,6 +101,12 @@ gate:  ## Fail if any metric fell below eval/baseline.json
 record-baseline:  ## Re-record eval/baseline.json - commit it with the change that moved it
 	uv run python -m eval.runner --suite all --ablation --write-baseline \
 		--out docs/reports/ablation-retrieval.json
+
+postman:  ## Run the 69 contract assertions against a running API, into docs/reports/
+	npx --yes -p newman -p newman-reporter-htmlextra newman run \
+		tests/postman/AshenEra.postman_collection.json \
+		-e tests/postman/local.postman_environment.json \
+		-r cli,htmlextra --reporter-htmlextra-export docs/reports/newman.html
 
 ocr-report:  ## Measured Tesseract vs vision model comparison
 	uv run python scripts/ocr_vs_vlm.py
