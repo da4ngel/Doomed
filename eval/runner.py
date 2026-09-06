@@ -142,9 +142,29 @@ def run_suite(suite_name: str, config: Config, k: int = 10, retriever=None) -> S
 
 
 def print_table(rows: list[SuiteResult]) -> None:
+    """Print one suite's ablation rows.
+
+    WHY a gold-less suite is named rather than printed as zeros: `adversarial` and
+    `unanswerable` carry no gold documents by construction - they score refusal
+    behaviour, not retrieval. A table of 0.000 there reads as a catastrophic result
+    when it is an inapplicable one, and an inapplicable zero copied into a report is
+    indistinguishable from a real failure.
+    """
     if not rows:
         return
     k = rows[0].k
+    if not rows[0].scored:
+        print(
+            f"  {len(rows[0].results)} questions, none carrying gold documents. "
+            "This suite scores refusal behaviour, not retrieval - "
+            "retrieval metrics are not applicable and are not reported."
+        )
+        return
+    if len(rows[0].scored) < len(rows[0].results):
+        print(
+            f"  scoring {len(rows[0].scored)} of {len(rows[0].results)} questions; "
+            "the rest carry no gold documents and are excluded, not counted as misses."
+        )
     header = (
         f"{'config':22s} {'n':>3s} {'recall@' + str(k):>9s} "
         f"{'cov@' + str(k):>7s} {'ndcg':>6s} {'mrr':>6s} {'p95ms':>6s}"
