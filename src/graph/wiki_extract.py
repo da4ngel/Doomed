@@ -227,9 +227,22 @@ def _clean(value: str) -> str:
     return value.replace("**", "").replace("*", "").strip()
 
 
+#: A leading article is not part of an entity's identity. The corpus writes both
+#: "The Iron-Ring Cartel" and "Iron-Ring Cartel", and treating them as two entities
+#: SPLITS the graph: the Purge of Blackport is won by one of them while the members
+#: belong to the other, so a two-hop question finds a victor with no members.
+_LEADING_ARTICLE = re.compile(r"^(the|a|an)\s+", re.IGNORECASE)
+
+
 def entity_id(name: str) -> str:
-    """Stable slug. Canonicalisation of near-duplicates happens later, in D3."""
-    slug = re.sub(r"[^a-z0-9]+", "_", _clean(name).lower()).strip("_")
+    """Stable slug, article-insensitive.
+
+    Deliberately conservative: this collapses "The X" onto "X" and nothing else. Broader
+    fuzzy merging is what turns Greyfell Citadel into Ironfell Citadel, so the rule is a
+    named prefix rather than a similarity threshold.
+    """
+    cleaned = _LEADING_ARTICLE.sub("", _clean(name)).strip()
+    slug = re.sub(r"[^a-z0-9]+", "_", cleaned.lower()).strip("_")
     return f"ent_{slug}"
 
 

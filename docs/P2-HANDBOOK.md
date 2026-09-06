@@ -184,6 +184,21 @@ show its working. Every hop carries `evidence_chunk_id` and `authority_tier`.
 
 Unresolved names return `resolved: false`. Handle that rather than assuming a match.
 
+### Entity vocabulary — `GET /v1/graph/entities`
+
+```
+GET /v1/graph/entities?type=Character&limit=1000
+```
+
+**A1 normalises against this and nothing else.** A general-purpose spell-corrector turns
+"Veyra Sunder" into something real and destroys retrieval; correcting only against names
+that exist is what stops "Greyfel Citadell" becoming Ironfell Citadel.
+
+203 entities. Filter by `type` — `Character` (36), `Faction` (5), `Location` (24),
+`Artifact` (12), `Event` (6), `Component` (10). The `Title` type is a catch-all that also
+holds literals (years like "315 AS", secret text), so **normalise against the typed
+entities, not against everything**.
+
 ### Assets — `GET /v1/assets/{id}` and `/meta`
 
 `/meta` gives `values[]` (label→value pairs), `caption`, `entity_link`, `description`.

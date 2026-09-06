@@ -106,7 +106,7 @@ def corpus_graph():
 @corpus
 def test_the_whole_wiki_graph_persists(corpus_graph) -> None:
     entities, relations = corpus_graph.counts()
-    assert entities == 203
+    assert entities == 198
     assert relations == 379
 
 

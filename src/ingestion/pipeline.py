@@ -146,6 +146,10 @@ def ingest_document(
                 declared = len(outline)
         if scanned:
             blocks.extend(_ocr_scanned_pages(path, doc_id, scanned))
+            # OCR blocks are appended after extraction, so restore reading order by
+            # page. A recovered title page belongs at the front of the document, not
+            # stranded at the end where it becomes a 12-token orphan chunk.
+            blocks.sort(key=lambda b: (b.page, b.order))
         return blocks, scanned, matched, declared
 
     if fmt == "docx":

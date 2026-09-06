@@ -4,7 +4,10 @@
 # unset - which is what the test suite and CI use so neither needs a running daemon.
 services:
   qdrant:
-    image: qdrant/qdrant:v1.12.4
+    # Pinned to match qdrant-client. The client warns when the major version differs or
+    # the minor gap exceeds one, and a mismatched pair is a silent-wrong-answer risk in
+    # a system whose whole point is not returning silent wrong answers.
+    image: qdrant/qdrant:v1.15.4
     container_name: ashen-qdrant
     ports:
       - "6333:6333"   # REST

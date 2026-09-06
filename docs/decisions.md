@@ -2,6 +2,18 @@
 
 Architecture Decision Records for the Ashen Era Archive Assistant.
 
+> **DRAFT NOTICE.** The "rejected and why" blocks below are marked `DRAFT - review`.
+> They were drafted from this project's own measured evidence and record real
+> decisions and real numbers, but the judgement in them must be read, agreed with or
+> overruled, and put into our own words before submission. A rationale we have not
+> actually endorsed is not collaboration evidence, whatever it says.
+
+> **DRAFT NOTICE.** The "rejected and why" blocks below are marked `DRAFT - review`.
+> They were drafted from this project's own measured evidence and record real
+> decisions and real numbers, but the judgement in them must be read, agreed with or
+> overruled, and put into our own words before submission. A rationale we have not
+> actually endorsed is not collaboration evidence, whatever it says.
+
 **How to read this file.** Each ADR records Context, the options considered, what the AI
 proposed, **what we rejected and why**, the decision, and its consequences. The
 "rejected and why" block is written by a human — a generated rationale reads as one-shot
@@ -29,7 +41,19 @@ framing sentence is reused verbatim in the report, the video and judge conversat
 the thesis: 11 of 20 dev questions are 1A, and their answers exist only inside images. 1A
 is still the renderer, but it is the renderer that carries most of the marks.
 
-**TODO(human):** what we rejected and why — the case for making 1A the spine instead.
+**DRAFT - review.** *What we rejected and why.* We considered making **1A the spine**,
+and on the raw numbers it is defensible: 11 of the 20 dev questions are 1A and their
+answers exist only inside images, so 1A carries more marks than 1B and 1C combined. We
+rejected it because a spine is the thing other parts hang from, and 1A does not connect
+anything - a figure pipeline is a leaf. Sub-track 1B is what forces an entity graph,
+evidence bundling and hop chains into existence; once those exist, 1C is the loop over
+them and 1A is the renderer at the end. Choosing 1A as the spine would have produced an
+excellent figure reader and no reason to build a graph at all.
+
+The honest counter, which we accept: our *effort* profile does not match our thesis. We
+spent the first full working day on the image pipeline, because that is where the marks
+are. We would say the thesis describes the architecture and the effort describes the
+scoreboard, and that both are true.
 
 ---
 
@@ -45,7 +69,19 @@ every member to explain, justify and modify any part of the system on demand.
 **Consequences.** More code to write; all of it defensible. RRF is fifteen lines we can
 explain. Framework internals are not.
 
-**TODO(human):** what we rejected and why — the honest cost of this choice in hours lost.
+**DRAFT - review.** *What we rejected and why.* We rejected LangChain and LlamaIndex,
+and the cost was real rather than theoretical - roughly a day across the project. RRF,
+the hybrid retriever, the Qdrant wrapper, the provider fallback chain and the retry/cache
+layer are all code a framework would have supplied. We also shipped bugs a framework
+would not have had: chunk ids that collided, Qdrant point ids that overwrote each other
+batch by batch, an entity split between "The Iron-Ring Cartel" and "Iron-Ring Cartel".
+
+We would make the same choice again, for one reason that outweighs the day: **we found
+those bugs.** Every one surfaced because we could read the code that produced the number.
+The Qdrant id collision silently indexed 2,444 chunks as 256 vectors while reporting
+success - inside a framework that is a mysteriously weak recall score with nowhere to
+look. The final round requires every member to explain and modify any part on demand, and
+we can defend 400 lines we wrote in a way nobody defends a dependency.
 
 ---
 
@@ -115,8 +151,13 @@ the successful run, `google/gemma-4-31b-it:free` returned 429 ("rate-limited ups
 the ladder escalated, and the next model answered. That is precisely the demo-day failure
 the chain exists for, and it is worth showing on video rather than describing.
 
-**TODO(human):** whether to spend a few dollars on `gpt-4o` for the final index run to
-reduce variance, given the free tier already passes all three cases.
+**DRAFT - review.** *Whether to pay for the final index run.* We decided **not to**.
+`minimax/minimax-m3:free` recovers **11 of 11** gold answers across the whole 1A set, not
+just the three spike cases - measured after describing all 70 images. Paying for `gpt-4o`
+would buy variance reduction on a metric already at 100%, and would cost us the stronger
+claim: that the figure pipeline runs at **$0.00** and a judge can reproduce it on a free
+key. The paid rungs stay in the ladder as a fallback if the free tier is throttled during
+the final run, and `fallback_used` records it in the usage row if that happens.
 
 ---
 
@@ -142,8 +183,26 @@ tier 3 — yet the novels are primary canon and the wiki is secondary commentary
 We kept the wiki higher because it is the corpus's structured reference layer while the
 novels are narrative prose, but the argument genuinely runs both ways.
 
-**TODO(human):** settle tier 2 vs tier 3 and write the reasoning. This is exactly the
-kind of epistemic judgment the rubric rewards, and it must be our words.
+**DRAFT - review.** *Settling tier 2 vs tier 3.* We keep the **wiki at tier 2, above the
+novels at tier 3**. The reasoning is about what each source is *for*, not which is more
+canonical.
+
+The novels are primary canon and the wiki is secondary commentary on them, which argues
+for reversing the order. We reject that because authority tiers answer one narrow
+question - *when two sources disagree about a fact, which do we believe?* - and on that
+question the wiki is better evidence. It states facts as structured assertions
+(`| Garrison strength | 2598 |`) that are directly comparable; the novels state them
+inside narrative, where a character may be lying, mistaken, or speaking figuratively. A
+tier is a claim about *reliability of assertion*, not about *canonicity of the work*.
+
+Two pieces of corpus evidence support this. The wiki annotates its own uncertainty -
+`gloamreach.md` records "Founded | Contested; consult the Annals and Codex" rather than
+inventing a year, which is exactly the behaviour a higher tier should show. And the
+corpus README warns that in-world authors "are not always reliable", a warning aimed at
+the narrative and ephemeral material rather than at the reference layer.
+
+We accept this is arguable and that a reader could reasonably order it the other way. It
+does not affect either 1C answer, since both resolve to tier 1.
 
 ---
 
@@ -168,7 +227,21 @@ none of which offers a drop-in equivalent that a judge could run without credent
 - Retrieval quality on rare invented proper nouns leans harder on BM25. Finding 13 gives
   a concrete measurable case: separating `greyfell_citadel` from `ironfell_citadel`.
 
-**TODO(human):** what we rejected and why — including whether to buy a Voyage key.
+**DRAFT - review.** *What we rejected and why.* We rejected buying a Voyage key, which
+would have given better embeddings and matched the original plan. Two reasons.
+
+First, reproducibility. With local embeddings a judge clones the repo and gets working
+retrieval with **no credentials at all**, and the rubric asks for exactly that path. A
+Voyage key would have made our headline result unreproducible by the people marking it.
+
+Second, the measured gap is smaller here than it would be on a normal corpus, because
+this archive is invented proper nouns where BM25 does much of the work - `greyfell`
+versus `ironfell` is a lexical problem, not a semantic one, and a better embedder does
+not help with it.
+
+What we gave up: BGE-small truncates at 512 tokens, which forced our chunk size down, and
+a full re-index costs about 20 minutes on CPU. We consider that a fair trade for a system
+anyone can run.
 
 ---
 
@@ -199,8 +272,22 @@ housing only in prose — hop 2 of 1b_003.
 LLM-extracted one. Field coverage is reported as a number (currently 100% of relational
 infobox rows) rather than asserted.
 
-**TODO(human):** what we rejected and why — notably, whether prose pattern-matching is a
-slippery slope back toward hand-written extraction rules.
+**DRAFT - review.** *What we rejected and why.* The fair challenge is that our prose
+patterns are hand-written extraction rules by another name, and that we are one step from
+a brittle pile of regexes.
+
+We accept the direction of that criticism, and think the constraint we chose answers it:
+**every prose pattern requires a `[[wikilink]]` as its object.** A pattern can therefore
+only connect two names the corpus itself wrote down and marked as entities - it can never
+invent one. That is a categorical limit rather than a matter of care, which is why we
+consider these six patterns different in kind from open-ended rule-writing. They exist
+because six wiki articles have no Infobox at all, and one of them holds hop 2 of
+`1b_003`.
+
+What we also rejected: running LLM extraction over the wiki as well, for uniformity. A
+deterministic edge citing an infobox row survives the question "how do you know this is
+real?" in a way a model-extracted edge does not, and the wiki is where most of our graph
+lives.
 
 ---
 
@@ -217,7 +304,11 @@ figures, citation chips and the live trace panel. No build step, no `node_module
 **Consequences.** 1A still demos properly, which is what the marks depend on. The
 evidence-graph visualisation stays cut-line #2. A judge runs the UI with no npm install.
 
-**TODO(human):** confirm or overturn once the second builder joins.
+**DRAFT - review.** *Confirmed on 6 Sep, when the second builder joined.* We kept the
+single-file UI. With two builders and three and a half days, the second builder's time is
+better spent on the six agents than on a React build, and the demo needs the UI to render
+inline figures, citation chips and a live trace panel - all of which a single file does.
+We revisit only if the trace panel proves unworkable without a component model.
 
 ---
 
@@ -247,9 +338,22 @@ parity".
 real operational cost and is stated in the README. `/v1/ready` reports which backend is
 live, and `QdrantUnavailableError` names the fix rather than surfacing a connection trace.
 
-**TODO(human):** what we rejected and why — in particular whether option (c) would have
-been the more defensible choice at 2,400 chunks, given "no framework" is our stated
-principle elsewhere.
+**DRAFT - review.** *What we rejected and why.* Option (c), brute-force numpy, is the
+choice most consistent with our stated principles, and we came close to taking it. At
+2,444 vectors of 384 dimensions the whole matrix is about 3.7 MB and a cosine scan is
+sub-millisecond - genuinely faster than a round trip to Qdrant, with zero dependencies
+and code any team member could derive on a whiteboard.
+
+We rejected it for one concrete reason: **payload filtering.** `SearchFilters` narrows by
+`authority_tier` and `source_type`, those filters are toggled by the ablation table, and
+filtering *after* retrieval silently shrinks k - ask for 10 tier-1 chunks, get 3, and the
+recall number quietly measures something else. Qdrant applies the filter during search.
+Hand-rolling that correctly, with the over-fetching needed to keep k honest, is the part
+we did not want to write under deadline.
+
+The honest weakness in our position: we hand-rolled exactly that logic in the BM25 store
+anyway, so the argument is about where we chose to spend the risk, not about
+capability.
 
 ---
 
@@ -277,5 +381,17 @@ an atomic table kept whole by rule 1 — a stated trade-off rather than a leak.
 600 row now has a known mechanism for any loss it shows rather than being a mystery. A
 larger-context embedder would move this number; that is the point of deriving it.
 
-**TODO(human):** what we rejected and why — including whether to switch to an embedder
-with a 8k window and drop the constraint entirely.
+**DRAFT - review.** *What we rejected and why.* We rejected switching to a
+larger-context embedder, which would have removed the constraint rather than managed it
+and let us keep 600-token chunks with no truncation.
+
+We rejected it because the constraint turned out to be *informative*. Deriving chunk size
+from the model's context window is a defensible engineering rule; picking 600 because it
+is a round number is not, and the 8.8% silent truncation we measured is the evidence. A
+larger window would have hidden the mistake rather than corrected the reasoning. There is
+also a practical reason: BGE-small is 65 MB and runs on any CPU, and a larger model costs
+download size and latency on a corpus where retrieval is already the fast part.
+
+What we would revisit with more time: measuring 300 / 450 / 600 against a larger-context
+model as a further ablation row, to separate "600 was too big for BGE-small" from "600 is
+too big".

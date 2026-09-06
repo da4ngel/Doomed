@@ -129,6 +129,9 @@ def test_prose_fallback_requires_a_wikilink() -> None:
 pytestmark_corpus = pytest.mark.skipif(not CORPUS_ROOT.exists(), reason="corpus not present")
 
 
+corpus_graph_test = pytest.mark.skipif(not CORPUS_ROOT.exists(), reason="corpus not present")
+
+
 @pytest.fixture(scope="module")
 def graph():
     if not CORPUS_ROOT.exists():
@@ -138,7 +141,7 @@ def graph():
 
 def test_corpus_extraction_is_dense_enough_to_be_useful(graph) -> None:
     assert graph.articles == 95
-    assert len(graph.entities) >= 200
+    assert len(graph.entities) == 198
     assert len(graph.relations) >= 350
 
 
@@ -218,3 +221,42 @@ def test_chain_1b_003_bearer_to_relic_to_redoubt(graph) -> None:
 
     housed = _step(graph, entity_id("The Cinder-Wrought Aegis"), "housed_at")
     assert entity_id("Gloamreach") in housed
+
+
+def test_a_leading_article_is_not_part_of_identity() -> None:
+    """The corpus writes both "The Iron-Ring Cartel" and "Iron-Ring Cartel".
+
+    Treating them as two entities SPLITS the graph: the Purge of Blackport is won by one
+    while the members belong to the other, so 1b_009's two-hop walk found a victor with
+    no members.
+    """
+    assert entity_id("The Iron-Ring Cartel") == entity_id("Iron-Ring Cartel")
+    assert entity_id("A Ballad") == entity_id("Ballad")
+
+
+def test_article_merging_does_not_merge_different_names() -> None:
+    """Conservative by design - a named prefix, not a similarity threshold. Broader
+    fuzzy merging is what turns Greyfell Citadel into Ironfell Citadel."""
+    assert entity_id("Greyfell Citadel") != entity_id("Ironfell Citadel")
+    assert entity_id("The Thrice-Bound Edge") != entity_id("The Thrice-Bound Lantern")
+
+
+@corpus_graph_test
+def test_no_article_collisions_remain_in_the_corpus(graph) -> None:
+    import re as _re
+
+    by_norm: dict[str, list[str]] = {}
+    for entity in graph.entities.values():
+        key = _re.sub(r"^(the|a|an)\s+", "", entity.canonical_name.lower()).strip()
+        by_norm.setdefault(key, []).append(entity.canonical_name)
+    collisions = {k: v for k, v in by_norm.items() if len(v) > 1}
+    assert not collisions, f"{len(collisions)} article collisions: {list(collisions)[:5]}"
+
+
+@corpus_graph_test
+def test_chain_1b_009_reaches_a_member_of_the_victor(graph) -> None:
+    """Purge of Blackport -> victor -> member. Broken until article merging landed."""
+    victors = _step_back(graph, entity_id("The Purge of Blackport"), "won")
+    assert entity_id("The Iron-Ring Cartel") in victors
+    members = _step(graph, entity_id("The Iron-Ring Cartel"), "has_member")
+    assert entity_id("Halvard Crowhurst") in members

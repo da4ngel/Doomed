@@ -1,0 +1,164 @@
+{
+  "contradiction_1c": [
+    {
+      "suite": "contradiction_1c",
+      "config": "1. BM25 only",
+      "questions": 2,
+      "scored": 2,
+      "recall@10": 1.0,
+      "precision@10": 0.1,
+      "coverage@10": 1.0,
+      "ndcg@10": 0.6505,
+      "mrr": 0.5556,
+      "p50_ms": 112,
+      "p95_ms": 112
+    },
+    {
+      "suite": "contradiction_1c",
+      "config": "2. Dense only",
+      "questions": 2,
+      "scored": 2,
+      "recall@10": 0.0,
+      "precision@10": 0.0,
+      "coverage@10": 0.0,
+      "ndcg@10": 0.0,
+      "mrr": 0.0,
+      "p50_ms": 1560,
+      "p95_ms": 1560
+    },
+    {
+      "suite": "contradiction_1c",
+      "config": "3. Hybrid RRF",
+      "questions": 2,
+      "scored": 2,
+      "recall@10": 1.0,
+      "precision@10": 0.1,
+      "coverage@10": 1.0,
+      "ndcg@10": 0.6505,
+      "mrr": 0.5556,
+      "p50_ms": 114,
+      "p95_ms": 114
+    },
+    {
+      "suite": "contradiction_1c",
+      "config": "4. Hybrid + rerank",
+      "questions": 2,
+      "scored": 2,
+      "recall@10": 0.5,
+      "precision@10": 0.05,
+      "coverage@10": 0.5,
+      "ndcg@10": 0.25,
+      "mrr": 0.1667,
+      "p50_ms": 2936,
+      "p95_ms": 2936
+    }
+  ],
+  "multihop_1b": [
+    {
+      "suite": "multihop_1b",
+      "config": "1. BM25 only",
+      "questions": 7,
+      "scored": 7,
+      "recall@10": 0.5952,
+      "precision@10": 0.1429,
+      "coverage@10": 0.1429,
+      "ndcg@10": 0.5354,
+      "mrr": 0.6548,
+      "p50_ms": 1,
+      "p95_ms": 1
+    },
+    {
+      "suite": "multihop_1b",
+      "config": "2. Dense only",
+      "questions": 7,
+      "scored": 7,
+      "recall@10": 0.0,
+      "precision@10": 0.0,
+      "coverage@10": 0.0,
+      "ndcg@10": 0.0,
+      "mrr": 0.0,
+      "p50_ms": 94,
+      "p95_ms": 130
+    },
+    {
+      "suite": "multihop_1b",
+      "config": "3. Hybrid RRF",
+      "questions": 7,
+      "scored": 7,
+      "recall@10": 0.5952,
+      "precision@10": 0.1429,
+      "coverage@10": 0.1429,
+      "ndcg@10": 0.5354,
+      "mrr": 0.6548,
+      "p50_ms": 92,
+      "p95_ms": 120
+    },
+    {
+      "suite": "multihop_1b",
+      "config": "4. Hybrid + rerank",
+      "questions": 7,
+      "scored": 7,
+      "recall@10": 0.5714,
+      "precision@10": 0.1286,
+      "coverage@10": 0.2857,
+      "ndcg@10": 0.5375,
+      "mrr": 0.7857,
+      "p50_ms": 2305,
+      "p95_ms": 2575
+    }
+  ],
+  "rich_1a": [
+    {
+      "suite": "rich_1a",
+      "config": "1. BM25 only",
+      "questions": 11,
+      "scored": 11,
+      "recall@10": 0.7273,
+      "precision@10": 0.0909,
+      "coverage@10": 0.5455,
+      "ndcg@10": 0.6642,
+      "mrr": 0.7303,
+      "p50_ms": 0,
+      "p95_ms": 1
+    },
+    {
+      "suite": "rich_1a",
+      "config": "2. Dense only",
+      "questions": 11,
+      "scored": 11,
+      "recall@10": 0.0,
+      "precision@10": 0.0,
+      "coverage@10": 0.0,
+      "ndcg@10": 0.0,
+      "mrr": 0.0,
+      "p50_ms": 107,
+      "p95_ms": 115
+    },
+    {
+      "suite": "rich_1a",
+      "config": "3. Hybrid RRF",
+      "questions": 11,
+      "scored": 11,
+      "recall@10": 0.7273,
+      "precision@10": 0.0909,
+      "coverage@10": 0.5455,
+      "ndcg@10": 0.6642,
+      "mrr": 0.7303,
+      "p50_ms": 96,
+      "p95_ms": 119
+    },
+    {
+      "suite": "rich_1a",
+      "config": "4. Hybrid + rerank",
+      "questions": 11,
+      "scored": 11,
+      "recall@10": 0.7727,
+      "precision@10": 0.1,
+      "coverage@10": 0.5455,
+      "ndcg@10": 0.7787,
+      "mrr": 0.9394,
+      "p50_ms": 2365,
+      "p95_ms": 2622
+    }
+  ]
+}

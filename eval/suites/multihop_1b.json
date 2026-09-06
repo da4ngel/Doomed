@@ -1,0 +1,89 @@
+{
+  "suite": "multihop_1b",
+  "description": "The 7 sub-track 1B questions from the dev set. Each answer was resolved by walking the entity graph and then verified against the source wiki articles by hand. Gold documents are the articles carrying the edges in the chain - no single document answers any of these, which is what coverage@k measures.",
+  "authored_by": "human, graph-resolved then source-verified",
+  "authored_at": "2026-09-06",
+  "questions": [
+    {
+      "qid": "1b_006",
+      "track": "1B",
+      "question": "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+      "gold_answer": "any member of The Silent Choir",
+      "accept": ["Ignatz Fellgard", "Brannoc Palefroth", "Thessaly Coldwater", "Lucan Hollowmere", "Tamsin Greyfen", "Ossric Ashgrove", "Ravena Stormwell", "Isolde Mournvale"],
+      "gold_docs": ["the_war_of_drowned_light", "the_silent_choir"],
+      "hop_chain": ["The War of Drowned Light", "won_by", "The Silent Choir", "has_member", "<individual>"],
+      "hops": 2,
+      "notes": "The Silent Choir is named as Victor on the war's own article; its members come from the faction article. Neither document alone answers the question."
+    },
+    {
+      "qid": "1b_005",
+      "track": "1B",
+      "question": "Which war was won by the organization that included Isolde Mournvale as one of its members?",
+      "gold_answer": "The War of Drowned Light",
+      "accept": ["The War of Drowned Light", "War of Drowned Light"],
+      "gold_docs": ["isolde_mournvale", "the_silent_choir", "the_war_of_drowned_light"],
+      "hop_chain": ["Isolde Mournvale", "member_of", "The Silent Choir", "won", "The War of Drowned Light"],
+      "hops": 2,
+      "notes": "Reverse of 1b_006 - person to faction to war rather than war to faction to person."
+    },
+    {
+      "qid": "1b_022",
+      "track": "1B",
+      "question": "Which war did Ravena Stormwell's own faction ultimately win?",
+      "gold_answer": "The War of Drowned Light",
+      "accept": ["The War of Drowned Light", "War of Drowned Light"],
+      "gold_docs": ["ravena_stormwell", "the_silent_choir", "the_war_of_drowned_light"],
+      "hop_chain": ["Ravena Stormwell", "member_of", "The Silent Choir", "won", "The War of Drowned Light"],
+      "hops": 2,
+      "notes": "Same shape as 1b_005 with a different bearer. Both must resolve, or the graph is memorising rather than traversing."
+    },
+    {
+      "qid": "1b_007",
+      "track": "1B",
+      "question": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+      "gold_answer": "The Leaden Accord",
+      "accept": ["The Leaden Accord", "Leaden Accord"],
+      "gold_docs": ["ederon_fellgard", "the_iron_ring_cartel", "the_leaden_accord"],
+      "hop_chain": ["Ederon Fellgard", "member_of", "The Iron-Ring Cartel", "won", "The Leaden Accord"],
+      "hops": 2,
+      "distractors": ["The Winter Reckoning"],
+      "trap": "The Iron-Ring Cartel won TWO events: The Winter Reckoning and The Leaden Accord. The word 'accord' in the question is the disambiguator - a system that returns the first victory returns The Winter Reckoning and is wrong.",
+      "notes": "Tests that the answer is filtered by the question's own constraint, not just by graph adjacency."
+    },
+    {
+      "qid": "1b_009",
+      "track": "1B",
+      "question": "In what way is Halvard Crowhurst connected to the victors of the Purge of Blackport?",
+      "gold_answer": "he is a member of The Iron-Ring Cartel, which won the Purge of Blackport",
+      "accept": ["member of The Iron-Ring Cartel", "member of the Iron-Ring Cartel", "Iron-Ring Cartel"],
+      "gold_docs": ["the_purge_of_blackport", "the_iron_ring_cartel"],
+      "hop_chain": ["The Purge of Blackport", "won_by", "The Iron-Ring Cartel", "has_member", "Halvard Crowhurst"],
+      "hops": 2,
+      "trap": "This chain was BROKEN until entity canonicalisation landed: the corpus writes both 'Iron-Ring Cartel' and 'The Iron-Ring Cartel', and as separate entities the victor had no members. Halvard Crowhurst also has no wiki article of his own - he appears only in ephemera - so he is reachable solely as the object of the faction's Members row.",
+      "notes": "The question asks HOW he is connected, so the answer is the relation, not a name."
+    },
+    {
+      "qid": "1b_013",
+      "track": "1B",
+      "question": "Whose dominion encompasses the lair of the Gravemaw Wyrm?",
+      "gold_answer": "The Bleeding Crown",
+      "accept": ["The Bleeding Crown", "Bleeding Crown"],
+      "gold_docs": ["gravemaw_wyrm", "marrowwell_abbey"],
+      "hop_chain": ["Gravemaw Wyrm", "lair_of", "Marrowwell Abbey", "ruled_by", "The Bleeding Crown"],
+      "hops": 2,
+      "notes": "The ruled_by edge is attested twice - infobox and prose - which is corroboration of one route, not two independent routes."
+    },
+    {
+      "qid": "1b_003",
+      "track": "1B",
+      "question": "To which shadowed redoubt must one journey to examine the relic long borne by Cerys Sablewood the Ashen since 356 AS?",
+      "gold_answer": "Gloamreach",
+      "accept": ["Gloamreach"],
+      "gold_docs": ["cerys_sablewood_the_ashen", "the_cinder_wrought_aegis"],
+      "hop_chain": ["Cerys Sablewood the Ashen", "bore_since (356 AS)", "The Cinder-Wrought Aegis", "housed_at", "Gloamreach"],
+      "hops": 2,
+      "trap": "The 'since 356 AS' qualifier is part of the question and must survive traversal. Hop 2 exists only in the article's PROSE - the Cinder-Wrought Aegis is one of the six wiki articles with no Infobox at all.",
+      "notes": "Distinguishes place of forging (Embermarch) from place of housing (Gloamreach); the question asks where to journey, so housing is correct."
+    }
+  ]
+}

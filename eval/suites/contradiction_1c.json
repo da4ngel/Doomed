@@ -1,0 +1,72 @@
+{
+  "suite": "contradiction_1c",
+  "description": "The 2 sub-track 1C questions. Both are contradiction questions - the words 'precise', 'true' and 'actually' are the tell. Each has multiple sourced years in the corpus, and the task is to find the competing claims and resolve them by authority tier. Every claim below was located and read by hand.",
+  "authored_by": "human, from the corpus",
+  "authored_at": "2026-09-06",
+  "why_this_suite_exists": "Corpus findings, Finding 4: the A4 conflict layer is the 1C answer path, not a differentiator bolted on the side. Iterative search finds the competing claims; tier-based resolution picks the answer and shows the working.",
+  "questions": [
+    {
+      "qid": "1c_000",
+      "track": "1C",
+      "question": "State the precise year in the Age of Shadows that marks the true founding of Gloamreach.",
+      "gold_answer": "246 AS",
+      "accept": ["246 AS", "246"],
+      "gold_docs": ["codex_vaeloria_i_gazetteer_of_the_sundered_realms"],
+      "supporting_docs": ["gloamreach", "contract_concerning_the_sceptre_of_final_winter", "field_report_concerning_gloamreach"],
+      "competing_claims": [
+        {
+          "value": "246 AS",
+          "doc_id": "codex_vaeloria_i_gazetteer_of_the_sundered_realms",
+          "tier": 1,
+          "quote": "The founding record is exact: Gloamreach's founded is 246 AS."
+        },
+        {
+          "value": "286 AS",
+          "doc_id": "contract_concerning_the_sceptre_of_final_winter",
+          "tier": 4,
+          "quote": "Gloamreach was founded in 286 AS. I record this plainly because plain records outlive frightened ones."
+        },
+        {
+          "value": "295 AS",
+          "doc_id": "field_report_concerning_gloamreach",
+          "tier": 4,
+          "quote": "founded in 295 AS"
+        }
+      ],
+      "expected_resolution": "higher_tier",
+      "expected_rationale": "The tier-1 codex states the founding record exactly; the two competing years are tier-4 in-world records, which are primary but partial, and they do not agree with each other either.",
+      "minimum_steps": 2,
+      "trap": "wiki/gloamreach.md does NOT give a year. Its infobox reads 'Founded | Contested; consult the Annals and Codex' - the corpus is explicitly telling the reader the single-lookup answer does not exist. A system that stops at the wiki returns nothing; a system that stops at the first ephemeral source returns 286 or 295.",
+      "notes": "The cleanest 1C question in the set: it cannot be answered in one lookup, it names where to look next, and the resolution is by tier."
+    },
+    {
+      "qid": "1c_003",
+      "track": "1C",
+      "question": "In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+      "gold_answer": "391 AS",
+      "accept": ["391 AS", "391"],
+      "gold_docs": ["codex_vaeloria_ii_armory_of_relics_and_bestiary"],
+      "supporting_docs": ["gauntlet_of_sorrowfell", "sermon_concerning_malchior_cindervale_the_flame_touched"],
+      "competing_claims": [
+        {
+          "value": "391 AS",
+          "doc_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+          "tier": 1,
+          "quote": "The authoritative record states plainly: Gauntlet of Sorrowfell's forged is 391 AS. The accepted forging date is 391 AS, and no competing date has standing in this codex."
+        },
+        {
+          "value": "360 AS",
+          "doc_id": "sermon_concerning_malchior_cindervale_the_flame_touched",
+          "tier": 5,
+          "quote": "And behold the regalia named Gauntlet of Sorrowfell. Its forged year is 360 AS."
+        }
+      ],
+      "expected_resolution": "higher_tier",
+      "expected_rationale": "The tier-1 codex names 391 AS as the accepted date and explicitly says no competing date has standing. The 360 AS claim is a tier-5 sermon - attested but unreliable, exactly the class the tier table exists to discount.",
+      "minimum_steps": 2,
+      "distractors": ["119 AS"],
+      "trap": "The Psalter of Seven Sorrows was forged in 119 AS and is a different artifact that matches on 'Sorrow'. It appears in tier-3 novels and a tier-5 sermon, so a system matching loosely on the name returns 119 AS with a real citation.",
+      "notes": "This is the tier-5 'folkloric / homiletic - unreliable narrator' case the authority table was designed for, and the codex helpfully states its own authority in the text."
+    }
+  ]
+}
