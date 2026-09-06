@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import os
 import threading
-from collections.abc import Callable
 from pathlib import Path
 from typing import Annotated
 
@@ -17,12 +16,14 @@ from fastapi.responses import FileResponse
 
 from src.agents.analyst import QueryAnalyst
 from src.agents.composer import AnswerComposer
+from src.agents.conflict_adapter import ConflictAdapter, Vocabulary
 from src.agents.critic import SufficiencyCritic
+from src.agents.merger import ConflictDetector
 from src.agents.orchestrator import Orchestrator
 from src.agents.retriever import RetrievalAgent
 from src.agents.runtime import BoundedLLM, Budget, KnowledgeClient
 from src.agents.verifier import AnswerVerifier
-from src.api.schemas import AnswerPacket, ChatRequest, Conflict, Entity, SearchHit
+from src.api.schemas import AnswerPacket, ChatRequest
 from src.core.cache import ResponseCache
 from src.core.config import get_settings
 from src.core.llm import LLMClient
@@ -45,11 +46,8 @@ def get_knowledge() -> KnowledgeClient:
     )
 
 
-ConflictDetector = Callable[[list[SearchHit]], list[Conflict]]
-
-
 def get_conflict_detector() -> ConflictDetector | None:
-    """P1 supplies the implementation; absence is a visible partial result."""
+    """Optional override; otherwise the request gets the real P1 adapter."""
     return None
 
 
@@ -64,12 +62,7 @@ def build_orchestrator(
         os.environ.get("KNOWLEDGE_API_URL", "http://127.0.0.1:8000"), cache, budget
     )
 
-    def vocabulary() -> list[Entity]:
-        payload = knowledge.request("GET", "/v1/graph/entities")
-        return [
-            Entity.model_validate(e)
-            for e in (payload if isinstance(payload, list) else payload["entities"])
-        ]
+    vocabulary = Vocabulary(lambda: knowledge.request("GET", "/v1/graph/entities?limit=1000"))
 
     llm = BoundedLLM(LLMClient(cache=cache), budget)
     return Orchestrator(
@@ -81,7 +74,7 @@ def build_orchestrator(
         traces,
         budget,
         llm=llm,
-        conflict_detector=detector,
+        conflict_detector=detector if detector is not None else ConflictAdapter(vocabulary),
     )
 
 

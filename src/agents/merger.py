@@ -9,6 +9,9 @@ from difflib import SequenceMatcher
 from pydantic import Field
 
 from src.api.schemas import Conflict, Frozen, SearchHit, Warning
+from src.synthesis.conflicts import MergeReport
+
+ConflictDetector = Callable[[list[SearchHit]], list[Conflict] | MergeReport]
 
 
 class Bundle(Frozen):
@@ -22,7 +25,7 @@ def merge_evidence(
     chunks: list[SearchHit],
     *,
     hop_order: list[str] | None = None,
-    detector: Callable[[list[SearchHit]], list[Conflict]] | None = None,
+    detector: ConflictDetector | None = None,
 ) -> Bundle:
     # Different numeric assertions must survive deduplication, even in similar prose.
     kept: list[SearchHit] = []
@@ -49,7 +52,11 @@ def merge_evidence(
     else:
         try:
             # Detector sees all sources, so dedup never destroys corroboration/conflicts.
-            result.conflicts = [Conflict.model_validate(c) for c in detector(chunks)]
+            report = detector(chunks)
+            conflicts = report.conflicts if isinstance(report, MergeReport) else report
+            result.conflicts = [Conflict.model_validate(c) for c in conflicts]
+            if isinstance(report, MergeReport):
+                result.reliability_notes.extend(report.reliability_notes)
         except Exception:
             result.warnings.append(
                 Warning(

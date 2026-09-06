@@ -87,9 +87,11 @@ def _load_entities(base_url: str, cache: ResponseCache | None) -> list[Entity]:
 def _names(entities: list[Entity]) -> dict[str, list[Entity]]:
     names: dict[str, list[Entity]] = {}
     for entity in entities:
-        for name in [entity.canonical_name, *entity.aliases]:
+        surfaces = [entity.canonical_name, *entity.aliases]
+        surfaces += [name[4:] for name in surfaces if name.casefold().startswith("the ")]
+        for name in surfaces:
             if name.strip():
-                names.setdefault(name.casefold(), []).append(entity)
+                names.setdefault(_matching_text(name).casefold(), []).append(entity)
     return names
 
 
@@ -99,7 +101,9 @@ def _mentions(question: str, names: dict[str, list[Entity]]) -> list[tuple[int, 
         unique = {e.entity_id: e for e in entities}
         if len(unique) != 1:
             continue
-        for match in re.finditer(r"(?<!\w)" + re.escape(name) + r"(?!\w)", question, re.I):
+        for match in re.finditer(
+            r"(?<!\w)" + re.escape(name) + r"(?!\w)", _matching_text(question), re.I
+        ):
             found.append((match.start(), match.end(), next(iter(unique.values()))))
     selected: list[tuple[int, int, Entity]] = []
     for item in sorted(found, key=lambda x: (-(x[1] - x[0]), x[0])):
@@ -110,6 +114,7 @@ def _mentions(question: str, names: dict[str, list[Entity]]) -> list[tuple[int, 
 
 def _typo_score(source: str, target: str) -> float:
     """Require each word to agree, so a shared 'Citadel' cannot hide a new place."""
+    source, target = _matching_text(source), _matching_text(target)
     left, right = source.casefold().split(), target.casefold().split()
     if len(left) != len(right):
         return 0
@@ -141,7 +146,9 @@ def _corrections(question: str, names: dict[str, list[Entity]]) -> list[Correcti
     protected = [
         (m.start(), m.end())
         for name in names
-        for m in re.finditer(r"(?<!\w)" + re.escape(name) + r"(?!\w)", question, re.I)
+        for m in re.finditer(
+            r"(?<!\w)" + re.escape(name) + r"(?!\w)", _matching_text(question), re.I
+        )
     ]
     words = list(_WORD.finditer(question))
     proposals = []
@@ -195,7 +202,11 @@ def _non_overlapping(proposals: list[Correction]) -> list[Correction]:
 
 def _intent(question: str, seeds: list[SeedEntity]) -> QueryIntent:
     lower = question.casefold()
-    if re.search(r"\b(agree|disagree|contradict\w*|conflicting|true year|actual year)\b", lower):
+    if re.search(
+        r"\b(agree|disagree|contradict\w*|conflicting|true (?:year|founding)|"
+        r"actual year|actually forged)\b",
+        lower,
+    ):
         return "contradiction"
     if re.search(
         r"\b(figure|plate|diagram|map|table|look like|looks like|appearance|seal|portrait|"
@@ -213,6 +224,11 @@ def _intent(question: str, seeds: list[SeedEntity]) -> QueryIntent:
     if re.search(r"\b(explore|overview|tell me about)\b", lower):
         return "exploratory"
     return "direct"
+
+
+def _matching_text(text: str) -> str:
+    """One-character substitutions preserve rollback offsets and user-visible text."""
+    return text.translate(str.maketrans("‑–—‐’‘“”", "----''\"\""))
 
 
 class QueryAnalyst:

@@ -1,6 +1,6 @@
 # Reasoning layer handoff
 
-The P2 service now implements A1, A2, A3, A5, A6, the bounded orchestrator, mode routing, durable traces, and the UI. A4's deduplication/hop ordering and injection point are implemented; **P1's conflict detector is still absent**. This is not yet a validated competition submission: the real corpus, 203-entity endpoint, model credentials, and upstream conflict implementation were unavailable in this checkout.
+The P2 service implements A1–A6, the bounded orchestrator, mode routing, durable traces, and the UI. P1's vocabulary endpoint and conflict detector are now integrated through their actual contracts. This is not yet a validated competition submission: the raw corpus is absent locally, and live knowledge/chat acceptance targets were unavailable at the latest preflight.
 
 ## Run against the knowledge service
 
@@ -16,11 +16,11 @@ Open `http://127.0.0.1:8001/`. This entry point deliberately avoids changing P1'
 
 The UI polls the job trace, shows citations with source excerpts, places verified figures inline, renders Markdown tables, displays missing information and warnings, and exports the answer with its trace as JSON. It renders archive/model text with DOM text nodes, never HTML. It does not load third-party scripts. `X-Normalize: false` rolls back name correction on a subsequent self-contained request. Conversation memory is not implemented; nonempty `conversation_id` is explicitly rejected rather than silently ignored. Questions longer than 5,000 characters are rejected at the route.
 
-## P1 integration still needed
+## P1 integration and remaining dependencies
 
-1. Implement `GET /v1/graph/entities`, returning a complete `Entity[]` or `{ "entities": Entity[] }`. A1 filters out `Title` records locally. Missing/failed vocabulary leaves names unchanged with `normalization_skipped`; it is not replaced with direct graph/database imports.
-2. Connect the conflict detector as `Callable[[list[SearchHit]], list[Conflict]]`. The detector receives original evidence before deduplication, preserving corroboration. For a host application, call `create_app(conflict_detector=adapter)` or override the `get_conflict_detector` FastAPI dependency. The adapter must translate P1's final ABI to the frozen `Conflict` schema. In particular, its resolution is `higher_tier`, not the spec's obsolete `tier_preferred`. Without it, packets carry `conflict_detection_unavailable`, remain partial, and cap confidence at 0.6. We do **not** claim that planted conflict 1a_004 is resolved until this is connected and evaluated.
-3. Provide the corpus and upstream API for actual acceptance. `data/corpus/Ashen_Era_Archive/sample_questions.json` is missing, so the 20-question A1 test remains skipped. The 11 question texts in `eval/suites/rich_1a.json` are available and exercised for routing only.
+1. A1 and A4 share one validated `EntityVocabularyResponse` from `GET /v1/graph/entities?limit=1000`. The service rejects truncated or empty named-entity vocabularies and filters out `Title` records. Failed vocabulary leaves names unchanged with `normalization_skipped`.
+2. `ConflictAdapter` translates original `SearchHit` evidence into frozen `Chunk` objects and calls P1's `detect_conflicts(chunks, typed_entities)`. A4 preserves its conflicts and reliability notes. The default chat factory installs this adapter automatically; a custom detector remains injectable. Fixture tests cover founding/forging discrepancies and numeric versus missing attunement values. Actual planted conflict 1a_004 still requires live corpus evaluation.
+3. All 20 dev-question texts are now available in P1's checked-in gold suites and pass an A1 smoke test. The original raw `sample_questions.json` acceptance test remains skipped because the corpus is missing. Unicode punctuation links to canonical entities without changing the user's text; both 1C questions route to contradiction.
 4. The graph seam returns sourced edges but does not include full citation document metadata. A2 keeps those edges and their evidence IDs; later search supplies actual source chunks. It never fabricates documents or chunks from graph edges. The asset metadata seam lacks page dimensions/page count, so A6 checks against returned source pages and drops unverifiable bounding boxes. Global registry/page-bound verification requires an upstream metadata seam; it is not claimed here.
 5. `read_section` does not exist. A2 emits a tool failure for it, and A3's prompt excludes it. `list_mentions` is implemented as search on the supplied entity name, as the handbook specifies.
 
@@ -46,7 +46,7 @@ uv run black --check src/agents src/synthesis src/api/routes/chat.py src/core/tr
 uv run mypy src/agents src/synthesis src/api/routes/chat.py src/core/trace.py src/core/usage.py --follow-imports=silent
 ```
 
-Latest local scoped result: **121 passed, 1 skipped**. The broader `tests/unit tests/reasoning` run: **198 passed, 48 skipped, 2 existing upstream failures**.
+Latest local scoped result, including P1 conflict tests: **147 passed, 7 skipped**. Lint, formatting, and reasoning type checks pass. The earlier broader `tests/unit tests/reasoning` run: **198 passed, 48 skipped, 2 existing upstream failures**.
 
 The new reasoning fixtures cover all tool variants/failures, a three-step discovery chain, two-empty-step stopping, step/token/wall limits, delayed transports, prompt-boundary attacks, missing P1 detection, table rendering, correct and decoy figure labels, fabricated citations/quotes/markers, entailment outage, durable jobs/traces, and API validation. They use scripted model responses and HTTP fixtures, not a live model or corpus. No answer-accuracy/retrieval eval delta is claimed.
 
@@ -75,9 +75,21 @@ flowchart LR
   R --> A2[One HTTP retrieval action]
   A2 --> A3[Quote-backed coverage and next discovery]
   A3 -->|missing and within budget| A2
-  A3 -->|covered or stopped| A4[Deduplicate and P1 conflict hook]
+  A3 -->|covered or stopped| A4[Deduplicate and P1 conflict detector]
   A4 --> A5[Claims and selected figures]
   A5 --> A6[Provenance and entailment checks]
   A6 --> P[Frozen answer packet]
   P --> UI[UI and persistent trace]
 ```
+
+## Live acceptance runner
+
+```sh
+uv run python -m tests.reasoning.acceptance --preflight-only
+uv run python -m tests.reasoning.acceptance --suite dev
+uv run python -m tests.reasoning.acceptance --suite unanswerable
+```
+
+Use `--knowledge-url`, `--chat-url`, and `--out` for remote services and output location. The runner checks index readiness, a complete vocabulary, and a real chat endpoint before submitting questions. It rejects the scripted fixture. Each run writes JSON/Markdown reports and a blank human-review CSV; completed questions also save answer packets and traces. Gold answers never enter chat requests. Lexical matches are diagnostic only and exclude conflict prose; correctness, negation, subject binding, and refusal quality require human review. Retrieval recall and genuine evidence gain are not computed from citation counts.
+
+The 6 September integration preflight returned `blocked`, with zero questions attempted: both localhost services refused connections. This is an infrastructure result, not a zero answer-accuracy score. Start the corpus-backed knowledge service and configured chat service before running the full suites. Browser interaction checks, real metrics, cross-review, and submission artifacts remain pending.
