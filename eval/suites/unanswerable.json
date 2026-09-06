@@ -1,0 +1,70 @@
+{
+  "suite": "unanswerable",
+  "description": "Questions that are plausible, on-topic, and NOT answerable from the archive. Every one is grounded in a sentence where the corpus explicitly declines to record the fact - 'the record does not establish...', 'No bearer is named' - so the expected refusal is verifiable rather than a matter of opinion.",
+  "authored_by": "human, from the corpus's own non-statements",
+  "authored_at": "2026-09-06",
+  "why_this_suite_exists": "Judges will ask something the archive does not contain, and every other system will hallucinate an answer. Refusal accuracy and the false-refusal rate are both scored: a system that refuses everything gets 1.0 on the first alone, so the two are always reported together with the answerable suites.",
+  "expected_behaviour": {
+    "missing_information": "non-empty, and names the specific gap",
+    "claims": "no claim with support 'corroborated' or 'single_source' asserting the missing fact",
+    "nearest_related": "the system should still cite the document that discusses the topic, showing it looked"
+  },
+  "questions": [
+    {
+      "qid": "un_001",
+      "question": "Under what circumstances did Aldous Wrenfield come to command Fenspire?",
+      "why_unanswerable": "wiki/aldous_wrenfield_the_last_warden.md states: 'The available record does not establish the circumstances under which Aldous came to command Fenspire.'",
+      "nearest_related_docs": ["aldous_wrenfield_the_last_warden"],
+      "trap": "The command relation IS in the graph (commands, since 336 AS), so retrieval succeeds and looks authoritative. The system must distinguish 'I know he commands it' from 'I know why', which is exactly the distinction a fluent model erases."
+    },
+    {
+      "qid": "un_002",
+      "question": "What are the appearance, origin and powers of The Silent Psalter?",
+      "why_unanswerable": "wiki/aldous_wrenfield_the_last_warden.md states: 'The canonical record does not establish its appearance, origin, powers, or manner of use.'",
+      "nearest_related_docs": ["aldous_wrenfield_the_last_warden", "the_silent_psalter"],
+      "trap": "The artifact exists and is wielded since 341 AS, so there is plenty to retrieve. None of it answers the question asked."
+    },
+    {
+      "qid": "un_003",
+      "question": "When did Aldous Wrenfield's mentorship of Thessaly Coldwater begin, and what did it involve?",
+      "why_unanswerable": "wiki/aldous_wrenfield_the_last_warden.md states: 'The record does not establish when the mentorship began, what instruction it involved, or whether it remains active.'",
+      "nearest_related_docs": ["aldous_wrenfield_the_last_warden"],
+      "trap": "mentor_of is a real graph edge with no qualifier. The graph proves the relation and says nothing about its timing - a system reading edges as facts will invent a date."
+    },
+    {
+      "qid": "un_004",
+      "question": "Who were the recipients of the intelligence Aldous Wrenfield sold to the Iron-Ring Cartel?",
+      "why_unanswerable": "wiki/aldous_wrenfield_the_last_warden.md states: 'The record does not establish the terms of Aldous's membership, the nature of the intelligence sold, the recipients of that intelligence...'",
+      "nearest_related_docs": ["aldous_wrenfield_the_last_warden", "the_iron_ring_cartel"],
+      "trap": "The `secret` predicate records that he sells intelligence to the Cartel. The buyer is named; the onward recipients are not."
+    },
+    {
+      "qid": "un_005",
+      "question": "What does Maelis Harrowick the Pale look like?",
+      "why_unanswerable": "ephemera/decree_concerning_house_morvain: 'Maelis's appearance is not established beyond the epithet the Pale and the formal station of Court Chronicler.'",
+      "nearest_related_docs": ["maelis_harrowick_the_pale"],
+      "trap": "Several wiki articles say 'no canonical physical features are established' for their subject while still describing demeanour at length. A composer that treats demeanour as appearance answers confidently and wrongly."
+    },
+    {
+      "qid": "un_006",
+      "question": "How long did Caedmon Hollowmere serve at Stormmarch?",
+      "why_unanswerable": "wiki/caedmon_hollowmere.md states: 'The record does not establish the length of that service, the circumstances under which he came there, or whether the location represents...'",
+      "nearest_related_docs": ["caedmon_hollowmere", "stormmarch"],
+      "trap": "The service relation exists in the graph. Duration does not."
+    },
+    {
+      "qid": "un_007",
+      "question": "How is the contradiction between Brannoc Ironmere's death in 300 AS and his wielding the Edge of Gloamreach since 314 AS resolved?",
+      "why_unanswerable": "wiki/brannoc_ironmere_the_red_handed.md states: 'The canon establishes both records but does not provide a reconciliation between them.'",
+      "nearest_related_docs": ["brannoc_ironmere_the_red_handed", "edge_of_gloamreach"],
+      "trap": "This is the hardest case in the suite. BOTH facts are recorded and the contradiction is real and acknowledged - so the conflict layer will correctly surface it. The right answer is 'the archive states both and reconciles neither', not a resolution. A system that resolves it by tier invents canon."
+    },
+    {
+      "qid": "un_008",
+      "question": "What does the Marrowwell Abbey vault guard?",
+      "why_unanswerable": "ephemera quartermaster ledger: 'Whether it guards coin, blood, a road, or nothing a sane clerk should name is not established here.'",
+      "nearest_related_docs": ["marrowwell_abbey"],
+      "trap": "The in-world author lists possibilities. A model that summarises the list as an answer converts speculation into fact - and the tier-4 source is a primary record, so it looks trustworthy."
+    }
+  ]
+}
