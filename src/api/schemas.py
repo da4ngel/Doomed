@@ -393,3 +393,68 @@ class ReadyResponse(Frozen):
     #: Models loaded. A cold first request is ~30x a warm one.
     warm: bool = False
     detail: list[str] = Field(default_factory=list)
+
+
+# --------------------------------------------------------------------------
+# Graph endpoints.
+#
+# ADDITIVE ONLY. The frozen contracts above are untouched - these are new request and
+# response models for POST /v1/graph/*, which the reasoning layer calls to walk hop
+# chains. Adding models beside the frozen ones needs no ADR; changing one does.
+# --------------------------------------------------------------------------
+
+
+class GraphNeighborsRequest(Frozen):
+    entity: str
+    hops: int = Field(default=1, ge=1, le=3)
+    rel_types: list[RelationPredicate] | None = None
+    max_nodes: int = Field(default=200, ge=1, le=1000)
+
+
+class GraphEdgeOut(Frozen):
+    """An edge with the evidence that licenses it. No unsourced edges leave the API."""
+
+    subject_id: str
+    subject: str
+    predicate: RelationPredicate
+    object_id: str
+    object: str
+    evidence_chunk_id: str
+    authority_tier: AuthorityTier
+    qualifier: str | None = None
+
+
+class GraphNeighborsResponse(Frozen):
+    entity_id: str
+    resolved: bool
+    entities: list[Entity] = Field(default_factory=list)
+    edges: list[GraphEdgeOut] = Field(default_factory=list)
+    truncated: bool = False
+
+
+class GraphPathsRequest(Frozen):
+    from_entity: str = Field(alias="from")
+    to_entity: str = Field(alias="to")
+    max_hops: int = Field(default=3, ge=1, le=5)
+    max_paths: int = Field(default=10, ge=1, le=50)
+
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+
+class GraphPath(Frozen):
+    """One route, with every hop's evidence.
+
+    `distinct` collapses routes by entity chain: the same chain attested by an infobox
+    row and a prose sentence is one route corroborated twice, not two routes.
+    """
+
+    hops: list[GraphEdgeOut] = Field(default_factory=list)
+    evidence_chunk_ids: list[str] = Field(default_factory=list)
+    readable: str = ""
+
+
+class GraphPathsResponse(Frozen):
+    from_id: str
+    to_id: str
+    resolved: bool
+    paths: list[GraphPath] = Field(default_factory=list)
