@@ -63,11 +63,16 @@ LLM_CONFIDENCE = 0.6
 #: the passages that can.
 MIN_ENTITIES = 2
 
-#: (provider, model), cheapest first - same shape as the vision ladder, same reason: one
-#: 429 during a long extraction run must not cost the whole graph.
+#: (provider, model), FREE FIRST - and that ordering is not cosmetic. The first version
+#: of this ladder led with `deepseek/deepseek-chat`, which is paid, and a bulk run over
+#: 849 passages exhausted the OpenRouter in-flight credit budget and then spent a 402 on
+#: every remaining passage before falling through. Extraction is a bulk job with a cheap
+#: per-item value, so it belongs on the free tier by default; the paid rungs exist so one
+#: rate limit cannot cost the whole graph, not to be the default path.
 TEXT_LADDER: list[tuple[str, str]] = [
-    ("openrouter", "deepseek/deepseek-chat"),
     ("openrouter", "minimax/minimax-m3:free"),
+    ("openrouter", "google/gemma-4-31b-it:free"),
+    ("openrouter", "deepseek/deepseek-chat"),
     ("openai", "gpt-4o-mini"),
 ]
 

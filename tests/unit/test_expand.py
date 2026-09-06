@@ -272,3 +272,80 @@ def test_build_doc_chunks_keeps_index_order() -> None:
     meta = {"d1:c0": {"doc_id": "d1"}, "d2:c0": {"doc_id": "d2"}, "d1:c1": {"doc_id": "d1"}}
     index = build_doc_chunks(ordered, lambda cid: meta[cid])
     assert index == {"d1": ["d1:c0", "d1:c1"], "d2": ["d2:c0"]}
+
+
+# -- edge confidence ------------------------------------------------------
+
+
+def _mixed_confidence_store() -> FakeStore:
+    """One wiki edge and one LLM-extracted edge from the same seed."""
+    war = _entity("The Purge of Blackport", "Event")
+    wiki_side = _entity("Wiki Faction", "Faction", ["wiki/wiki_faction.md"])
+    prose_side = _entity("Prose Faction", "Faction", ["wiki/prose_faction.md"])
+    return FakeStore(
+        edges={
+            war.entity_id: [
+                Hop(wiki_side.entity_id, "fought_in", war.entity_id, "w#row", 2, None, 1.0),
+                Hop(prose_side.entity_id, "fought_in", war.entity_id, "novel:c4", 3, None, 0.6),
+            ]
+        },
+        entities={e.entity_id: e for e in [war, wiki_side, prose_side]},
+    )
+
+
+def _mixed_doc_chunks() -> dict[str, list[str]]:
+    return {"wiki_faction": ["wiki_faction:c0"], "prose_faction": ["prose_faction:c0"]}
+
+
+def test_low_confidence_edges_do_not_spend_an_expansion_slot_by_default() -> None:
+    """An expansion slot EVICTS a base hit. Adding 193 extracted edges took 1B
+    coverage@10 from 0.714 down to 0.571 - not because the edges were wrong, but because
+    they filled slots that had gone unspent, displacing gold the base retriever had
+    already found."""
+    store = _mixed_confidence_store()
+    expansion = graph_expand(
+        "the Purge of Blackport",
+        store,
+        list(store.entities.values()),
+        _mixed_doc_chunks(),
+    )
+    assert expansion.chunk_ids == ["wiki_faction:c0"]
+
+
+def test_lowering_the_threshold_admits_extracted_edges() -> None:
+    """The edges are not discarded - they are gated, and the gate is a parameter so the
+    ablation row can be re-run rather than argued about."""
+    store = _mixed_confidence_store()
+    expansion = graph_expand(
+        "the Purge of Blackport",
+        store,
+        list(store.entities.values()),
+        _mixed_doc_chunks(),
+        min_confidence=0.5,
+    )
+    assert set(expansion.chunk_ids) == {"wiki_faction:c0", "prose_faction:c0"}
+
+
+def test_the_authoritative_edge_wins_when_a_triple_is_attested_twice() -> None:
+    """The same relationship is often stated by both an infobox row and a sentence in a
+    novel. Deduplicating before sorting let whichever the walk reached first win."""
+    war = _entity("The Purge of Blackport", "Event")
+    faction = _entity("Both Faction", "Faction", ["wiki/both_faction.md"])
+    store = FakeStore(
+        edges={
+            war.entity_id: [
+                Hop(faction.entity_id, "fought_in", war.entity_id, "novel:c9", 3, None, 0.6),
+                Hop(faction.entity_id, "fought_in", war.entity_id, "wiki#row", 2, None, 1.0),
+            ]
+        },
+        entities={e.entity_id: e for e in [war, faction]},
+    )
+    expansion = graph_expand(
+        "the Purge of Blackport",
+        store,
+        [war, faction],
+        {"both_faction": ["both_faction:c0"]},
+        min_confidence=0.5,
+    )
+    assert len(expansion.chunk_ids) == 1
+    assert "wiki#row" in expansion.reasons["both_faction:c0"]

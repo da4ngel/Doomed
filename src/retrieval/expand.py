@@ -47,6 +47,22 @@ DEFAULT_HOPS = 1
 #: Ceiling on chunks added by graph expansion, before the caller's budget is applied.
 MAX_GRAPH_CHUNKS = 12
 
+#: Minimum edge confidence that may spend an expansion slot. 1.0 means deterministic
+#: wiki edges only.
+#:
+#: Measured, and it is the most counter-intuitive number in this module: adding 193
+#: LLM-extracted edges (confidence 0.6) took 1B coverage@10 DOWN from 0.714 to 0.571.
+#: Not because the edges are wrong - because an expansion slot EVICTS a base hit, and
+#: with wiki edges alone part of the budget simply went unspent. The extracted edges
+#: filled those slots with tier-3 novel chunks that displaced gold documents the base
+#: retriever had already found.
+#:
+#: So the edges stay in the graph, where `/v1/graph/neighbors` and `/paths` use them to
+#: answer and to show hop chains, and they stay out of retrieval, where their cost is
+#: measured and their benefit is not. Lower this to include them and re-run the
+#: ablation; the row is `6b. + graph expand (all edges)`.
+MIN_EXPANSION_CONFIDENCE = 1.0
+
 #: Chunks either side of a hit for section expansion.
 SECTION_WINDOW = 1
 
@@ -137,11 +153,18 @@ def graph_expand(
     hops: int = DEFAULT_HOPS,
     max_chunks: int = MAX_GRAPH_CHUNKS,
     exclude_docs: set[str] | None = None,
+    min_confidence: float = MIN_EXPANSION_CONFIDENCE,
 ) -> Expansion:
     """Walk out from entities named in the query and retrieve the documents reached.
 
-    Edges are taken in authority-tier order, so when the budget bites it drops the least
-    authoritative route rather than whichever the walk happened to reach last.
+    Edges are taken by (confidence, authority tier), and that order is load-bearing.
+    Every expansion slot EVICTS a base hit, so a candidate must be worth more than the
+    hit it displaces. A deterministic wiki edge (confidence 1.0) read off an infobox row
+    is; a 0.6-confidence edge read out of a novel by a model usually is not.
+
+    Measured: sorting by tier alone, adding 193 LLM-extracted edges took 1B coverage
+    DOWN from 0.714 to 0.571, because tier-3 novel documents began evicting good base
+    hits. More edges is not better under a fixed budget - better edges first is.
 
     Self-loops are skipped. The wiki extractor produces them where an article's infobox
     names its own subject (an event page whose `Conflict` row is the event), and an edge
@@ -155,23 +178,34 @@ def graph_expand(
         return result
 
     names = store.names()
-    seen_edges: set[tuple[str, str, str]] = set()
     collected: list[Hop] = []
     seed_ids = {seed.entity_id for seed in seeds}
 
     for seed in seeds:
         result.entities.append(seed.entity_id)
         _, edges = store.neighbors(seed.entity_id, hops=hops)
-        for hop in edges:
-            if hop.subject_id == hop.object_id:
-                continue
-            key = (hop.subject_id, hop.predicate, hop.object_id)
-            if key in seen_edges:
-                continue
-            seen_edges.add(key)
-            collected.append(hop)
+        collected += [
+            hop
+            for hop in edges
+            if hop.subject_id != hop.object_id and hop.confidence >= min_confidence
+        ]
 
-    collected.sort(key=lambda h: h.authority_tier)
+    # Sort BEFORE deduplicating. The same triple is often attested twice - once by a
+    # wiki infobox row (confidence 1.0) and once by a sentence in a novel (0.6) - and
+    # deduplicating first lets whichever the walk reached first win. That is how adding
+    # 193 extracted edges took 1B coverage from 0.714 to 0.571: low-confidence
+    # duplicates were shadowing the authoritative edges, then sorting to the back.
+    collected.sort(key=lambda h: (-h.confidence, h.authority_tier))
+
+    seen_edges: set[tuple[str, str, str]] = set()
+    deduped: list[Hop] = []
+    for hop in collected:
+        key = (hop.subject_id, hop.predicate, hop.object_id)
+        if key in seen_edges:
+            continue
+        seen_edges.add(key)
+        deduped.append(hop)
+    collected = deduped
     reached_docs = set(exclude_docs)
 
     for hop in collected:

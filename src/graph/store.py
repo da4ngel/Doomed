@@ -63,6 +63,10 @@ class Hop:
     evidence_chunk_id: str
     authority_tier: int
     qualifier: str | None = None
+    #: 1.0 for a deterministic wiki edge, lower for one an LLM read out of prose.
+    #: Retrieval expansion sorts on this before tier, because every expansion slot
+    #: evicts a base hit and a 0.6-confidence edge usually is not worth that trade.
+    confidence: float = 1.0
 
     def as_text(self, names: dict[str, str]) -> str:
         subject = names.get(self.subject_id, self.subject_id)
@@ -201,6 +205,7 @@ class GraphStore:
                     r["evidence_chunk_id"],
                     r["authority_tier"],
                     r["qualifier"],
+                    r["confidence"],
                 )
                 for r in rows
             ]
@@ -218,6 +223,7 @@ class GraphStore:
                         r["evidence_chunk_id"],
                         r["authority_tier"],
                         r["qualifier"],
+                        r["confidence"],
                     )
                     for r in back
                 ]
