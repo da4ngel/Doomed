@@ -185,6 +185,31 @@ class OpenRouterProvider:
         )
 
 
+def _require_json_word(messages: list[dict[str, Any]]) -> None:
+    """Ensure the literal word "json" appears, because OpenAI refuses without it.
+
+        400: 'messages' must contain the word 'json' in some form, to use
+             'response_format' of type 'json_object'.
+
+    A prompt can show the exact JSON shape it wants - {"verdicts":[{"claim_id":...}]} -
+    and still not contain the word, which is precisely what A6's entailment prompt did.
+    Every entailment call 400'd, the verifier swallowed it as `entailment_skipped`, and
+    every non-extractive claim was quietly downgraded to "Inference (not verified)". A
+    verification step that silently stops verifying is worse than one that fails loudly.
+
+    Only OpenAI enforces this, so only OpenAI's body is amended: rewriting the prompt for
+    every provider would change their cache keys and make recorded runs irreproducible.
+    """
+    if any("json" in str(m.get("content", "")).lower() for m in messages):
+        return
+    note = "Respond with a single JSON object."
+    for message in messages:
+        if message.get("role") == "system" and isinstance(message.get("content"), str):
+            message["content"] = f"{message['content']} {note}"
+            return
+    messages.insert(0, {"role": "system", "content": note})
+
+
 class OpenAIProvider(OpenRouterProvider):
     """OpenAI direct. Same wire format as OpenRouter, different host and auth.
 
@@ -210,6 +235,7 @@ class OpenAIProvider(OpenRouterProvider):
             body["max_completion_tokens"] = params["max_tokens"]
         if params.get("json_mode"):
             body["response_format"] = {"type": "json_object"}
+            _require_json_word(body["messages"])
 
         started = time.perf_counter()
         with httpx.Client(timeout=params.get("timeout", 120.0)) as client:
