@@ -134,9 +134,16 @@ subject matching a wiki article. So all 70 link into the graph at zero cost.
 
 ## 4. Graph — the 1B spine
 
-**198 entities, 379 relations, zero LLM calls.** Built from wiki Infobox rows and
-`[[wikilinks]]`, so every edge cites the row it came from: *"how do you know this edge is
-real?"* has a line-number answer.
+**198 entities, 742 relations.** 379 come from wiki Infobox rows and
+`[[wikilinks]]` with **zero LLM calls**, so every one cites the row it came from: *"how do
+you know this edge is real?"* has a line-number answer.
+
+The other 363 are extracted from narrative passages by an LLM that is never asked who
+exists — only how the entities already named in front of it relate, using predicates from
+the frozen vocabulary. Five validators drop anything else; the strictest requires the model
+to quote the sentence verbatim, and a quote the passage does not contain is a fabrication
+caught before it becomes an edge. They carry `confidence 0.6` against the wiki's 1.0, which
+is what lets retrieval exclude them and traversal keep them.
 
 The infobox vocabulary is a long tail of ~100 labels, not 13 — `member_of` alone appears
 as seven field names — so the extractor is a surface-form map, and unmapped fields are
@@ -155,8 +162,23 @@ row *and* a prose sentence is one route corroborated twice, not two routes.
 ## 5. Retrieval
 
 Dense (Qdrant, BGE-small 384d) + sparse (BM25) → **RRF k=60** → cross-encoder rerank →
-payload filters. Every stage independently toggleable, so the ablation is nine
-configurations of one function rather than nine implementations.
+**graph expansion** → payload filters. Every stage independently toggleable, so the
+ablation is seven configurations of one function rather than seven implementations.
+
+**Graph expansion is the biggest measured win in the project**: multi-hop `coverage@10`
+0.429 → **0.714**, recall 0.714 → **0.905**, for 20 ms. It walks one edge out from
+entities named in the query and pulls in the document of each entity reached — which is
+exactly the 1B failure mode, where the second hop's article does not contain the
+question's subject in any form either retriever scores highly.
+
+It spends the **same k**: up to `k // 2` slots are taken from the bottom of the base
+ranking (ADR-009). Appending instead would have made the row unable to lose, and the gain
+would have been the extra evidence rather than the graph.
+
+That budget is also why only **deterministic wiki edges** may spend a slot. Adding 193
+LLM-extracted edges took coverage back *down* to 0.571, because a slot evicts a base hit
+and tier-3 novel chunks displaced gold. The extracted edges stay in the graph for
+traversal and citation; they stay out of retrieval.
 
 RRF fuses on **rank, not score**: BM25 is unbounded, cosine is [-1,1], and any
 normalisation would itself need defending. Fifteen lines, derivable on a whiteboard.
@@ -165,8 +187,12 @@ Sparse matters more here than usual. The corpus is invented proper nouns with pl
 near-miss decoys — `greyfell_citadel` (3,695, image-only) beside `ironfell_citadel`
 (1,096, in text) — where dense similarity actively pulls the wrong pair together.
 
-**Warm latency 1,106 ms with rerank, 76 ms without** — so rerank costs ~1,030 ms, the
-first hard number for its ablation row.
+**Warm latency 1,106 ms with rerank, 76 ms without.** Under eval load the cross-encoder
+reaches ~2,500 ms p95 — and it makes multi-hop *worse* (coverage 0.429 → 0.143) while
+helping single-lookup (1A MRR 0.803 → 0.939). It scores each document's relevance
+independently, which is the wrong objective when the answer needs documents that are
+individually weak and collectively necessary. So the router gates rerank by intent, and
+leaves graph expansion on: 20 ms, large 1B win, exactly neutral on 1A and 1C.
 
 ---
 
@@ -217,8 +243,12 @@ build held the lock and the API could not open the store, which on demo day is a
 - **Resolve a conflict between equal tiers.** Both sides are surfaced.
 - **Compose from model knowledge.** The world is invented; anything the model "knows" is
   hallucinated by definition.
-- **Treat retrieved text as instruction.** Evidence always enters prompts inside a
-  delimited block.
+- **Treat retrieved text as instruction.** Evidence enters prompts through
+  `src/core/evidence.py`, inside a delimited block, with the governing instruction stated
+  before it *and restated after it* — an instruction only above the payload is what a long
+  injected passage talks its way past. In-world orders are flagged as
+  `instruction_like_text_in_source` and never removed, because the flagged passage is often
+  the one holding the answer.
 - **Report a stage succeeded without checking its count.** Three separate indexing bugs
   printed a success line while being wrong — 2,441 chunks indexed as 256 vectors among
   them — so the eval harness now refuses to score an empty index.

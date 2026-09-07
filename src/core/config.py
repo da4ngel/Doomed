@@ -45,6 +45,10 @@ class Settings(BaseSettings):
     # --- stores ----------------------------------------------------------
     qdrant_path: Path = REPO_ROOT / "data" / "index" / "qdrant"
     qdrant_url: str | None = None
+    #: Which Qdrant collection to read and write. Configurable so an experiment can
+    #: build a second index without destroying the one the API is serving - the chunk
+    #: size sweep needs three indexes and must not cost us the working one.
+    qdrant_collection: str = "ashen_chunks"
     cache_db: Path = REPO_ROOT / "data" / "cache" / "llm_cache.sqlite"
     trace_db: Path = REPO_ROOT / "data" / "cache" / "traces.sqlite"
     index_dir: Path = REPO_ROOT / "data" / "index"

@@ -219,39 +219,76 @@ retrieved context it is `retrieval`; if present and the answer is wrong it is `s
 
 ## 7. The ablation table
 
-Nine configurations of one retrieval function, not nine implementations — otherwise a row
-measures two changes at once.
+Every row is one configuration of one retrieval function, never a second
+implementation — otherwise a row measures two changes at once.
 
-| # | Config | recall@10 | coverage@10 | nDCG@10 | grounded | correct | retr. fail | synth. fail | p95 ms | $/q |
-|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | BM25 only | | | | | | | | | |
-| 2 | Dense only | | | | | | | | | |
-| 3 | Hybrid RRF | | | | | | | | | |
-| 4 | Hybrid + rerank | | | | | | | | | |
-| 5 | + neighbour expansion | | | | | | | | | |
-| 6 | + graph expansion (1B) | | | | | | | | | |
-| 7 | + agentic loop (1C) | | | | | | | | | |
-| 8 | + conflict layer | | | | | | | | | |
-| 9 | chunk 300 / 450 / 600 sweep | | | | | | | | | |
+Filled numbers live in **`docs/reports/ablation.md`**; this table records what each row
+is for and whether it has run.
+
+| # | Config | status |
+|---|---|---|
+| 1 | BM25 only | run |
+| 2 | Dense only | run |
+| 3 | Hybrid RRF | run |
+| 4 | Hybrid + rerank | run — **worse on multi-hop**, coverage 0.429 -> 0.143 |
+| 5 | + section expansion | run — **worse everywhere**, 0.429 -> 0.286 |
+| 6 | + graph expansion (1B) | run — **best row**, 0.429 -> 0.714 at 20 ms |
+| 7 | + both expansions | run — worse than 6 alone; they compete for one budget |
+| 8 | + conflict layer | blocked: A4 exists, no answer path consumes it yet |
+| 9 | chunk 300 / 450 / 600 sweep | run — **450 wins or ties everywhere** |
+| — | + agentic loop (1C) | blocked: P2's orchestrator |
+
+The answer-side columns originally planned here — `grounded`, `correct`, failure split,
+$/q — are deliberately absent rather than blank. Nothing produces a real answer yet, so
+every one of them would be a synthetic number in a table a reader would take as measured.
+
+Rows 5-7 spend the same k as row 3: expansion evicts the weakest base hits rather than
+extending the list (ADR-009). Appending would make row 6 unable to lose and credit the
+graph for what is really just more evidence.
 
 Row 9 is a sweep rather than a config: chunk size is derived from the embedding model's
 512-token context (ADR-008), and the 600 row is expected to lose recall because 8.8% of
-its chunks were silently truncated at embed time.
+its chunks were silently truncated at embed time. It builds into throwaway indexes and
+its own Qdrant collection, so it never risks the index the API is serving.
 
 ---
 
 ## 8. Regression gate
 
-A 10-question smoke suite runs in CI and fails the build if `recall@10` or `groundedness`
-drops more than 3 points from `eval/baseline.json`.
+**Implemented** as `uv run python -m eval.runner --suite all --ablation --gate`
+(`make gate`). It scores every suite under every retrieval config and exits 1 if any
+gated metric fell below `eval/baseline.json`.
+
+Gated: `recall@k`, `coverage@k`, `ndcg@k`, `mrr` - on every config, not just the
+default, because a change that helps the default and quietly breaks `sparse` is still a
+change we want to see.
+
+**Not gated: latency.** It is a property of the machine the run happened on, and a gate
+that fails on a busy laptop is a gate somebody disables the week before the deadline.
+
+**Tolerance is 0.001, not the 3 points originally specified here.** Retrieval scoring is
+deterministic - same index, same query, same ranks - so a number that moves means
+behaviour changed, and the wide band would have hidden exactly the regressions worth
+catching. The band was written before we knew the run was reproducible; it is now,
+byte-for-byte across two full runs. Answer-level metrics are stochastic and will need
+their own wider band when A5/A6 land, at which point this section gets a second row
+rather than a looser number.
+
+A gain is reported, not failed - and it is the moment to re-record:
+`make record-baseline`, committed **with** the change that moved the number, so the diff
+shows the cause and the effect together.
+
+The baseline recorded 2026-09-06 (UTC) is the ablation in `docs/reports/ablation.md`.
 
 ## 9. What we expect to fail, and will report
 
 `docs/limitations.md` records these with numbers as they are measured, not on D5 from
-memory:
+memory. **Written 2026-09-06 (UTC)** - it now carries the rerank result, the 0.429
+coverage ceiling, the unmeasured answer layer and the seven abandoned approaches with
+the number that killed each:
 
-- chunk size sweep — what won and by how much
-- naive top-k without rerank on multi-hop specifically
+- chunk size sweep — what won and by how much. **Not run.** 450 was set from the embedder's context window after 600 silently truncated 8.8% of chunks (ADR-008), which is a defect argument, not a comparison
+- naive top-k without rerank on multi-hop specifically - **measured: rerank COSTS us here.** 1B coverage@10 0.429 -> 0.143, recall 0.714 -> 0.500, while 1A nDCG 0.715 -> 0.779. Rerank belongs behind the intent router, not on by default
 - Tesseract on the plates, against the VLM (`scripts/ocr_vs_vlm.py`)
 - the agent loop without the redundancy guard — the churn rate measured, then fixed
 - any approach abandoned, with the number that killed it

@@ -7,7 +7,7 @@
 # (~20 min of CPU embedding), so it is a separate target on purpose.
 
 .PHONY: help setup up down ingest images graph chunk index serve test lint fmt check \
-        search ready ocr-report clean-index
+        search ready ocr-report clean-index documents eval ablation gate record-baseline extract postman
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -42,8 +42,12 @@ documents:  ## Corpus -> documents.jsonl + blocks.jsonl (~20s)
 images:  ## Describe the 70 unique images with a vision model (cached)
 	uv run python -m src.ingestion.images
 
-graph:  ## Build the entity graph from the wiki (deterministic, no LLM)
+graph:  ## Build the entity graph: wiki edges, then the recorded extracted ones
 	uv run python -m src.graph.store --build
+	uv run python -m src.graph.extract --apply-only
+
+extract:  ## Re-derive the LLM edges from the corpus (needs a key; --apply-only does not)
+	uv run python -m src.graph.extract --workers 3 --write
 
 chunk: documents  ## Blocks -> chunks.jsonl
 	uv run python -m src.ingestion.chunker
@@ -73,14 +77,36 @@ test:  ## Run the test suite (no Docker required)
 	uv run pytest
 
 lint:  ## ruff + black --check
-	uv run ruff check src tests spikes scripts
-	uv run black --check src tests spikes scripts
+	uv run ruff check src tests eval spikes scripts
+	uv run black --check src tests eval spikes scripts
 
 fmt:  ## Format in place
-	uv run ruff check --fix src tests spikes scripts
-	uv run black src tests spikes scripts
+	uv run ruff check --fix src tests eval spikes scripts
+	uv run black src tests eval spikes scripts
 
 check: lint test  ## Lint and test
+
+# ---------------------------------------------------------------- eval
+
+eval:  ## Score the gold suites with the default config (needs a built index)
+	uv run python -m eval.runner --suite all --failures
+
+ablation:  ## Every retrieval config against every suite, into docs/reports/
+	uv run python -m eval.runner --suite all --ablation \
+		--out docs/reports/ablation-retrieval.json
+
+gate:  ## Fail if any metric fell below eval/baseline.json
+	uv run python -m eval.runner --suite all --ablation --gate
+
+record-baseline:  ## Re-record eval/baseline.json - commit it with the change that moved it
+	uv run python -m eval.runner --suite all --ablation --write-baseline \
+		--out docs/reports/ablation-retrieval.json
+
+postman:  ## Run the 69 contract assertions against a running API, into docs/reports/
+	npx --yes -p newman -p newman-reporter-htmlextra newman run \
+		tests/postman/AshenEra.postman_collection.json \
+		-e tests/postman/local.postman_environment.json \
+		-r cli,htmlextra --reporter-htmlextra-export docs/reports/newman.html
 
 ocr-report:  ## Measured Tesseract vs vision model comparison
 	uv run python scripts/ocr_vs_vlm.py

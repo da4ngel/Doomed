@@ -28,11 +28,22 @@ in `.env` to use the service.
 | Documents → blocks | `uv run python -m src.ingestion.pipeline` | ~20 s |
 | Images → descriptions | `uv run python -m src.ingestion.images` | ~3 min (cached after) |
 | Wiki → entity graph | `uv run python -m src.graph.store --build` | ~2 s |
+| Recorded LLM edges → graph | `uv run python -m src.graph.extract --apply-only` | ~1 s |
 | Blocks → chunks | `uv run python -m src.ingestion.chunker` | ~10 s |
-| Chunks → search index | `uv run python -m src.indexing.build` | **~20 min** |
+| Chunks → search index | `uv run python -m src.indexing.build` | **~25 min** |
 
-Only the last step is slow: 2,444 chunks embedded on CPU at ~2/sec. Everything before it
-is fast enough to re-run freely.
+Only the last step is slow: 2,474 chunks embedded on CPU at ~1.6/sec. Everything before
+it is fast enough to re-run freely.
+
+**Both graph steps are needed, in that order.** `--build` extracts 379 deterministic wiki
+edges and calls `replace_all`, which deletes everything else in the table; `--apply-only`
+then merges the 363 recorded LLM-extracted edges from `data/graph/llm_relations.jsonl`,
+committed so this needs no API key and no network. `make graph` runs both. Running
+`--build` alone leaves you with a graph missing a third of its edges and nothing saying
+so - which is why a test walks this exact path.
+
+Re-deriving those edges from the corpus instead (`make extract`) needs a key and takes
+hours on a free tier. There is no reason to do it unless the corpus changes.
 
 **Switching between embedded and Docker requires re-running `src.indexing.build`** — the
 vectors live in whichever store was written, they do not transfer.
@@ -50,7 +61,7 @@ curl -s localhost:8000/v1/ready | python -m json.tool
 ```
 
 Expect `status: ready`, `warm: true`, and:
-`documents 236 · chunks 2444 · images 70 · entities 203 · relations 379`
+`documents 236 · chunks 2474 · images 70 · entities 198 · relations 742`
 
 ## The two searches that prove it works
 

@@ -63,6 +63,10 @@ class Hop:
     evidence_chunk_id: str
     authority_tier: int
     qualifier: str | None = None
+    #: 1.0 for a deterministic wiki edge, lower for one an LLM read out of prose.
+    #: Retrieval expansion sorts on this before tier, because every expansion slot
+    #: evicts a base hit and a 0.6-confidence edge usually is not worth that trade.
+    confidence: float = 1.0
 
     def as_text(self, names: dict[str, str]) -> str:
         subject = names.get(self.subject_id, self.subject_id)
@@ -124,6 +128,40 @@ class GraphStore:
                 ],
             )
 
+    def add_relations(self, relations: list[Relation]) -> int:
+        """Merge edges in without touching what is already there. Returns how many
+        rows were actually new.
+
+        WHY this exists alongside `replace_all`: the wiki graph is rebuilt from
+        scratch because deterministic extraction makes a rebuild cheap and idempotent.
+        LLM-extracted edges are neither - re-running costs money and may not return
+        the identical set - so they are merged, and the primary key
+        (subject, predicate, object, evidence_chunk_id) makes a re-run a no-op rather
+        than a duplicate.
+
+        Calling `replace_all` after this would silently delete every extracted edge,
+        which is why `--build` and `extract --write` are separate commands.
+        """
+        with self._connect() as conn:
+            before = conn.execute("SELECT COUNT(*) FROM relations").fetchone()[0]
+            conn.executemany(
+                "INSERT OR IGNORE INTO relations VALUES (?, ?, ?, ?, ?, ?, ?)",
+                [
+                    (
+                        r.subject_id,
+                        r.predicate,
+                        r.object_id,
+                        r.evidence_chunk_id,
+                        r.authority_tier,
+                        r.confidence,
+                        r.qualifier,
+                    )
+                    for r in relations
+                ],
+            )
+            after = conn.execute("SELECT COUNT(*) FROM relations").fetchone()[0]
+        return int(after - before)
+
     # -- reading ---------------------------------------------------------
 
     def counts(self) -> tuple[int, int]:
@@ -167,6 +205,7 @@ class GraphStore:
                     r["evidence_chunk_id"],
                     r["authority_tier"],
                     r["qualifier"],
+                    r["confidence"],
                 )
                 for r in rows
             ]
@@ -184,6 +223,7 @@ class GraphStore:
                         r["evidence_chunk_id"],
                         r["authority_tier"],
                         r["qualifier"],
+                        r["confidence"],
                     )
                     for r in back
                 ]

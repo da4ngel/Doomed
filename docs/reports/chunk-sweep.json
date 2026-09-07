@@ -1,0 +1,180 @@
+{
+  "builds": [
+    {
+      "size": 300,
+      "chunks": 3407,
+      "over_context": 1,
+      "median_tokens": 236,
+      "embed_seconds": 1449.5
+    },
+    {
+      "size": 600,
+      "chunks": 2028,
+      "over_context": 176,
+      "median_tokens": 389,
+      "embed_seconds": 1451.7
+    }
+  ],
+  "scores": {
+    "300": {
+      "multihop_1b | 3. Hybrid RRF": {
+        "suite": "multihop_1b",
+        "config": "3. Hybrid RRF",
+        "questions": 7,
+        "scored": 7,
+        "recall@10": 0.619,
+        "precision@10": 0.1429,
+        "coverage@10": 0.2857,
+        "ndcg@10": 0.5682,
+        "mrr": 0.8333,
+        "p50_ms": 126,
+        "p95_ms": 355
+      },
+      "multihop_1b | 6. + graph expand": {
+        "suite": "multihop_1b",
+        "config": "6. + graph expand",
+        "questions": 7,
+        "scored": 7,
+        "recall@10": 0.8571,
+        "precision@10": 0.2,
+        "coverage@10": 0.5714,
+        "ndcg@10": 0.6924,
+        "mrr": 0.8333,
+        "p50_ms": 123,
+        "p95_ms": 128
+      },
+      "rich_1a | 3. Hybrid RRF": {
+        "suite": "rich_1a",
+        "config": "3. Hybrid RRF",
+        "questions": 11,
+        "scored": 11,
+        "recall@10": 0.7727,
+        "precision@10": 0.1,
+        "coverage@10": 0.5455,
+        "ndcg@10": 0.7065,
+        "mrr": 0.7909,
+        "p50_ms": 113,
+        "p95_ms": 154
+      },
+      "rich_1a | 6. + graph expand": {
+        "suite": "rich_1a",
+        "config": "6. + graph expand",
+        "questions": 11,
+        "scored": 11,
+        "recall@10": 0.7273,
+        "precision@10": 0.0909,
+        "coverage@10": 0.5455,
+        "ndcg@10": 0.6849,
+        "mrr": 0.7727,
+        "p50_ms": 96,
+        "p95_ms": 125
+      },
+      "paraphrase | 3. Hybrid RRF": {
+        "suite": "paraphrase",
+        "config": "3. Hybrid RRF",
+        "questions": 19,
+        "scored": 19,
+        "recall@10": 0.5263,
+        "precision@10": 0.1053,
+        "coverage@10": 0.2105,
+        "ndcg@10": 0.5055,
+        "mrr": 0.6698,
+        "p50_ms": 99,
+        "p95_ms": 122
+      },
+      "paraphrase | 6. + graph expand": {
+        "suite": "paraphrase",
+        "config": "6. + graph expand",
+        "questions": 19,
+        "scored": 19,
+        "recall@10": 0.6667,
+        "precision@10": 0.1421,
+        "coverage@10": 0.4211,
+        "ndcg@10": 0.5819,
+        "mrr": 0.6698,
+        "p50_ms": 112,
+        "p95_ms": 139
+      }
+    },
+    "600": {
+      "multihop_1b | 3. Hybrid RRF": {
+        "suite": "multihop_1b",
+        "config": "3. Hybrid RRF",
+        "questions": 7,
+        "scored": 7,
+        "recall@10": 0.6667,
+        "precision@10": 0.1571,
+        "coverage@10": 0.4286,
+        "ndcg@10": 0.615,
+        "mrr": 0.8571,
+        "p50_ms": 138,
+        "p95_ms": 387
+      },
+      "multihop_1b | 6. + graph expand": {
+        "suite": "multihop_1b",
+        "config": "6. + graph expand",
+        "questions": 7,
+        "scored": 7,
+        "recall@10": 0.8571,
+        "precision@10": 0.2,
+        "coverage@10": 0.5714,
+        "ndcg@10": 0.7088,
+        "mrr": 0.8571,
+        "p50_ms": 129,
+        "p95_ms": 157
+      },
+      "rich_1a | 3. Hybrid RRF": {
+        "suite": "rich_1a",
+        "config": "3. Hybrid RRF",
+        "questions": 11,
+        "scored": 11,
+        "recall@10": 0.7727,
+        "precision@10": 0.1,
+        "coverage@10": 0.5455,
+        "ndcg@10": 0.7191,
+        "mrr": 0.8106,
+        "p50_ms": 122,
+        "p95_ms": 151
+      },
+      "rich_1a | 6. + graph expand": {
+        "suite": "rich_1a",
+        "config": "6. + graph expand",
+        "questions": 11,
+        "scored": 11,
+        "recall@10": 0.7727,
+        "precision@10": 0.1,
+        "coverage@10": 0.5455,
+        "ndcg@10": 0.7191,
+        "mrr": 0.8106,
+        "p50_ms": 127,
+        "p95_ms": 396
+      },
+      "paraphrase | 3. Hybrid RRF": {
+        "suite": "paraphrase",
+        "config": "3. Hybrid RRF",
+        "questions": 19,
+        "scored": 19,
+        "recall@10": 0.5526,
+        "precision@10": 0.1105,
+        "coverage@10": 0.2632,
+        "ndcg@10": 0.5245,
+        "mrr": 0.6974,
+        "p50_ms": 117,
+        "p95_ms": 138
+      },
+      "paraphrase | 6. + graph expand": {
+        "suite": "paraphrase",
+        "config": "6. + graph expand",
+        "questions": 19,
+        "scored": 19,
+        "recall@10": 0.693,
+        "precision@10": 0.1474,
+        "coverage@10": 0.4737,
+        "ndcg@10": 0.5979,
+        "mrr": 0.6974,
+        "p50_ms": 118,
+        "p95_ms": 143
+      }
+    }
+  }
+}

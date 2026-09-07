@@ -1,0 +1,202 @@
+{
+  "suite": "paraphrase",
+  "description": "Every gold question in this repo is phrased once, by the people who wrote the corpus profile. The hidden set is phrased by someone else. This suite re-asks questions whose answers we already know, in wordings we did not use, against IDENTICAL gold documents - so any drop against the source suite is a robustness failure and nothing else. Styles are labelled so a drop can be attributed: `colloquial` and `formal` change register, `terse` strips the question down to keywords, and `oblique` deliberately omits the canonical entity name, which is the wording that tests whether graph expansion degrades gracefully when exact entity matching finds no seed.",
+  "authored_by": "human, paraphrased from the source suites; gold documents copied unchanged",
+  "authored_at": "2026-09-07",
+  "questions": [
+    {
+      "qid": "para_1b_006_a",
+      "origin": "1b_006",
+      "track": "1B",
+      "style": "colloquial",
+      "question": "Who was in the group that ended up winning the War of Drowned Light?",
+      "gold_answer": "any member of The Silent Choir",
+      "accept": ["Ignatz Fellgard", "Brannoc Palefroth", "Thessaly Coldwater", "Lucan Hollowmere", "Tamsin Greyfen", "Ossric Ashgrove", "Ravena Stormwell", "Isolde Mournvale"],
+      "gold_docs": ["the_war_of_drowned_light", "the_silent_choir"]
+    },
+    {
+      "qid": "para_1b_006_b",
+      "origin": "1b_006",
+      "track": "1B",
+      "style": "terse",
+      "question": "War of Drowned Light victor members",
+      "gold_answer": "any member of The Silent Choir",
+      "accept": ["Ignatz Fellgard", "Brannoc Palefroth", "Thessaly Coldwater", "Lucan Hollowmere", "Tamsin Greyfen", "Ossric Ashgrove", "Ravena Stormwell", "Isolde Mournvale"],
+      "gold_docs": ["the_war_of_drowned_light", "the_silent_choir"]
+    },
+    {
+      "qid": "para_1b_005_a",
+      "origin": "1b_005",
+      "track": "1B",
+      "style": "colloquial",
+      "question": "Isolde Mournvale belonged to a group. What war did that group win?",
+      "gold_answer": "The War of Drowned Light",
+      "accept": ["The War of Drowned Light", "War of Drowned Light"],
+      "gold_docs": ["isolde_mournvale", "the_silent_choir", "the_war_of_drowned_light"]
+    },
+    {
+      "qid": "para_1b_005_b",
+      "origin": "1b_005",
+      "track": "1B",
+      "style": "formal",
+      "question": "Identify the conflict in which the organisation counting Isolde Mournvale among its membership was ultimately victorious.",
+      "gold_answer": "The War of Drowned Light",
+      "accept": ["The War of Drowned Light", "War of Drowned Light"],
+      "gold_docs": ["isolde_mournvale", "the_silent_choir", "the_war_of_drowned_light"]
+    },
+    {
+      "qid": "para_1b_022_a",
+      "origin": "1b_022",
+      "track": "1B",
+      "style": "colloquial",
+      "question": "What war did Ravena Stormwell's side end up winning?",
+      "gold_answer": "The War of Drowned Light",
+      "accept": ["The War of Drowned Light", "War of Drowned Light"],
+      "gold_docs": ["ravena_stormwell", "the_silent_choir", "the_war_of_drowned_light"]
+    },
+    {
+      "qid": "para_1b_022_b",
+      "origin": "1b_022",
+      "track": "1B",
+      "style": "terse",
+      "question": "Ravena Stormwell faction war won",
+      "gold_answer": "The War of Drowned Light",
+      "accept": ["The War of Drowned Light", "War of Drowned Light"],
+      "gold_docs": ["ravena_stormwell", "the_silent_choir", "the_war_of_drowned_light"]
+    },
+    {
+      "qid": "para_1b_007_a",
+      "origin": "1b_007",
+      "track": "1B",
+      "style": "colloquial",
+      "question": "Ederon Fellgard is part of some faction. Which accord did that faction win?",
+      "gold_answer": "The Leaden Accord",
+      "accept": ["The Leaden Accord", "Leaden Accord"],
+      "gold_docs": ["ederon_fellgard", "the_iron_ring_cartel", "the_leaden_accord"]
+    },
+    {
+      "qid": "para_1b_007_b",
+      "origin": "1b_007",
+      "track": "1B",
+      "style": "formal",
+      "question": "Which accord was carried by the organisation in which Ederon Fellgard holds membership?",
+      "gold_answer": "The Leaden Accord",
+      "accept": ["The Leaden Accord", "Leaden Accord"],
+      "gold_docs": ["ederon_fellgard", "the_iron_ring_cartel", "the_leaden_accord"]
+    },
+    {
+      "qid": "para_1b_009_a",
+      "origin": "1b_009",
+      "track": "1B",
+      "style": "colloquial",
+      "question": "How does Halvard Crowhurst relate to whoever won at Blackport?",
+      "gold_answer": "he is a member of The Iron-Ring Cartel, the victors",
+      "accept": ["Iron-Ring Cartel", "Iron Ring Cartel", "member"],
+      "gold_docs": ["the_purge_of_blackport", "the_iron_ring_cartel"]
+    },
+    {
+      "qid": "para_1b_009_b",
+      "origin": "1b_009",
+      "track": "1B",
+      "style": "terse",
+      "question": "Halvard Crowhurst Purge of Blackport victors link",
+      "gold_answer": "he is a member of The Iron-Ring Cartel, the victors",
+      "accept": ["Iron-Ring Cartel", "Iron Ring Cartel", "member"],
+      "gold_docs": ["the_purge_of_blackport", "the_iron_ring_cartel"]
+    },
+    {
+      "qid": "para_1b_013_a",
+      "origin": "1b_013",
+      "track": "1B",
+      "style": "colloquial",
+      "question": "The Gravemaw Wyrm has a lair. Who rules the place it lives?",
+      "gold_answer": "The Bleeding Crown",
+      "accept": ["The Bleeding Crown", "Bleeding Crown"],
+      "gold_docs": ["gravemaw_wyrm", "marrowwell_abbey"]
+    },
+    {
+      "qid": "para_1b_013_b",
+      "origin": "1b_013",
+      "track": "1B",
+      "style": "oblique",
+      "question": "Who holds authority over the site where the great worm of the marrow-fens makes its den?",
+      "gold_answer": "The Bleeding Crown",
+      "accept": ["The Bleeding Crown", "Bleeding Crown"],
+      "gold_docs": ["gravemaw_wyrm", "marrowwell_abbey"],
+      "notes": "Deliberately names no canonical entity. Graph expansion finds no seed here, so this question measures whether the base retriever degrades gracefully rather than whether the graph works."
+    },
+    {
+      "qid": "para_1b_003_a",
+      "origin": "1b_003",
+      "track": "1B",
+      "style": "colloquial",
+      "question": "Cerys Sablewood has carried a relic since 356 AS. Where would you go to see it?",
+      "gold_answer": "the location housing the Cinder-Wrought Aegis",
+      "accept": ["Cinder-Wrought Aegis", "Cinder Wrought Aegis"],
+      "gold_docs": ["cerys_sablewood_the_ashen", "the_cinder_wrought_aegis"]
+    },
+    {
+      "qid": "para_1b_003_b",
+      "origin": "1b_003",
+      "track": "1B",
+      "style": "terse",
+      "question": "Cerys Sablewood relic since 356 AS housed where",
+      "gold_answer": "the location housing the Cinder-Wrought Aegis",
+      "accept": ["Cinder-Wrought Aegis", "Cinder Wrought Aegis"],
+      "gold_docs": ["cerys_sablewood_the_ashen", "the_cinder_wrought_aegis"]
+    },
+    {
+      "qid": "para_1a_001_a",
+      "origin": "1a_001",
+      "track": "1A",
+      "style": "colloquial",
+      "question": "How many troops does Emberdeep actually have, according to the chart?",
+      "gold_answer": "1,114",
+      "accept": ["1,114", "1114"],
+      "gold_assets": ["images/plate_01_location_emberdeep.png"],
+      "trap": "The chart carries 800 / 2,400 / 6,000 as reference bars. Any wording of this question must still land on 1,114."
+    },
+    {
+      "qid": "para_1a_009_a",
+      "origin": "1a_009",
+      "track": "1A",
+      "style": "terse",
+      "question": "Greyfell Citadel garrison figure plate",
+      "gold_answer": "3,695",
+      "accept": ["3,695", "3695"],
+      "gold_assets": ["images/plate_09_location_greyfell_citadel.png"],
+      "trap": "Ironfell Citadel is a different place with 1,096. A terse query is where a near-miss is most likely."
+    },
+    {
+      "qid": "para_1a_007_a",
+      "origin": "1a_007",
+      "track": "1A",
+      "style": "formal",
+      "question": "What attunement expenditure is recorded against the Thrice-Bound Lantern on its official plate?",
+      "gold_answer": "55",
+      "accept": ["55"],
+      "gold_assets": ["images/plate_07_artifact_the_thrice_bound_lantern.png"],
+      "trap": "The Thrice-Bound Edge is one token away and costs 94; 55 is also the Lantern's own Adept-tolerance reference bar."
+    },
+    {
+      "qid": "para_1a_v12_a",
+      "origin": "1a_v12",
+      "track": "1A",
+      "style": "colloquial",
+      "question": "What's on House Morvain's banner?",
+      "gold_answer": "two crossed keys",
+      "accept": ["crossed keys", "keys"],
+      "gold_docs": ["wiki/house_morvain.md"]
+    },
+    {
+      "qid": "para_1a_v21_a",
+      "origin": "1a_v21",
+      "track": "1A",
+      "style": "oblique",
+      "question": "The Gauntlet of Sorrowfell is illustrated in the archive. What design is worked into it?",
+      "gold_answer": "a serpent",
+      "accept": ["serpent", "snake"],
+      "gold_docs": ["wiki/gauntlet_of_sorrowfell.md"]
+    }
+  ]
+}

@@ -6,6 +6,8 @@ than from memory - the graph has to survive storage for `/v1/graph/*` to mean an
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from src.api.schemas import Entity, Relation
@@ -96,18 +98,66 @@ def test_lookup_is_exact_and_never_fuzzy(store: GraphStore) -> None:
 
 
 @pytest.fixture(scope="module")
-def corpus_graph():
+def corpus_graph(tmp_path_factory):
+    """Build the wiki graph into a throwaway directory.
+
+    This fixture used to call `build(get_settings())`, which writes the PRODUCTION
+    graph via `replace_all` - so every test run silently deleted the 193 LLM-extracted
+    edges, and `test_the_whole_wiki_graph_persists` then passed by asserting the number
+    it had just caused. A test that mutates the artefact it measures is worse than no
+    test: it is a green tick over a destroyed index.
+    """
     if not CORPUS_ROOT.exists():
         pytest.skip("corpus not present")
-    build(get_settings())
-    return GraphStore(get_settings().index_dir / "graph.sqlite")
+    index_dir = tmp_path_factory.mktemp("graph")
+    settings = get_settings().model_copy(update={"index_dir": index_dir})
+    build(settings)
+    return GraphStore(index_dir / "graph.sqlite")
 
 
 @corpus
 def test_the_whole_wiki_graph_persists(corpus_graph) -> None:
+    """The DETERMINISTIC half of the graph: what the wiki alone yields, every time."""
     entities, relations = corpus_graph.counts()
     assert entities == 198
     assert relations == 379
+
+
+@corpus
+def test_recorded_extracted_edges_merge_without_a_model(tmp_path) -> None:
+    """The committed edges must restore the full graph with no key and no network.
+
+    `make graph` runs `--build` (which drops them) and then `--apply-only`, so if this
+    path breaks, a judge following the README gets a graph missing a third of its edges
+    and nothing says so.
+    """
+    from src.graph.extract import DEFAULT_OUT, load_recorded
+
+    path = Path(DEFAULT_OUT)
+    if not path.exists():
+        pytest.skip("no recorded edges committed")
+
+    # Its OWN store, not the module-scoped fixture. Merging into a shared graph
+    # changes what every later test in this module walks - which is the exact bug
+    # this suite just fixed in `corpus_graph`, reintroduced one test later.
+    build(get_settings().model_copy(update={"index_dir": tmp_path}))
+    graph = GraphStore(tmp_path / "graph.sqlite")
+
+    recorded = load_recorded(path)
+    assert recorded, "the file exists but holds no edges"
+    assert all(r.confidence < 1.0 for r in recorded), (
+        "extracted edges must be distinguishable from deterministic wiki edges - "
+        "retrieval gates on exactly that"
+    )
+    assert all(r.evidence_chunk_id for r in recorded), "no unsourced edges, ever"
+
+    before = graph.counts()[1]
+    added = graph.add_relations(recorded)
+    assert graph.counts()[1] == before + added
+
+    # Idempotent: the primary key makes a second apply a no-op, which is what lets
+    # `make graph` be safe to re-run.
+    assert graph.add_relations(recorded) == 0
 
 
 @corpus
