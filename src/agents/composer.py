@@ -147,6 +147,7 @@ class AnswerComposer:
                 )
             )
             return
+        proposed = _portrait_quotes(proposed, sources, assets)
         citations = [citation_for(sources[s.chunk_id], s.quote) for s in proposed.sources]
         claim_id = f"claim_{len(packet.claims) + 1}"
         accepted = self._visuals(proposed, sources, assets, question)
@@ -216,3 +217,25 @@ def _support(citations: list) -> SupportLabel:
 
 def _is_table(text: str) -> bool:
     return bool(re.search(r"(?m)^\s*\|?\s*:?-{3,}.*\|", text))
+
+
+def _portrait_quotes(
+    proposed: ProposedClaim, sources: dict[str, SearchHit], assets: list[dict]
+) -> ProposedClaim:
+    """Include the indexed portrait caption when its description omits the subject name."""
+    result = proposed.model_copy(deep=True)
+    for ref in result.sources:
+        source = sources[ref.chunk_id]
+        for asset in assets:
+            if (
+                asset["asset_id"] not in result.asset_ids
+                or asset["asset_id"] not in source.asset_ids
+                or asset.get("values")
+            ):
+                continue
+            if not subject_matches(asset, ref.quote):
+                end = source.text.index(ref.quote) + len(ref.quote)
+                expanded = source.text[:end]
+                if subject_matches(asset, expanded):
+                    ref.quote = expanded
+    return result

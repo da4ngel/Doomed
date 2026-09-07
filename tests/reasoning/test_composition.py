@@ -226,3 +226,28 @@ def test_composer_missing_information_cannot_be_marked_complete(chunk):
         partial=False,
     )
     assert packet.partial and packet.missing_information
+
+
+def test_portrait_citation_includes_its_real_subject_caption(chunk, asset):
+    asset = {**asset, "values": []}
+    source = chunk.model_copy(update={"text": "Greyfell Citadel\nA tall stone tower."})
+    packet = compose(
+        source,
+        [asset],
+        text="Greyfell Citadel has a tall stone tower.",
+        quote="A tall stone tower.",
+        visual_ids=[asset["asset_id"]],
+        requires_visual=True,
+    )
+    assert packet.claims and packet.visuals
+    assert packet.citations[0].excerpt == source.text
+    wrong = source.model_copy(update={"text": "Ironfell Citadel\nA tall stone tower."})
+    packet = compose(
+        wrong,
+        [asset],
+        text="Greyfell Citadel has a tall stone tower.",
+        quote="A tall stone tower.",
+        visual_ids=[asset["asset_id"]],
+        requires_visual=True,
+    )
+    assert not packet.claims

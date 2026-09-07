@@ -83,3 +83,21 @@ claims case. No human review CSV has been auto-filled.
 The main UI on port 8001 now runs the free model with an explicit process environment
 override; `.env` model settings were not overwritten. Restart with
 `LLM_MODEL_SYNTHESIS=minimax/minimax-m3:free` to reproduce that model choice.
+
+## Completed post-fix dev run and caption retests
+
+The subsequent full 20-question diagnostic run returned **8/20 supported-claim gold-text
+matches**, **13 partial packets**, and **zero structural errors**. This is still not a
+human-reviewed correctness score or an acceptance pass. Reports are `post-fix-dev.json`.
+
+A separate caption-binding fix then passed three descriptive figure retests (Ignatz's
+scroll, Aldous's chalice, Gauntlet motif), each with supported claims, its figure, and no
+partial flag. It expands an already-valid verbatim description quote to include the
+preceding indexed subject caption. Numeric quotes are excluded from this expansion;
+wrong-subject and reference-bar checks remain strict. These retests are preserved in
+`portrait-retest.json` and must not be added to the full-run result as though one run
+passed 11/20. A new full run on that final revision remains necessary.
+
+Hosted CI for the preceding fixes passed, including Newman and cache cleanup
+([run 34108890649](https://github.com/da4ngel/Doomed/actions/runs/34108890649)). The caption
+fix has 161 local reasoning/contract tests passing; its new hosted run is pending.

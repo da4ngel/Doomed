@@ -1,0 +1,169 @@
+{
+  "status": "diagnostic_only",
+  "preflight": {
+    "blockers": [
+      "P1 readiness opens a second embedded Qdrant client; formal readiness is degraded after retrieval."
+    ]
+  },
+  "results": [
+    {
+      "qid": "1a_v06",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": false,
+      "citation_recall": 0.5,
+      "citation_precision": 1.0,
+      "iterations": 1,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "wiki/images/atmo_creature_creature_ashfall_colossus.png",
+        "wiki/images/atmo_portrait_character_aldous_wrenfield_the_last_warden.png",
+        "wiki/images/atmo_portrait_character_brannoc_ironmere_the_red_handed.png",
+        "wiki/images/atmo_portrait_character_cerys_sablewood_the_ashen.png",
+        "wiki/images/atmo_portrait_character_halvard_vane_the_grave_sworn.png",
+        "wiki/images/atmo_portrait_character_ignatz_ashgrove_the_oathless.png",
+        "wiki/images/atmo_portrait_character_malchior_cindervale_the_flame_touched.png",
+        "wiki/images/atmo_portrait_character_morwenna_ashgrove.png",
+        "wiki/images/atmo_portrait_character_sabelle_mournvale_the_twice_crowned.png",
+        "wiki/images/atmo_relic_artifact_chalice_of_ashdeep.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "wiki/images/atmo_creature_creature_ashfall_colossus.png",
+            "wiki/images/atmo_portrait_character_aldous_wrenfield_the_last_warden.png",
+            "wiki/images/atmo_portrait_character_brannoc_ironmere_the_red_handed.png",
+            "wiki/images/atmo_portrait_character_cerys_sablewood_the_ashen.png",
+            "wiki/images/atmo_portrait_character_halvard_vane_the_grave_sworn.png",
+            "wiki/images/atmo_portrait_character_ignatz_ashgrove_the_oathless.png",
+            "wiki/images/atmo_portrait_character_malchior_cindervale_the_flame_touched.png",
+            "wiki/images/atmo_portrait_character_morwenna_ashgrove.png",
+            "wiki/images/atmo_portrait_character_sabelle_mournvale_the_twice_crowned.png",
+            "wiki/images/atmo_relic_artifact_chalice_of_ashdeep.png"
+          ],
+          "new_gold_documents": [
+            "wiki/images/atmo_portrait_character_ignatz_ashgrove_the_oathless.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.5,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 0.5,
+      "gold_document_coverage": false,
+      "trace_id": "tr_61e2fd19300c4474",
+      "latency_ms": 1616
+    },
+    {
+      "qid": "1a_v07",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": false,
+      "citation_recall": 0.5,
+      "citation_precision": 1.0,
+      "iterations": 1,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "wiki/images/atmo_heraldry_faction_the_ashen_vanguard.png",
+        "wiki/images/atmo_portrait_character_aldous_wrenfield_the_last_warden.png",
+        "wiki/images/atmo_portrait_character_brannoc_ironmere_the_red_handed.png",
+        "wiki/images/atmo_portrait_character_cerys_sablewood_the_ashen.png",
+        "wiki/images/atmo_portrait_character_corvus_hollowmere_the_pale.png",
+        "wiki/images/atmo_portrait_character_halvard_vane_the_grave_sworn.png",
+        "wiki/images/atmo_portrait_character_ignatz_ashgrove_the_oathless.png",
+        "wiki/images/atmo_portrait_character_maelis_harrowick_the_pale.png",
+        "wiki/images/atmo_portrait_character_malchior_cindervale_the_flame_touched.png",
+        "wiki/images/atmo_portrait_character_sabelle_mournvale_the_twice_crowned.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "wiki/images/atmo_heraldry_faction_the_ashen_vanguard.png",
+            "wiki/images/atmo_portrait_character_aldous_wrenfield_the_last_warden.png",
+            "wiki/images/atmo_portrait_character_brannoc_ironmere_the_red_handed.png",
+            "wiki/images/atmo_portrait_character_cerys_sablewood_the_ashen.png",
+            "wiki/images/atmo_portrait_character_corvus_hollowmere_the_pale.png",
+            "wiki/images/atmo_portrait_character_halvard_vane_the_grave_sworn.png",
+            "wiki/images/atmo_portrait_character_ignatz_ashgrove_the_oathless.png",
+            "wiki/images/atmo_portrait_character_maelis_harrowick_the_pale.png",
+            "wiki/images/atmo_portrait_character_malchior_cindervale_the_flame_touched.png",
+            "wiki/images/atmo_portrait_character_sabelle_mournvale_the_twice_crowned.png"
+          ],
+          "new_gold_documents": [
+            "wiki/images/atmo_portrait_character_aldous_wrenfield_the_last_warden.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.5,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 0.5,
+      "gold_document_coverage": false,
+      "trace_id": "tr_5a3f80a9dbba416f",
+      "latency_ms": 2636
+    },
+    {
+      "qid": "1a_v21",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": false,
+      "citation_recall": 0.5,
+      "citation_precision": 1.0,
+      "iterations": 1,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "wiki/images/atmo_battle_painting_conflict_the_leaden_accord.png",
+        "wiki/images/atmo_battle_painting_conflict_the_war_of_drowned_light.png",
+        "wiki/images/atmo_landscape_location_ironfell_citadel.png",
+        "wiki/images/atmo_portrait_character_cerys_sablewood_the_ashen.png",
+        "wiki/images/atmo_portrait_character_sabelle_mournvale_the_twice_crowned.png",
+        "wiki/images/atmo_relic_artifact_chalice_of_ashdeep.png",
+        "wiki/images/atmo_relic_artifact_diadem_of_sorrowgate.png",
+        "wiki/images/atmo_relic_artifact_gauntlet_of_sorrowfell.png",
+        "wiki/images/atmo_relic_artifact_the_psalter_of_seven_sorrows.png",
+        "wiki/images/atmo_relic_artifact_the_thrice_bound_edge.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "wiki/images/atmo_battle_painting_conflict_the_leaden_accord.png",
+            "wiki/images/atmo_battle_painting_conflict_the_war_of_drowned_light.png",
+            "wiki/images/atmo_landscape_location_ironfell_citadel.png",
+            "wiki/images/atmo_portrait_character_cerys_sablewood_the_ashen.png",
+            "wiki/images/atmo_portrait_character_sabelle_mournvale_the_twice_crowned.png",
+            "wiki/images/atmo_relic_artifact_chalice_of_ashdeep.png",
+            "wiki/images/atmo_relic_artifact_diadem_of_sorrowgate.png",
+            "wiki/images/atmo_relic_artifact_gauntlet_of_sorrowfell.png",
+            "wiki/images/atmo_relic_artifact_the_psalter_of_seven_sorrows.png",
+            "wiki/images/atmo_relic_artifact_the_thrice_bound_edge.png"
+          ],
+          "new_gold_documents": [
+            "wiki/images/atmo_relic_artifact_gauntlet_of_sorrowfell.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.5,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 0.5,
+      "gold_document_coverage": false,
+      "trace_id": "tr_f004aeea865c401a",
+      "latency_ms": 1071
+    }
+  ]
+}
