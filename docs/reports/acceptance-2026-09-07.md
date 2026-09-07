@@ -228,6 +228,42 @@ without verified support, and that is the property the rubric cares about most.
 
 ---
 
+## Two findings from the UI contract check
+
+The browser extension was unavailable here, as it was for P2, so the UI was verified
+at the contract level instead: the page is served, `/v1/chat/jobs` returns a trace id,
+`/v1/traces/{id}` carries the `packet` the UI reads, and `/v1/assets/{id}` serves the
+figure as `image/png`. Visual rendering still needs a human at a browser.
+
+### Every answer reports 0% confidence — known, not fixed
+
+The composer's instruction shows the output shape as
+`{claims: [{..., confidence: 0.0}]}` and the model copies `0.0` straight through, so
+`packet.confidence` — the mean of its claims — is 0.0 on every answer, including ones
+that are fully verified and non-partial. The UI renders `packet.confidence*100`%, so a
+correct, entailed, cited answer displays **0%**.
+
+**Fixing the prompt was tried and reverted.** Naming the field without a value and
+asking the model to judge it made the flagship Emberdeep answer fail A6 entailment —
+1 verified claim became 0. A cosmetic badge is not worth trading a working demo answer
+for, so the prompt stands and the display is recorded as a known flaw. The right fix is
+probably to derive confidence from support and entailment status in the verifier rather
+than trusting the model's self-report, and that is a change to make with an eval behind
+it, not hours before a freeze.
+
+### The seam is version-sensitive, which is the argument for merging
+
+Running the chat service from the pre-merge branch against the merged knowledge API
+fails every retrieval call with `ValidationError`. `SearchResponse` gained `expanded`
+and `expansion_reasons` after the branch forked, and `Frozen` sets `extra="forbid"`, so
+the older client rejects every response the newer server sends.
+
+Additive schema changes are safe in one direction only: a **new** client tolerates an
+old server, an **old** client does not tolerate a new one. Both halves must ship from
+the same commit, which is exactly what the merge delivers.
+
+---
+
 ## What this run does not establish
 
 - **No correctness score.** Five lexical matches is a substring count. Groundedness of
