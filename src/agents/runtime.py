@@ -77,8 +77,18 @@ class _GuardedProvider:
     def complete(self, model: str, messages: list[dict[str, Any]], **params: Any) -> LLMResponse:
         params["timeout"] = min(params.get("timeout", 120), self.budget.remaining())
         # UTF-8 bytes conservatively bound input tokens, including evidence.
-        self.budget.reserve(len(json.dumps(messages).encode()) + params.get("max_tokens", 800))
-        return self.provider.complete(model, messages, **params)
+        reserved = len(json.dumps(messages).encode()) + params.get("max_tokens", 800)
+        self.budget.reserve(reserved)
+        response = self.provider.complete(model, messages, **params)
+        actual = response.tokens_in + response.tokens_out
+        if actual > 0:
+            # Admission stays conservative; completed calls use reported usage. Failed
+            # or unreported calls retain their reservation because usage is unknown.
+            if actual > reserved:
+                self.budget.reserve(actual - reserved)
+            else:
+                self.budget.tokens -= reserved - actual
+        return response
 
 
 class BoundedLLM:
@@ -99,6 +109,14 @@ class BoundedLLM:
         return self.client.usage
 
     def complete(self, messages: list[dict[str, Any]], **params: Any) -> LLMResponse:
+        model = params.get("model") or self.client.settings.llm_model_synthesis
+        # OpenRouter's provider/model IDs cannot be sent unchanged to other SDKs.
+        if (
+            "/" in model
+            and not model.startswith("arn:")
+            and "openrouter" in self.client.available_providers()
+        ):
+            params.setdefault("provider", "openrouter")
         return _within_budget(
             lambda: self.client.complete(messages, **params),
             self.budget,

@@ -94,3 +94,58 @@ def test_http_total_wait_is_bounded_even_if_transport_ignores_timeout(knowledge)
         knowledge(handler, budget).request("GET", "/entities")
     assert time.monotonic() - started < 0.12
     assert budget.cancelled
+
+
+def test_openrouter_model_does_not_fall_through_to_incompatible_provider(tmp_path):
+    calls = []
+
+    class Provider:
+        def __init__(self, name):
+            self.name = name
+
+        def available(self):
+            return True
+
+        def complete(self, model, messages, **params):
+            calls.append(self.name)
+            raise ValueError("provider unavailable")
+
+    llm = BoundedLLM(
+        LLMClient(
+            settings=Settings(_env_file=None),
+            cache=ResponseCache(tmp_path / "cache"),
+            providers=[Provider("openrouter"), Provider("bedrock")],
+        ),
+        Budget(),
+    )
+    with pytest.raises(ValueError):
+        llm.complete(messages("Test", {}), max_tokens=10)
+    assert calls == ["openrouter"]
+
+
+def test_successful_usage_reconciles_reservation_and_cache_does_not_reserve(tmp_path):
+    class Provider:
+        name = "fixture"
+
+        def available(self):
+            return True
+
+        def complete(self, model, messages, **params):
+            return LLMResponse(
+                text="{}", model=model, provider=self.name, tokens_in=40, tokens_out=10
+            )
+
+    budget = Budget(max_tokens=5000)
+    llm = BoundedLLM(
+        LLMClient(
+            settings=Settings(_env_file=None),
+            cache=ResponseCache(tmp_path / "cache"),
+            providers=[Provider()],
+        ),
+        budget,
+    )
+    llm.complete(messages("Test", {}), max_tokens=1000)
+    assert budget.tokens == 50
+    # Cache hits consume no new provider reservation.
+    llm.complete(messages("Test", {}), max_tokens=1000)
+    assert budget.tokens == 50
