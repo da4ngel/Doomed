@@ -15,10 +15,8 @@ from src.synthesis.render import render_packet
 from src.synthesis.visuals import bound_value, make_visual, score_asset, subject_matches
 
 INSTRUCTION = """Compose an answer only from supplied evidence. Return JSON:
-{claims: [{text, sources: [{chunk_id, quote}], asset_ids: [], confidence}],
-missing_information: []}. Set confidence yourself, between 0.0 and 1.0, as how strongly
-the quotes you cite entail the claim. It is a value you judge, not a constant.
-Every claim requires exact source quotes that entail it.
+{claims: [{text, sources: [{chunk_id, quote}], asset_ids: [], confidence: 0.0}],
+missing_information: []}. Every claim requires exact source quotes that entail it.
 Copy quotes only from evidence_bundle text, never from candidate asset metadata.
 Do not emit bibliography metadata, invented IDs or free-standing answer prose.
 For a table, put the verbatim Markdown table in one claim's text and source quote.
