@@ -48,6 +48,14 @@ class Budget:
         remaining = self.deadline - self.clock()
         if self.cancelled or remaining <= 0:
             self.stop_reason = self.stop_reason or "wall-clock budget exhausted"
+            # A blown deadline cancels the budget, exactly as a blown token allowance
+            # does. Without this, `cancelled` meant "we ran out of tokens" while the
+            # wall-clock path left it False, so whether a caller saw a cancelled budget
+            # depended on which limit happened to bite first. Nothing is lost: the
+            # deadline has already passed, so every later remaining() would raise anyway.
+            # `sleep()` deliberately does NOT cancel - there the deadline is still in the
+            # future and only a retry would overshoot it.
+            self.cancelled = True
             raise BudgetExceeded(self.stop_reason)
         return remaining
 
