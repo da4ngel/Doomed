@@ -8,9 +8,12 @@ adapter layer: format knowledge stops here.
 from __future__ import annotations
 
 import hashlib
+import logging
 import re
 
 from src.api.schemas import Block, BlockType
+
+log = logging.getLogger(__name__)
 
 #: `Fig. 3`, `Plate IV`, `Table 12` - used to bind a caption to the figure above it.
 CAPTION_RE = re.compile(r"^\s*(fig(?:ure)?\.?|plate|table)\s+([ivxlc]+|\d+)\b", re.IGNORECASE)
@@ -31,17 +34,43 @@ def block_checksum(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
 
 
+#: Which counter the last ingestion actually used. Read by the build manifest so a
+#: chunk count can always be traced to the tokenizer that produced it.
+TOKENIZER_USED = "unknown"
+
+
 def estimate_tokens(text: str) -> int:
     """Token count via tiktoken when available, else a 4-chars-per-token estimate.
 
     The estimate is a fallback rather than the default because chunk sizing is a reported
     experiment (300/600/1000 sweep) and an approximate denominator would make those
     numbers soft.
+
+    WHY the fallback is now loud: it used to be silent, and it changes the chunk count
+    from identical inputs and identical code, because `tiktoken.get_encoding` DOWNLOADS
+    its BPE table on first use and fails offline. Two builders reported 2,474 and 2,487
+    chunks from the same corpus and neither could tell which denominator either build had
+    used. A number that quietly reshapes the index - and therefore every retrieval metric
+    computed from it - has to announce itself.
     """
+    global TOKENIZER_USED
     try:
-        return len(_encoding().encode(text))
-    except Exception:  # noqa: BLE001 - never let token counting break ingestion
+        count = len(_encoding().encode(text))
+    except Exception as exc:  # noqa: BLE001 - never let token counting break ingestion
+        if TOKENIZER_USED != "char-estimate":
+            TOKENIZER_USED = "char-estimate"
+            log.warning(
+                "tiktoken unavailable (%s: %s) - falling back to a 4-chars-per-token "
+                "ESTIMATE. Chunk boundaries, and every metric computed from them, will "
+                "not match a build made with tiktoken. Install it, or reach the network "
+                "once so the BPE table caches, before recording any reported number.",
+                type(exc).__name__,
+                exc,
+            )
         return max(1, len(text) // 4)
+    if TOKENIZER_USED == "unknown":
+        TOKENIZER_USED = "tiktoken-cl100k_base"
+    return count
 
 
 _ENCODING = None

@@ -197,3 +197,48 @@ def test_docx_tables_are_read_from_table_objects() -> None:
     tables = [b for b in blocks if b.block_type == "table"]
     assert len(tables) == 28
     assert any("Garrison strength" in t.text for t in tables)
+
+
+# --------------------------------------------------------------------------
+# tokenizer provenance
+# --------------------------------------------------------------------------
+
+
+def test_tiktoken_is_the_counter_actually_in_use() -> None:
+    """The reported chunk counts assume tiktoken. Prove it, do not hope for it."""
+    from src.ingestion.adapters import base
+
+    base.estimate_tokens("the ashen era")
+    assert base.TOKENIZER_USED == "tiktoken-cl100k_base", (
+        f"this build counted tokens with {base.TOKENIZER_USED}; every chunk count "
+        "and retrieval metric it produces is incomparable with a tiktoken build"
+    )
+
+
+def test_the_estimate_fallback_announces_itself(monkeypatch, caplog) -> None:
+    """A silent fallback changes the chunk count from identical inputs.
+
+    Two builders reported 2,474 and 2,487 chunks from the same corpus and the same
+    chunker code, and neither could tell which denominator either build had used,
+    because tiktoken downloads its BPE table on first use and fails quietly offline.
+    """
+    import logging
+
+    from src.ingestion.adapters import base
+
+    monkeypatch.setattr(base, "_ENCODING", None)
+    monkeypatch.setattr(base, "TOKENIZER_USED", "unknown")
+    monkeypatch.setattr(base, "_encoding", lambda: (_ for _ in ()).throw(RuntimeError("offline")))
+
+    with caplog.at_level(logging.WARNING):
+        assert base.estimate_tokens("x" * 400) == 100
+
+    assert base.TOKENIZER_USED == "char-estimate"
+    assert any(
+        "ESTIMATE" in r.message for r in caplog.records
+    ), "the fallback must warn - that is the entire point of this change"
+
+    caplog.clear()
+    with caplog.at_level(logging.WARNING):
+        base.estimate_tokens("y" * 400)
+    assert not caplog.records, "warn once per process, not once per block"
