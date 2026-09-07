@@ -1,0 +1,775 @@
+{
+  "trace_id": "tr_7aa5027048704c70",
+  "question": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+  "mode": "auto",
+  "status": "ok",
+  "started_at": "2026-09-07T09:44:36+00:00",
+  "ended_at": "2026-09-07T09:44:59+00:00",
+  "iterations": 10,
+  "reasoning_trace": [
+    {
+      "step": 1,
+      "agent": "A1",
+      "action": "analyze",
+      "query": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "Intent: multi_hop; 1 linked entities",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "agent": "A2",
+      "action": "graph_neighbors",
+      "query": "Ederon Fellgard",
+      "found": 4,
+      "new_gold_docs": 0,
+      "learned": "Ederon Fellgard -born_in-> 338 AS [wiki/ederon_fellgard.md#infobox:Born] | Ederon Fellgard -member_of-> The Iron-Ring Cartel [wiki/ederon_fellgard.md#infobox:Membership] | Ederon Fellgard -located_in-> Greyfell Citadel [wiki/ederon_fellgard.md#infobox:Service] | Ederon Fellgard -member_of-> The Iron-Ring Cartel [wiki/ederon_fellgard.md#prose]",
+      "missing": "",
+      "latency_ms": 16
+    },
+    {
+      "step": 3,
+      "agent": "A3",
+      "action": "assess",
+      "query": "The Iron-Ring Cartel",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "From the graph, Ederon Fellgard is a member of The Iron-Ring Cartel (entity ent_iron_ring_cartel). Need to find evidence about accords the Cartel participated in or won. Listing mentions of The Iron-Ring Cartel will surface relevant chunks across documents.",
+      "missing": "What faction does Ederon Fellgard belong to?; Which accords (if any) did that faction participate in or compete for?; Which of those accords was ultimately won by that faction?",
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "agent": "A2",
+      "action": "list_mentions",
+      "query": "The Iron-Ring Cartel",
+      "found": 10,
+      "new_gold_docs": 4,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 1405
+    },
+    {
+      "step": 5,
+      "agent": "A3",
+      "action": "assess",
+      "query": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "The graph_neighbors action on 'ent_ederon_fellgard' returned only fragments about The Iron-Ring Cartel and unrelated members (Halvard Crowhurst, Morwenna Ashgrove), without directly confirming Ederon Fellgard's faction membership. The evidence repeatedly describes The Iron-Ring Cartel's participation in three conflicts (The Winter Reckoning, The Purge of Blackport, The Leaden Accord) with victories in The Winter Reckoning and The Leaden Accord, but nothing in the supplied evidence directly identifies Ederon Fellgard as a member of that or any other faction. To answer the question, I need to find any direct mention of 'Ederon Fellgard' to establish their faction affiliation. Issuing list_mentions for 'Ederon Fellgard' will surface all chunks that name this entity.",
+      "missing": "What faction does Ederon Fellgard belong to? (No evidence directly links Ederon Fellgard to any faction; only The Iron-Ring Cartel's general record and unrelated member Halvard Crowhurst are shown.); Which accords did Ederon Fellgard's faction participate in? (Cannot determine without first establishing Ederon Fellgard's faction.); Which accord was ultimately won by that faction? (Cannot determine without establishing Ederon Fellgard's faction.)",
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+      "found": 10,
+      "new_gold_docs": 4,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 2
+    },
+    {
+      "step": 7,
+      "agent": "A3",
+      "action": "assess",
+      "query": null,
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "Ederon Fellgard is explicitly recorded as a member of The Iron-Ring Cartel. The Cartel's record identifies it as a belligerent and victor in The Leaden Accord (and also The Winter reckoning), with The Leaden Accord being the only named accord in its conflict record. Therefore the accord won by Ederon Fellgard's faction is The Leaden Accord.",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "agent": "A4",
+      "action": "merge",
+      "query": null,
+      "found": 20,
+      "new_gold_docs": 0,
+      "learned": "0 detected conflicts; 20 distinct chunks",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 9,
+      "agent": "A5",
+      "action": "compose",
+      "query": null,
+      "found": 2,
+      "new_gold_docs": 0,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 10,
+      "agent": "A6",
+      "action": "verify",
+      "query": null,
+      "found": 2,
+      "new_gold_docs": 0,
+      "learned": "0 downgraded, 0 removed",
+      "missing": "",
+      "latency_ms": 0
+    }
+  ],
+  "retrieval_evidence": [
+    {
+      "action": {
+        "action": "graph_neighbors",
+        "query": "Ederon Fellgard",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {
+          "entity_id": "ent_ederon_fellgard",
+          "hops": 1
+        }
+      },
+      "chunks": [],
+      "edges": [
+        {
+          "subject_id": "ent_ederon_fellgard",
+          "subject": "Ederon Fellgard",
+          "predicate": "born_in",
+          "object_id": "ent_338_as",
+          "object": "338 AS",
+          "evidence_chunk_id": "wiki/ederon_fellgard.md#infobox:Born",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_ederon_fellgard",
+          "subject": "Ederon Fellgard",
+          "predicate": "member_of",
+          "object_id": "ent_iron_ring_cartel",
+          "object": "The Iron-Ring Cartel",
+          "evidence_chunk_id": "wiki/ederon_fellgard.md#infobox:Membership",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_ederon_fellgard",
+          "subject": "Ederon Fellgard",
+          "predicate": "located_in",
+          "object_id": "ent_greyfell_citadel",
+          "object": "Greyfell Citadel",
+          "evidence_chunk_id": "wiki/ederon_fellgard.md#infobox:Service",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_ederon_fellgard",
+          "subject": "Ederon Fellgard",
+          "predicate": "member_of",
+          "object_id": "ent_iron_ring_cartel",
+          "object": "The Iron-Ring Cartel",
+          "evidence_chunk_id": "wiki/ederon_fellgard.md#prose",
+          "authority_tier": 2,
+          "qualifier": null
+        }
+      ],
+      "step": 2
+    },
+    {
+      "action": {
+        "action": "list_mentions",
+        "query": "The Iron-Ring Cartel",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "the_iron_ring_cartel:c0",
+          "doc_id": "the_iron_ring_cartel"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c68",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "quartermaster_ledger_concerning_bryony_nightbrook:c2",
+          "doc_id": "quartermaster_ledger_concerning_bryony_nightbrook"
+        },
+        {
+          "chunk_id": "quartermaster_ledger_concerning_bryony_nightbrook:c3",
+          "doc_id": "quartermaster_ledger_concerning_bryony_nightbrook"
+        },
+        {
+          "chunk_id": "morwenna_ashgrove:c4",
+          "doc_id": "morwenna_ashgrove"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c69",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_iron_ring_cartel:c2",
+          "doc_id": "the_iron_ring_cartel"
+        },
+        {
+          "chunk_id": "the_iron_ring_cartel:c4",
+          "doc_id": "the_iron_ring_cartel"
+        },
+        {
+          "chunk_id": "the_iron_ring_cartel:c5",
+          "doc_id": "the_iron_ring_cartel"
+        },
+        {
+          "chunk_id": "the_iron_ring_cartel:c3",
+          "doc_id": "the_iron_ring_cartel"
+        }
+      ],
+      "edges": [],
+      "step": 4
+    },
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "ederon_fellgard:c0",
+          "doc_id": "ederon_fellgard"
+        },
+        {
+          "chunk_id": "ederon_fellgard:c3",
+          "doc_id": "ederon_fellgard"
+        },
+        {
+          "chunk_id": "ederon_fellgard:c4",
+          "doc_id": "ederon_fellgard"
+        },
+        {
+          "chunk_id": "morwenna_ashgrove:c0",
+          "doc_id": "morwenna_ashgrove"
+        },
+        {
+          "chunk_id": "ederon_fellgard:c2",
+          "doc_id": "ederon_fellgard"
+        },
+        {
+          "chunk_id": "the_bleeding_crown:c3",
+          "doc_id": "the_bleeding_crown"
+        },
+        {
+          "chunk_id": "isolde_fellgard_the_unforgiven:c4",
+          "doc_id": "isolde_fellgard_the_unforgiven"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c15",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_bleeding_crown:c4",
+          "doc_id": "the_bleeding_crown"
+        },
+        {
+          "chunk_id": "auction_catalogue_concerning_lucan_hollowmere:c1",
+          "doc_id": "auction_catalogue_concerning_lucan_hollowmere"
+        }
+      ],
+      "edges": [],
+      "step": 6
+    }
+  ],
+  "usage": [
+    {
+      "step": 1,
+      "model": "minimax/minimax-m3:free",
+      "routing_reason": "A1: analyze",
+      "tokens_in": 287,
+      "tokens_out": 70,
+      "latency_ms": 2582,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": false
+    },
+    {
+      "step": 3,
+      "model": "minimax/minimax-m3:free",
+      "routing_reason": "A3: assess",
+      "tokens_in": 1186,
+      "tokens_out": 166,
+      "latency_ms": 3443,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": false
+    },
+    {
+      "step": 5,
+      "model": "minimax/minimax-m3:free",
+      "routing_reason": "A3: assess",
+      "tokens_in": 4953,
+      "tokens_out": 355,
+      "latency_ms": 4386,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": false
+    },
+    {
+      "step": 7,
+      "model": "minimax/minimax-m3:free",
+      "routing_reason": "A3: assess",
+      "tokens_in": 9166,
+      "tokens_out": 409,
+      "latency_ms": 5626,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": false
+    },
+    {
+      "step": 9,
+      "model": "minimax/minimax-m3:free",
+      "routing_reason": "A5: compose",
+      "tokens_in": 8776,
+      "tokens_out": 384,
+      "latency_ms": 3229,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": false
+    },
+    {
+      "step": 10,
+      "model": "minimax/minimax-m3:free",
+      "routing_reason": "A6: verify",
+      "tokens_in": 508,
+      "tokens_out": 31,
+      "latency_ms": 2153,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": false
+    }
+  ],
+  "total_cost_usd": 0.0,
+  "total_tokens": 26291,
+  "cache_hits": 0,
+  "packet": {
+    "trace_id": "tr_7aa5027048704c70",
+    "mode": "graph",
+    "answer_markdown": "Ederon Fellgard is a member of The Iron-Ring Cartel.\n\n[cite_b98bfb89aab578a2] [cite_cb65a92a3ce34791]\n\nThe accord ultimately won by The Iron-Ring Cartel (of which Ederon Fellgard is a member) was The Leaden Accord.\n\n[cite_82e69e5af890f20e] [cite_68c27f869e7c9cb6]",
+    "claims": [
+      {
+        "claim_id": "claim_1",
+        "text": "Ederon Fellgard is a member of The Iron-Ring Cartel.",
+        "citation_ids": [
+          "cite_b98bfb89aab578a2",
+          "cite_cb65a92a3ce34791"
+        ],
+        "support": "corroborated",
+        "confidence": 1.0
+      },
+      {
+        "claim_id": "claim_2",
+        "text": "The accord ultimately won by The Iron-Ring Cartel (of which Ederon Fellgard is a member) was The Leaden Accord.",
+        "citation_ids": [
+          "cite_82e69e5af890f20e",
+          "cite_68c27f869e7c9cb6"
+        ],
+        "support": "corroborated",
+        "confidence": 1.0
+      }
+    ],
+    "citations": [
+      {
+        "id": "cite_b98bfb89aab578a2",
+        "chunk_id": "the_annals_of_the_ashen_era:c15",
+        "doc_id": "the_annals_of_the_ashen_era",
+        "title": "House Morvain > Registry: Aldous Wrenfield the Last Warden > Registry: Ederon Fellgard",
+        "page": 16,
+        "bbox": null,
+        "section_path": [
+          "House Morvain",
+          "Registry: Aldous Wrenfield the Last Warden",
+          "Registry: Ederon Fellgard"
+        ],
+        "source_type": "codex",
+        "authority_tier": 1,
+        "excerpt": "The same record places Ederon Fellgard among the members of The Iron-Ring Cartel.",
+        "excerpt_sha256": "280697d2d0e2e6cc72c15dfb8fe7e6bed4d5c37ee2dd1c56d0ba2199436e0dff",
+        "score": 0.031754,
+        "relation": "supports"
+      },
+      {
+        "id": "cite_cb65a92a3ce34791",
+        "chunk_id": "ederon_fellgard:c0",
+        "doc_id": "ederon_fellgard",
+        "title": "Ederon Fellgard",
+        "page": 1,
+        "bbox": null,
+        "section_path": [
+          "Ederon Fellgard"
+        ],
+        "source_type": "wiki",
+        "authority_tier": 2,
+        "excerpt": "Ederon Fellgard is a minor figure of the [[Ashen Era]] who serves as a Sapper. Ederon Fellgard was born in 338 AS, is a member of [[The Iron-Ring Cartel]], and serves at [[Greyfell Citadel]].",
+        "excerpt_sha256": "625ea38a42ac2a5b8a741efe79320730d00aee3dafa01104631220eec2a05f72",
+        "score": 0.032018,
+        "relation": "supports"
+      },
+      {
+        "id": "cite_82e69e5af890f20e",
+        "chunk_id": "the_annals_of_the_ashen_era:c69",
+        "doc_id": "the_annals_of_the_ashen_era",
+        "title": "House Morvain > Registry: Aldous Wrenfield the Last Warden > The Iron-Ring Cartel > Recorded Belligerencies and Victories",
+        "page": 62,
+        "bbox": null,
+        "section_path": [
+          "House Morvain",
+          "Registry: Aldous Wrenfield the Last Warden",
+          "The Iron-Ring Cartel",
+          "Recorded Belligerencies and Victories"
+        ],
+        "source_type": "codex",
+        "authority_tier": 1,
+        "excerpt": "The Leaden Accord The Iron-Ring Cartel belligerent in The Leaden Accord; The Iron-Ring Cartel victor of The Leaden Accord",
+        "excerpt_sha256": "055700128d076da6e8f2c5d9dea677941d83a82307a935e6dfa32dc09d96179d",
+        "score": 0.030886,
+        "relation": "supports"
+      },
+      {
+        "id": "cite_68c27f869e7c9cb6",
+        "chunk_id": "the_iron_ring_cartel:c0",
+        "doc_id": "the_iron_ring_cartel",
+        "title": "The Iron-Ring Cartel (faction)",
+        "page": 1,
+        "bbox": null,
+        "section_path": [
+          "The Iron-Ring Cartel (faction)"
+        ],
+        "source_type": "wiki",
+        "authority_tier": 2,
+        "excerpt": "The Iron-Ring Cartel was a belligerent and victor in [[The Winter Reckoning]], a belligerent in [[The Purge of Blackport]], and a belligerent and victor in [[The Leaden Accord]].",
+        "excerpt_sha256": "9910500d87bf68aabc78f470ae678bf4f901f2dbd735361ce0904a71e8d424dd",
+        "score": 0.032522,
+        "relation": "supports"
+      }
+    ],
+    "visuals": [],
+    "evidence_graph": {
+      "nodes": [
+        {
+          "id": "ent_ederon_fellgard",
+          "type": "entity",
+          "label": "Ederon Fellgard"
+        },
+        {
+          "id": "ent_338_as",
+          "type": "entity",
+          "label": "338 AS"
+        },
+        {
+          "id": "ent_iron_ring_cartel",
+          "type": "entity",
+          "label": "The Iron-Ring Cartel"
+        },
+        {
+          "id": "ent_greyfell_citadel",
+          "type": "entity",
+          "label": "Greyfell Citadel"
+        },
+        {
+          "id": "claim_1",
+          "type": "claim",
+          "label": "Ederon Fellgard is a member of The Iron-Ring Cartel."
+        },
+        {
+          "id": "the_annals_of_the_ashen_era",
+          "type": "document",
+          "label": "House Morvain > Registry: Aldous Wrenfield the Last Warden > The Iron-Ring Cartel > Recorded Belligerencies and Victories"
+        },
+        {
+          "id": "ederon_fellgard",
+          "type": "document",
+          "label": "Ederon Fellgard"
+        },
+        {
+          "id": "claim_2",
+          "type": "claim",
+          "label": "The accord ultimately won by The Iron-Ring Cartel (of which Ederon Fellgard is a member) was The Leaden Accord."
+        },
+        {
+          "id": "the_iron_ring_cartel",
+          "type": "document",
+          "label": "The Iron-Ring Cartel (faction)"
+        }
+      ],
+      "edges": [
+        {
+          "from_id": "ent_ederon_fellgard",
+          "to_id": "ent_338_as",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_ederon_fellgard",
+          "to_id": "ent_iron_ring_cartel",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_ederon_fellgard",
+          "to_id": "ent_greyfell_citadel",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_ederon_fellgard",
+          "to_id": "ent_iron_ring_cartel",
+          "type": "relates"
+        },
+        {
+          "from_id": "the_annals_of_the_ashen_era",
+          "to_id": "claim_1",
+          "type": "supports"
+        },
+        {
+          "from_id": "ederon_fellgard",
+          "to_id": "claim_1",
+          "type": "supports"
+        },
+        {
+          "from_id": "the_annals_of_the_ashen_era",
+          "to_id": "claim_2",
+          "type": "supports"
+        },
+        {
+          "from_id": "the_iron_ring_cartel",
+          "to_id": "claim_2",
+          "type": "supports"
+        }
+      ],
+      "paths": []
+    },
+    "conflicts": [],
+    "missing_information": [],
+    "warnings": [
+      {
+        "type": "normalization_skipped",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": null,
+        "detail": null
+      }
+    ],
+    "corrections": [],
+    "confidence": 1.0,
+    "iterations": 3,
+    "partial": false,
+    "reasoning_trace": [
+      {
+        "step": 1,
+        "agent": "A1",
+        "action": "analyze",
+        "query": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "Intent: multi_hop; 1 linked entities",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 2,
+        "agent": "A2",
+        "action": "graph_neighbors",
+        "query": "Ederon Fellgard",
+        "found": 4,
+        "new_gold_docs": 0,
+        "learned": "Ederon Fellgard -born_in-> 338 AS [wiki/ederon_fellgard.md#infobox:Born] | Ederon Fellgard -member_of-> The Iron-Ring Cartel [wiki/ederon_fellgard.md#infobox:Membership] | Ederon Fellgard -located_in-> Greyfell Citadel [wiki/ederon_fellgard.md#infobox:Service] | Ederon Fellgard -member_of-> The Iron-Ring Cartel [wiki/ederon_fellgard.md#prose]",
+        "missing": "",
+        "latency_ms": 16
+      },
+      {
+        "step": 3,
+        "agent": "A3",
+        "action": "assess",
+        "query": "The Iron-Ring Cartel",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "From the graph, Ederon Fellgard is a member of The Iron-Ring Cartel (entity ent_iron_ring_cartel). Need to find evidence about accords the Cartel participated in or won. Listing mentions of The Iron-Ring Cartel will surface relevant chunks across documents.",
+        "missing": "What faction does Ederon Fellgard belong to?; Which accords (if any) did that faction participate in or compete for?; Which of those accords was ultimately won by that faction?",
+        "latency_ms": 0
+      },
+      {
+        "step": 4,
+        "agent": "A2",
+        "action": "list_mentions",
+        "query": "The Iron-Ring Cartel",
+        "found": 10,
+        "new_gold_docs": 4,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 1405
+      },
+      {
+        "step": 5,
+        "agent": "A3",
+        "action": "assess",
+        "query": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "The graph_neighbors action on 'ent_ederon_fellgard' returned only fragments about The Iron-Ring Cartel and unrelated members (Halvard Crowhurst, Morwenna Ashgrove), without directly confirming Ederon Fellgard's faction membership. The evidence repeatedly describes The Iron-Ring Cartel's participation in three conflicts (The Winter Reckoning, The Purge of Blackport, The Leaden Accord) with victories in The Winter Reckoning and The Leaden Accord, but nothing in the supplied evidence directly identifies Ederon Fellgard as a member of that or any other faction. To answer the question, I need to find any direct mention of 'Ederon Fellgard' to establish their faction affiliation. Issuing list_mentions for 'Ederon Fellgard' will surface all chunks that name this entity.",
+        "missing": "What faction does Ederon Fellgard belong to? (No evidence directly links Ederon Fellgard to any faction; only The Iron-Ring Cartel's general record and unrelated member Halvard Crowhurst are shown.); Which accords did Ederon Fellgard's faction participate in? (Cannot determine without first establishing Ederon Fellgard's faction.); Which accord was ultimately won by that faction? (Cannot determine without establishing Ederon Fellgard's faction.)",
+        "latency_ms": 0
+      },
+      {
+        "step": 6,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+        "found": 10,
+        "new_gold_docs": 4,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 2
+      },
+      {
+        "step": 7,
+        "agent": "A3",
+        "action": "assess",
+        "query": null,
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "Ederon Fellgard is explicitly recorded as a member of The Iron-Ring Cartel. The Cartel's record identifies it as a belligerent and victor in The Leaden Accord (and also The Winter reckoning), with The Leaden Accord being the only named accord in its conflict record. Therefore the accord won by Ederon Fellgard's faction is The Leaden Accord.",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 8,
+        "agent": "A4",
+        "action": "merge",
+        "query": null,
+        "found": 20,
+        "new_gold_docs": 0,
+        "learned": "0 detected conflicts; 20 distinct chunks",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 9,
+        "agent": "A5",
+        "action": "compose",
+        "query": null,
+        "found": 2,
+        "new_gold_docs": 0,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 10,
+        "agent": "A6",
+        "action": "verify",
+        "query": null,
+        "found": 2,
+        "new_gold_docs": 0,
+        "learned": "0 downgraded, 0 removed",
+        "missing": "",
+        "latency_ms": 0
+      }
+    ],
+    "usage": [
+      {
+        "step": 1,
+        "model": "minimax/minimax-m3:free",
+        "routing_reason": "A1: analyze",
+        "tokens_in": 287,
+        "tokens_out": 70,
+        "latency_ms": 2582,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": false
+      },
+      {
+        "step": 3,
+        "model": "minimax/minimax-m3:free",
+        "routing_reason": "A3: assess",
+        "tokens_in": 1186,
+        "tokens_out": 166,
+        "latency_ms": 3443,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": false
+      },
+      {
+        "step": 5,
+        "model": "minimax/minimax-m3:free",
+        "routing_reason": "A3: assess",
+        "tokens_in": 4953,
+        "tokens_out": 355,
+        "latency_ms": 4386,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": false
+      },
+      {
+        "step": 7,
+        "model": "minimax/minimax-m3:free",
+        "routing_reason": "A3: assess",
+        "tokens_in": 9166,
+        "tokens_out": 409,
+        "latency_ms": 5626,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": false
+      },
+      {
+        "step": 9,
+        "model": "minimax/minimax-m3:free",
+        "routing_reason": "A5: compose",
+        "tokens_in": 8776,
+        "tokens_out": 384,
+        "latency_ms": 3229,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": false
+      },
+      {
+        "step": 10,
+        "model": "minimax/minimax-m3:free",
+        "routing_reason": "A6: verify",
+        "tokens_in": 508,
+        "tokens_out": 31,
+        "latency_ms": 2153,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": false
+      }
+    ]
+  },
+  "verification": {
+    "claims_checked": 2,
+    "claims_downgraded": 0,
+    "claims_removed": 0,
+    "markers_stripped": 0,
+    "citations_dropped": 0,
+    "confidence_adjustment": 0.0,
+    "entailment_skipped": false
+  }
+}

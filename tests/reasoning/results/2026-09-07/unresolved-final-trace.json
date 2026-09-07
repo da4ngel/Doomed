@@ -1,0 +1,579 @@
+{
+  "trace_id": "tr_fc4017bb08764a32",
+  "question": "How is the contradiction between Brannoc Ironmere's death in 300 AS and his wielding the Edge of Gloamreach since 314 AS resolved?",
+  "mode": "auto",
+  "status": "partial",
+  "started_at": "2026-09-07T09:53:13+00:00",
+  "ended_at": "2026-09-07T09:53:13+00:00",
+  "iterations": 6,
+  "reasoning_trace": [
+    {
+      "step": 1,
+      "agent": "A1",
+      "action": "analyze",
+      "query": "How is the contradiction between Brannoc Ironmere's death in 300 AS and his wielding the Edge of Gloamreach since 314 AS resolved?",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "Intent: contradiction; 1 linked entities",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "How is the contradiction between Brannoc Ironmere's death in 300 AS and his wielding the Edge of Gloamreach since 314 AS resolved?",
+      "found": 10,
+      "new_gold_docs": 3,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 1
+    },
+    {
+      "step": 3,
+      "agent": "A3",
+      "action": "assess",
+      "query": null,
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "The evidence directly answers the sub-question. The wiki (brannoc_ironmere_the_red_handed:c5) explicitly states that the contradiction \"remains unresolved\" and that \"Until a canonical account provides a resolution, the two facts stand separately in the archive.\" The relationships section (brannoc_ironmere_the_red_handed:c4) confirms the entries are \"retained without an assumed explanation.\" The novel passage (c91) from Crown of Cinders depicts Brannoc himself aware of this contradiction between his recorded death in 300 AS and his continued existence, with the grimoire (Edge of Gloamreach) acknowledging and savoring the contradiction. Together these provide verbatim coverage that the contradiction is canonically unresolved, with the two facts standing separately. No further action is needed.",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "agent": "A4",
+      "action": "merge",
+      "query": null,
+      "found": 10,
+      "new_gold_docs": 0,
+      "learned": "0 detected conflicts; 10 distinct chunks",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "agent": "A5",
+      "action": "compose",
+      "query": null,
+      "found": 3,
+      "new_gold_docs": 0,
+      "learned": "",
+      "missing": "An explicit canonical reconciliation linking the Edge of Gloamreach's \"since 314 AS\" record to Brannoc Ironmere the Red-Handed's 300 AS death.; Any explanation for why a codex record dated after his death still attributes a weapon to him.; A documented in-world reason (resurrection, posthumous attribution, scribe error, or other mechanism) for the post-mortem weapon record.",
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "agent": "A6",
+      "action": "verify",
+      "query": null,
+      "found": 3,
+      "new_gold_docs": 0,
+      "learned": "0 downgraded, 0 removed",
+      "missing": "",
+      "latency_ms": 0
+    }
+  ],
+  "retrieval_evidence": [
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "How is the contradiction between Brannoc Ironmere's death in 300 AS and his wielding the Edge of Gloamreach since 314 AS resolved?",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "brannoc_ironmere_the_red_handed:c5",
+          "doc_id": "brannoc_ironmere_the_red_handed"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders:c165",
+          "doc_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders"
+        },
+        {
+          "chunk_id": "brannoc_ironmere_the_red_handed:c0",
+          "doc_id": "brannoc_ironmere_the_red_handed"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders:c207",
+          "doc_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders:c91",
+          "doc_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders:c251",
+          "doc_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c3",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "brannoc_ironmere_the_red_handed:c4",
+          "doc_id": "brannoc_ironmere_the_red_handed"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders:c229",
+          "doc_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders:c56",
+          "doc_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders"
+        }
+      ],
+      "edges": [],
+      "step": 2
+    }
+  ],
+  "usage": [
+    {
+      "step": 3,
+      "model": "minimax/minimax-m3:free",
+      "routing_reason": "A3: assess",
+      "tokens_in": 6140,
+      "tokens_out": 663,
+      "latency_ms": 8920,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": false
+    },
+    {
+      "step": 5,
+      "model": "minimax/minimax-m3:free",
+      "routing_reason": "A5: compose",
+      "tokens_in": 5805,
+      "tokens_out": 1067,
+      "latency_ms": 10011,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": false
+    },
+    {
+      "step": 6,
+      "model": "minimax/minimax-m3:free",
+      "routing_reason": "A6: verify",
+      "tokens_in": 674,
+      "tokens_out": 43,
+      "latency_ms": 3915,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": false
+    }
+  ],
+  "total_cost_usd": 0.0,
+  "total_tokens": 14392,
+  "cache_hits": 3,
+  "packet": {
+    "trace_id": "tr_fc4017bb08764a32",
+    "mode": "agent",
+    "answer_markdown": "The contradiction between Brannoc Ironmere the Red-Handed's death in 300 AS and the record that he wielded the Edge of Gloamreach since 314 AS remains unresolved within the canon.\n\n[cite_226d84c96e80eb59] [cite_c63a0ac6124db07d] [cite_1fb89a735582303b]\n\nThe wiki records the two weapon entries side by side without supplying an explanation: the Thrice-Bound Edge belongs to the period preceding his death, while the Edge of Gloamreach is dated after it.\n\n[cite_513d51f4b91446d2] [cite_1241637e3ebc2a18]\n\nThe codex registry likewise lists both weapon entries: \"Weapon Wields The Thrice-Bound Edge since 277 AS\" and \"Later weapon record Wields Edge of Gloamreach since 314 AS,\" while recording his death in 300 AS.\n\n[cite_57bdedbe119296d8] [cite_9a7e46ede1567b9e] [cite_60f6f85ad8cacb6b]\n\nStill unresolved:\n- An explicit canonical reconciliation linking the Edge of Gloamreach's \"since 314 AS\" record to Brannoc Ironmere the Red-Handed's 300 AS death.\n- Any explanation for why a codex record dated after his death still attributes a weapon to him.\n- A documented in-world reason (resurrection, posthumous attribution, scribe error, or other mechanism) for the post-mortem weapon record.",
+    "claims": [
+      {
+        "claim_id": "claim_1",
+        "text": "The contradiction between Brannoc Ironmere the Red-Handed's death in 300 AS and the record that he wielded the Edge of Gloamreach since 314 AS remains unresolved within the canon.",
+        "citation_ids": [
+          "cite_226d84c96e80eb59",
+          "cite_c63a0ac6124db07d",
+          "cite_1fb89a735582303b"
+        ],
+        "support": "single_source",
+        "confidence": 0.92
+      },
+      {
+        "claim_id": "claim_2",
+        "text": "The wiki records the two weapon entries side by side without supplying an explanation: the Thrice-Bound Edge belongs to the period preceding his death, while the Edge of Gloamreach is dated after it.",
+        "citation_ids": [
+          "cite_513d51f4b91446d2",
+          "cite_1241637e3ebc2a18"
+        ],
+        "support": "single_source",
+        "confidence": 0.9
+      },
+      {
+        "claim_id": "claim_3",
+        "text": "The codex registry likewise lists both weapon entries: \"Weapon Wields The Thrice-Bound Edge since 277 AS\" and \"Later weapon record Wields Edge of Gloamreach since 314 AS,\" while recording his death in 300 AS.",
+        "citation_ids": [
+          "cite_57bdedbe119296d8",
+          "cite_9a7e46ede1567b9e",
+          "cite_60f6f85ad8cacb6b"
+        ],
+        "support": "single_source",
+        "confidence": 0.9
+      }
+    ],
+    "citations": [
+      {
+        "id": "cite_226d84c96e80eb59",
+        "chunk_id": "brannoc_ironmere_the_red_handed:c5",
+        "doc_id": "brannoc_ironmere_the_red_handed",
+        "title": "Brannoc Ironmere the Red-Handed > Tactical Assessment",
+        "page": 1,
+        "bbox": null,
+        "section_path": [
+          "Brannoc Ironmere the Red-Handed",
+          "Tactical Assessment"
+        ],
+        "source_type": "wiki",
+        "authority_tier": 2,
+        "excerpt": "The contradiction between his death in 300 AS and the record that he wielded [[Edge of Gloamreach]] since 314 AS remains unresolved.",
+        "excerpt_sha256": "caee4bfc95ce2a1adbcc678dde25e7153697d186e6b9ccae49c7c5800b4f6a01",
+        "score": 0.016393,
+        "relation": "supports"
+      },
+      {
+        "id": "cite_c63a0ac6124db07d",
+        "chunk_id": "brannoc_ironmere_the_red_handed:c5",
+        "doc_id": "brannoc_ironmere_the_red_handed",
+        "title": "Brannoc Ironmere the Red-Handed > Tactical Assessment",
+        "page": 1,
+        "bbox": null,
+        "section_path": [
+          "Brannoc Ironmere the Red-Handed",
+          "Tactical Assessment"
+        ],
+        "source_type": "wiki",
+        "authority_tier": 2,
+        "excerpt": "Neither entry is omitted: [[Brannoc Ironmere the Red-Handed]] died in 300 AS during [[The Accord of Mournthrone]], and a later record states that he wielded [[Edge of Gloamreach]] since 314 AS.",
+        "excerpt_sha256": "b13732337a7e68bfdb44f2bbd6d645fd506e42724121550d281e1398140b54ce",
+        "score": 0.016393,
+        "relation": "supports"
+      },
+      {
+        "id": "cite_1fb89a735582303b",
+        "chunk_id": "brannoc_ironmere_the_red_handed:c5",
+        "doc_id": "brannoc_ironmere_the_red_handed",
+        "title": "Brannoc Ironmere the Red-Handed > Tactical Assessment",
+        "page": 1,
+        "bbox": null,
+        "section_path": [
+          "Brannoc Ironmere the Red-Handed",
+          "Tactical Assessment"
+        ],
+        "source_type": "wiki",
+        "authority_tier": 2,
+        "excerpt": "Until a canonical account provides a resolution, the two facts stand separately in the archive.",
+        "excerpt_sha256": "11603f6ff128f4fdf8d92645ea8e4d72c62666fe8c711ae8d28d17a15420c914",
+        "score": 0.016393,
+        "relation": "supports"
+      },
+      {
+        "id": "cite_513d51f4b91446d2",
+        "chunk_id": "brannoc_ironmere_the_red_handed:c4",
+        "doc_id": "brannoc_ironmere_the_red_handed",
+        "title": "Brannoc Ironmere the Red-Handed > Relationships & Affiliations",
+        "page": 1,
+        "bbox": null,
+        "section_path": [
+          "Brannoc Ironmere the Red-Handed",
+          "Relationships & Affiliations"
+        ],
+        "source_type": "wiki",
+        "authority_tier": 2,
+        "excerpt": "He wielded [[The Thrice-Bound Edge]] since 277 AS and is also recorded as wielding [[Edge of Gloamreach]] since 314 AS. The two entries are retained without an assumed explanation.",
+        "excerpt_sha256": "8a831c590485e20bd22170a65b0f9beaf604f1f09019ad5cb4563868b729da6d",
+        "score": 0.028783,
+        "relation": "supports"
+      },
+      {
+        "id": "cite_1241637e3ebc2a18",
+        "chunk_id": "brannoc_ironmere_the_red_handed:c4",
+        "doc_id": "brannoc_ironmere_the_red_handed",
+        "title": "Brannoc Ironmere the Red-Handed > Relationships & Affiliations",
+        "page": 1,
+        "bbox": null,
+        "section_path": [
+          "Brannoc Ironmere the Red-Handed",
+          "Relationships & Affiliations"
+        ],
+        "source_type": "wiki",
+        "authority_tier": 2,
+        "excerpt": "The former belongs to the period preceding his death in 300 AS; the latter is dated after it.",
+        "excerpt_sha256": "cbb581c487b509a54f1213de68f4f43ae495c7ab2b73ad473a986edbcd8509f7",
+        "score": 0.028783,
+        "relation": "supports"
+      },
+      {
+        "id": "cite_57bdedbe119296d8",
+        "chunk_id": "the_annals_of_the_ashen_era:c3",
+        "doc_id": "the_annals_of_the_ashen_era",
+        "title": "House Morvain > Registry: Aldous Wrenfield the Last Warden > Registry: Brannoc Ironmere the Red-Handed",
+        "page": 5,
+        "bbox": null,
+        "section_path": [
+          "House Morvain",
+          "Registry: Aldous Wrenfield the Last Warden",
+          "Registry: Brannoc Ironmere the Red-Handed"
+        ],
+        "source_type": "codex",
+        "authority_tier": 1,
+        "excerpt": "Weapon Wields The Thrice-Bound Edge since 277 AS",
+        "excerpt_sha256": "6ff3229e33e712626c7b69197c5e44232e07b7adb2da58d3471244466c7d1266",
+        "score": 0.02886,
+        "relation": "supports"
+      },
+      {
+        "id": "cite_9a7e46ede1567b9e",
+        "chunk_id": "the_annals_of_the_ashen_era:c3",
+        "doc_id": "the_annals_of_the_ashen_era",
+        "title": "House Morvain > Registry: Aldous Wrenfield the Last Warden > Registry: Brannoc Ironmere the Red-Handed",
+        "page": 5,
+        "bbox": null,
+        "section_path": [
+          "House Morvain",
+          "Registry: Aldous Wrenfield the Last Warden",
+          "Registry: Brannoc Ironmere the Red-Handed"
+        ],
+        "source_type": "codex",
+        "authority_tier": 1,
+        "excerpt": "Later weapon record Wields Edge of Gloamreach since 314 AS",
+        "excerpt_sha256": "3db37ff1cb3b1f468f0f643744bd6171b2dbc278a2ab8516420f7076bc772856",
+        "score": 0.02886,
+        "relation": "supports"
+      },
+      {
+        "id": "cite_60f6f85ad8cacb6b",
+        "chunk_id": "the_annals_of_the_ashen_era:c3",
+        "doc_id": "the_annals_of_the_ashen_era",
+        "title": "House Morvain > Registry: Aldous Wrenfield the Last Warden > Registry: Brannoc Ironmere the Red-Handed",
+        "page": 5,
+        "bbox": null,
+        "section_path": [
+          "House Morvain",
+          "Registry: Aldous Wrenfield the Last Warden",
+          "Registry: Brannoc Ironmere the Red-Handed"
+        ],
+        "source_type": "codex",
+        "authority_tier": 1,
+        "excerpt": "Died 300 AS",
+        "excerpt_sha256": "cdc37ac1e41ebbca18b04c5046e41960b694841d5cb82ff73bd84188968e2182",
+        "score": 0.02886,
+        "relation": "supports"
+      }
+    ],
+    "visuals": [],
+    "evidence_graph": {
+      "nodes": [
+        {
+          "id": "claim_1",
+          "type": "claim",
+          "label": "The contradiction between Brannoc Ironmere the Red-Handed's death in 300 AS and the record that he wielded the Edge of Gloamreach since 314 AS remains unresolved within the canon."
+        },
+        {
+          "id": "brannoc_ironmere_the_red_handed",
+          "type": "document",
+          "label": "Brannoc Ironmere the Red-Handed > Relationships & Affiliations"
+        },
+        {
+          "id": "claim_2",
+          "type": "claim",
+          "label": "The wiki records the two weapon entries side by side without supplying an explanation: the Thrice-Bound Edge belongs to the period preceding his death, while the Edge of Gloamreach is dated after it."
+        },
+        {
+          "id": "claim_3",
+          "type": "claim",
+          "label": "The codex registry likewise lists both weapon entries: \"Weapon Wields The Thrice-Bound Edge since 277 AS\" and \"Later weapon record Wields Edge of Gloamreach since 314 AS,\" while recording his death in 300 AS."
+        },
+        {
+          "id": "the_annals_of_the_ashen_era",
+          "type": "document",
+          "label": "House Morvain > Registry: Aldous Wrenfield the Last Warden > Registry: Brannoc Ironmere the Red-Handed"
+        }
+      ],
+      "edges": [
+        {
+          "from_id": "brannoc_ironmere_the_red_handed",
+          "to_id": "claim_1",
+          "type": "supports"
+        },
+        {
+          "from_id": "brannoc_ironmere_the_red_handed",
+          "to_id": "claim_1",
+          "type": "supports"
+        },
+        {
+          "from_id": "brannoc_ironmere_the_red_handed",
+          "to_id": "claim_1",
+          "type": "supports"
+        },
+        {
+          "from_id": "brannoc_ironmere_the_red_handed",
+          "to_id": "claim_2",
+          "type": "supports"
+        },
+        {
+          "from_id": "brannoc_ironmere_the_red_handed",
+          "to_id": "claim_2",
+          "type": "supports"
+        },
+        {
+          "from_id": "the_annals_of_the_ashen_era",
+          "to_id": "claim_3",
+          "type": "supports"
+        },
+        {
+          "from_id": "the_annals_of_the_ashen_era",
+          "to_id": "claim_3",
+          "type": "supports"
+        },
+        {
+          "from_id": "the_annals_of_the_ashen_era",
+          "to_id": "claim_3",
+          "type": "supports"
+        }
+      ],
+      "paths": []
+    },
+    "conflicts": [],
+    "missing_information": [
+      "An explicit canonical reconciliation linking the Edge of Gloamreach's \"since 314 AS\" record to Brannoc Ironmere the Red-Handed's 300 AS death.",
+      "Any explanation for why a codex record dated after his death still attributes a weapon to him.",
+      "A documented in-world reason (resurrection, posthumous attribution, scribe error, or other mechanism) for the post-mortem weapon record."
+    ],
+    "warnings": [
+      {
+        "type": "claim_downgraded",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": "removed",
+        "detail": "Proposed claim cites an absent chunk or fabricated quote"
+      },
+      {
+        "type": "normalization_skipped",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": null,
+        "detail": null
+      }
+    ],
+    "corrections": [],
+    "confidence": 0.6,
+    "iterations": 1,
+    "partial": true,
+    "reasoning_trace": [
+      {
+        "step": 1,
+        "agent": "A1",
+        "action": "analyze",
+        "query": "How is the contradiction between Brannoc Ironmere's death in 300 AS and his wielding the Edge of Gloamreach since 314 AS resolved?",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "Intent: contradiction; 1 linked entities",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 2,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "How is the contradiction between Brannoc Ironmere's death in 300 AS and his wielding the Edge of Gloamreach since 314 AS resolved?",
+        "found": 10,
+        "new_gold_docs": 3,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 1
+      },
+      {
+        "step": 3,
+        "agent": "A3",
+        "action": "assess",
+        "query": null,
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "The evidence directly answers the sub-question. The wiki (brannoc_ironmere_the_red_handed:c5) explicitly states that the contradiction \"remains unresolved\" and that \"Until a canonical account provides a resolution, the two facts stand separately in the archive.\" The relationships section (brannoc_ironmere_the_red_handed:c4) confirms the entries are \"retained without an assumed explanation.\" The novel passage (c91) from Crown of Cinders depicts Brannoc himself aware of this contradiction between his recorded death in 300 AS and his continued existence, with the grimoire (Edge of Gloamreach) acknowledging and savoring the contradiction. Together these provide verbatim coverage that the contradiction is canonically unresolved, with the two facts standing separately. No further action is needed.",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 4,
+        "agent": "A4",
+        "action": "merge",
+        "query": null,
+        "found": 10,
+        "new_gold_docs": 0,
+        "learned": "0 detected conflicts; 10 distinct chunks",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 5,
+        "agent": "A5",
+        "action": "compose",
+        "query": null,
+        "found": 3,
+        "new_gold_docs": 0,
+        "learned": "",
+        "missing": "An explicit canonical reconciliation linking the Edge of Gloamreach's \"since 314 AS\" record to Brannoc Ironmere the Red-Handed's 300 AS death.; Any explanation for why a codex record dated after his death still attributes a weapon to him.; A documented in-world reason (resurrection, posthumous attribution, scribe error, or other mechanism) for the post-mortem weapon record.",
+        "latency_ms": 0
+      },
+      {
+        "step": 6,
+        "agent": "A6",
+        "action": "verify",
+        "query": null,
+        "found": 3,
+        "new_gold_docs": 0,
+        "learned": "0 downgraded, 0 removed",
+        "missing": "",
+        "latency_ms": 0
+      }
+    ],
+    "usage": [
+      {
+        "step": 3,
+        "model": "minimax/minimax-m3:free",
+        "routing_reason": "A3: assess",
+        "tokens_in": 6140,
+        "tokens_out": 663,
+        "latency_ms": 8920,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": false
+      },
+      {
+        "step": 5,
+        "model": "minimax/minimax-m3:free",
+        "routing_reason": "A5: compose",
+        "tokens_in": 5805,
+        "tokens_out": 1067,
+        "latency_ms": 10011,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": false
+      },
+      {
+        "step": 6,
+        "model": "minimax/minimax-m3:free",
+        "routing_reason": "A6: verify",
+        "tokens_in": 674,
+        "tokens_out": 43,
+        "latency_ms": 3915,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": false
+      }
+    ]
+  },
+  "verification": {
+    "claims_checked": 3,
+    "claims_downgraded": 0,
+    "claims_removed": 0,
+    "markers_stripped": 0,
+    "citations_dropped": 0,
+    "confidence_adjustment": -0.30000000000000004,
+    "entailment_skipped": false
+  }
+}

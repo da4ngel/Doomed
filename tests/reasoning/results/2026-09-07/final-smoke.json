@@ -1,0 +1,119 @@
+{
+  "status": "diagnostic_only",
+  "preflight": {
+    "blockers": [
+      "P1 readiness opens a second embedded Qdrant client; formal readiness is degraded after retrieval."
+    ]
+  },
+  "results": [
+    {
+      "qid": "1a_004",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": true,
+      "citation_recall": 1.0,
+      "citation_precision": 1.0,
+      "iterations": 2,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "images/plate_02_conflict_the_accord_of_mournthrone.png",
+        "images/plate_03_location_crookgate_keep.png",
+        "images/plate_04_artifact_the_thrice_bound_edge.png",
+        "images/plate_06_location_hollowreach.png",
+        "images/plate_07_artifact_the_thrice_bound_lantern.png",
+        "images/plate_12_location_thorncairn.png",
+        "images/plate_13_artifact_the_cinder_wrought_aegis.png",
+        "wiki/images/atmo_creature_creature_ashfall_colossus.png",
+        "wiki/images/atmo_relic_artifact_edge_of_gloamreach.png",
+        "wiki/images/atmo_relic_artifact_the_hollow_edge.png",
+        "wiki/images/atmo_relic_artifact_the_psalter_of_seven_sorrows.png",
+        "wiki/images/atmo_relic_artifact_the_sceptre_of_final_winter.png",
+        "wiki/images/atmo_relic_artifact_the_silent_psalter.png",
+        "wiki/images/atmo_relic_artifact_the_thrice_bound_edge.png",
+        "wiki/images/atmo_relic_artifact_the_thrice_bound_lantern.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "images/plate_02_conflict_the_accord_of_mournthrone.png",
+            "images/plate_03_location_crookgate_keep.png",
+            "images/plate_04_artifact_the_thrice_bound_edge.png",
+            "images/plate_06_location_hollowreach.png",
+            "images/plate_07_artifact_the_thrice_bound_lantern.png",
+            "images/plate_12_location_thorncairn.png",
+            "wiki/images/atmo_creature_creature_ashfall_colossus.png",
+            "wiki/images/atmo_relic_artifact_the_hollow_edge.png",
+            "wiki/images/atmo_relic_artifact_the_thrice_bound_edge.png",
+            "wiki/images/atmo_relic_artifact_the_thrice_bound_lantern.png"
+          ],
+          "new_gold_documents": [
+            "images/plate_04_artifact_the_thrice_bound_edge.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 4,
+          "new_documents": [
+            "images/plate_13_artifact_the_cinder_wrought_aegis.png",
+            "wiki/images/atmo_relic_artifact_edge_of_gloamreach.png",
+            "wiki/images/atmo_relic_artifact_the_psalter_of_seven_sorrows.png",
+            "wiki/images/atmo_relic_artifact_the_sceptre_of_final_winter.png",
+            "wiki/images/atmo_relic_artifact_the_silent_psalter.png"
+          ],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_da1adb3233c543ed",
+      "latency_ms": 585
+    },
+    {
+      "qid": "un_007",
+      "structural_errors": [],
+      "lexical_answer_match": null,
+      "groundedness": 1.0,
+      "claims": 3,
+      "empty_answer": false,
+      "partial": true,
+      "citation_recall": null,
+      "citation_precision": null,
+      "iterations": 1,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "brannoc_ironmere_the_red_handed",
+        "the_annals_of_the_ashen_era",
+        "the_ashen_chronicles_volume_iii_a_crown_of_cinders"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "brannoc_ironmere_the_red_handed",
+            "the_annals_of_the_ashen_era",
+            "the_ashen_chronicles_volume_iii_a_crown_of_cinders"
+          ],
+          "new_gold_documents": null,
+          "gold_gain": null,
+          "cumulative_gold_recall": null,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": null,
+      "gold_document_coverage": null,
+      "trace_id": "tr_fc4017bb08764a32",
+      "latency_ms": 47
+    }
+  ]
+}

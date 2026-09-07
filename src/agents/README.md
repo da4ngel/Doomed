@@ -1,6 +1,6 @@
 # Reasoning layer handoff
 
-The P2 service implements A1–A6, the bounded orchestrator, mode routing, durable traces, and the UI. P1's vocabulary endpoint and conflict detector are now integrated through their actual contracts. This is not yet a validated competition submission: the raw corpus has now been located outside the checkout; local knowledge indexing and real answer validation are still pending.
+The P2 service implements A1–A6, the bounded orchestrator, mode routing, durable traces, and the UI. Current measured results and remaining gates are in [LIVE-VALIDATION.md](LIVE-VALIDATION.md); P1 integration defects are in [UPSTREAM-ISSUES.md](UPSTREAM-ISSUES.md). P1's vocabulary endpoint and conflict detector are now integrated through their actual contracts. This is not yet a validated competition submission: the raw corpus has now been located outside the checkout; local knowledge indexing and real answer validation are still pending.
 
 ## Run against the knowledge service
 
@@ -119,3 +119,5 @@ Dense indexing completed: 2,747 vectors in 784 seconds. The knowledge API starts
 OpenRouter synthesis access is verified through `LLMClient`. The image pipeline described all 70 unique images with no dead letters (15 records have numeric values); the records preserve Emberdeep 1,114, Greyfell 3,695, Edge 94 and Lantern 55 under their subject labels. Rechunking with tokenizer resources available produced 2,487 chunks, including all 70 figures; the vector rebuild is in progress. Earlier 2,747-chunk counts describe the text-only build and must not be used as current counts.
 
 The first live Gloamreach question retrieved the gold document but exhausted the 25-second budget during cold retrieval/model work. A second run hit the conservative token budget. Neither returned a supported claim; these are failures, not correct answers. Trace inspection motivated two changes: explicit visual/contradiction intent no longer gets overwritten by A1's optional LLM, and A3's latest evidence references existing chunk IDs instead of duplicating their text. All 170 scoped tests pass with no skips. Live answer validation of these fixes remains pending the full index rebuild.
+
+Current local model runs are no longer blocked on a missing key or archive. The full figure index is built, and targeted numeric answers work. Full acceptance is still incomplete: see the live validation report rather than the historical setup observations above. Successful provider calls now reconcile conservative reservations to reported usage; failed/unreported calls retain their reservations.
