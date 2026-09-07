@@ -20,7 +20,7 @@ from src.api.routes import assets as asset_routes
 from src.api.routes import graph as graph_routes
 from src.api.routes import search as search_routes
 from src.api.schemas import HealthResponse, ReadyResponse
-from src.core.config import get_settings
+from src.core.config import Settings, get_settings
 
 VERSION = "0.1.0"
 
@@ -95,6 +95,43 @@ def _count_table(db: Path, table: str) -> int:
         return 0
 
 
+def _vector_count(settings: Settings) -> int:
+    """Count vectors through the store the retriever already owns.
+
+    WHY not just build a QdrantStore here: in embedded mode Qdrant takes an exclusive
+    lock on data/index/qdrant. Once any search has loaded the retriever, a second client
+    cannot open the same directory, so /v1/ready answered `degraded` with vectors=-1
+    while retrieval was working perfectly - readiness contradicting the thing it exists
+    to report. It never showed up in server mode, where a second client is just another
+    connection, which is why it survived until someone ran embedded.
+
+    The fallback is for a process where the retriever has not loaded at all - a clean
+    clone before `python -m src.indexing.build`. It closes the store it opens, because
+    leaving it open would take the very lock this function exists to avoid.
+    """
+    try:
+        from src.api.routes.search import get_retriever
+
+        return get_retriever().vectors.count()
+    except Exception:  # noqa: BLE001 - fall back to a standalone read
+        pass
+
+    store = None
+    try:
+        from src.indexing.qdrant_store import QdrantStore
+
+        store = QdrantStore(settings)
+        return store.count()
+    except Exception:  # noqa: BLE001 - an unreachable store is reported, not raised
+        return -1
+    finally:
+        if store is not None:
+            try:
+                store.close()
+            except Exception:  # noqa: BLE001 - shutdown must not raise
+                pass
+
+
 @app.get("/v1/ready", response_model=ReadyResponse, tags=["00 Health"])
 def ready() -> ReadyResponse:
     """Index counts, provider reachability and warm state."""
@@ -108,13 +145,7 @@ def ready() -> ReadyResponse:
     entities = _count_table(graph_db, "entities")
     relations = _count_table(graph_db, "relations")
 
-    vectors = 0
-    try:
-        from src.indexing.qdrant_store import QdrantStore
-
-        vectors = QdrantStore(settings).count()
-    except Exception:  # noqa: BLE001 - an unreachable store is reported, not raised
-        vectors = -1
+    vectors = _vector_count(settings)
 
     providers = settings.configured_providers()
     if not providers:

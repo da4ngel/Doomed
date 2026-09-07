@@ -40,6 +40,11 @@ node_modules/
 # Models cached by fastembed
 .fastembed_cache/
 
+# Session scratch. The colon makes this an illegal NTFS filename, so committing
+# one makes the whole branch un-checkoutable on Windows.
+:memory:*
+*.ses
+
 # Misc
 *.log
 .DS_Store

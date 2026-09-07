@@ -11,6 +11,7 @@ import hashlib
 import re
 
 from src.api.schemas import Block, BlockType
+from src.core.tokens import TOKENIZER_USED, estimate_tokens  # noqa: F401 - re-export
 
 #: `Fig. 3`, `Plate IV`, `Table 12` - used to bind a caption to the figure above it.
 CAPTION_RE = re.compile(r"^\s*(fig(?:ure)?\.?|plate|table)\s+([ivxlc]+|\d+)\b", re.IGNORECASE)
@@ -29,31 +30,6 @@ def clean_text(text: str) -> str:
 
 def block_checksum(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
-
-
-def estimate_tokens(text: str) -> int:
-    """Token count via tiktoken when available, else a 4-chars-per-token estimate.
-
-    The estimate is a fallback rather than the default because chunk sizing is a reported
-    experiment (300/600/1000 sweep) and an approximate denominator would make those
-    numbers soft.
-    """
-    try:
-        return len(_encoding().encode(text))
-    except Exception:  # noqa: BLE001 - never let token counting break ingestion
-        return max(1, len(text) // 4)
-
-
-_ENCODING = None
-
-
-def _encoding():
-    global _ENCODING
-    if _ENCODING is None:
-        import tiktoken
-
-        _ENCODING = tiktoken.get_encoding("cl100k_base")
-    return _ENCODING
 
 
 def is_caption(text: str) -> bool:

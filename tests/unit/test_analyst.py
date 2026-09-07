@@ -1,6 +1,7 @@
 """A1 acceptance and adversarial regressions, without upstream imports or credentials."""
 
 import json
+import os
 import time
 from pathlib import Path
 from unittest.mock import Mock
@@ -189,12 +190,18 @@ def test_llm_cannot_rewrite_question(vocabulary):
 
 
 def test_all_twenty_sample_questions(analyst):
-    path = (
-        Path(__file__).resolve().parents[2] / "data/corpus/Ashen_Era_Archive/sample_questions.json"
+    path = Path(
+        os.environ.get(
+            "ASHEN_SAMPLE_QUESTIONS",
+            str(
+                Path(__file__).resolve().parents[2]
+                / "data/corpus/Ashen_Era_Archive/sample_questions.json"
+            ),
+        )
     )
     if not path.exists():
         pytest.skip("Corpus is not shipped in this checkout; real 20-question acceptance pending")
-    payload = json.loads(path.read_text())
+    payload = json.loads(path.read_text(encoding="utf-8"))
     questions = payload if isinstance(payload, list) else payload["questions"]
     assert len(questions) == 20
     for item in questions:
@@ -202,3 +209,18 @@ def test_all_twenty_sample_questions(analyst):
         Analysis.model_validate(result.model_dump())
         assert result.sub_questions
         assert result.normalized == item["question"]
+
+
+@pytest.mark.parametrize(
+    "question,intent",
+    [
+        ("State the true founding year of Gloamreach.", "contradiction"),
+        ("Show the figure plate for Greyfell Citadel.", "visual"),
+    ],
+)
+def test_explicit_source_intent_is_not_overwritten_by_llm(vocabulary, question, intent):
+    llm = Mock()
+    result = QueryAnalyst(vocabulary_loader=lambda: vocabulary, llm=llm).analyze(question)
+    assert result.intent == intent
+    assert result.sub_questions == [question]
+    llm.complete.assert_not_called()

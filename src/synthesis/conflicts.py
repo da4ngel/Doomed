@@ -231,6 +231,10 @@ class MergeReport:
     conflicts: list[Conflict] = field(default_factory=list)
     reliability_notes: list[str] = field(default_factory=list)
     assertions: list[Assertion] = field(default_factory=list)
+    #: Two readings of the SAME asset that disagree. Not a conflict between sources -
+    #: one picture, two extractors - so it is kept for audit, never rendered as a
+    #: disagreement between archive documents.
+    extraction_disagreements: list[str] = field(default_factory=list)
 
 
 def _resolve(winners: list[Assertion], losers: list[Assertion]) -> tuple[str, str]:
@@ -299,6 +303,28 @@ def detect_conflicts(
             ),
         )
         (value_a, winners), (value_b, losers) = ranked[0], ranked[1]
+
+        # One image, two extractors, two numbers. The VLM description and the OCR text
+        # of a plate live in the same img: chunk, so a misread digit used to surface as
+        # a tier-1 archive source contradicting itself - with the SAME png named on both
+        # sides. That is an extraction defect, not a disagreement between documents, and
+        # rendering it as one invents a controversy the archive does not contain.
+        #
+        # Kept for audit rather than dropped: a plate whose two readers disagree is worth
+        # knowing about, it is just not evidence about the world.
+        same_asset = (
+            {a.doc_id for a in winners} == {a.doc_id for a in losers}
+            and len({a.doc_id for a in winners}) == 1
+            and all(a.chunk_id.startswith("img:") for a in (*winners, *losers))
+        )
+        if same_asset:
+            report.extraction_disagreements.append(
+                f"{winners[0].entity} {attribute}: {winners[0].doc_id} reads "
+                f"{value_a!r} and {value_b!r} from the same image. One of the two "
+                "extractors misread it; this is not two sources disagreeing."
+            )
+            continue
+
         resolution, rationale = _resolve(winners, losers)
 
         report.conflicts.append(

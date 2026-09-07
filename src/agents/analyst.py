@@ -14,12 +14,13 @@ from difflib import SequenceMatcher
 from typing import Literal
 
 import httpx
-from pydantic import Field
+from pydantic import AliasChoices, Field
 
+from src.agents.runtime import CompletionClient
 from src.api.schemas import Entity, EntityType, Frozen, QueryIntent
 from src.core.cache import ResponseCache
 from src.core.config import get_settings
-from src.core.llm import LLMClient, text_part
+from src.core.llm import text_part
 from src.core.retry import RetryPolicy, call_with_retry
 
 _WORD = re.compile(r"[^\W\d_]+(?:[-’'][^\W\d_]+)*", re.UNICODE)
@@ -33,7 +34,21 @@ _COMMON = set(
 
 
 class Correction(Frozen):
-    original: str = Field(alias="from")
+    # `from` is the wire name - {"from": ..., "to": ...} is how a correction reads in
+    # JSON and in a trace - but it cannot be a Python attribute, so the field is
+    # `original` and the alias carries the wire spelling.
+    #
+    # Split into validation_alias/serialization_alias rather than a single `alias`,
+    # for two reasons. AliasChoices accepts BOTH spellings on the way in, so
+    # model_validate(model_dump()) round-trips; a plain alias accepted only "from"
+    # while model_dump() emitted "original", and re-reading a persisted Analysis
+    # raised. And `alias` renames the synthesised __init__ parameter to `from`, which
+    # is not a legal keyword argument, which is why the construction site below used
+    # to need a **{"from": ...} splat that no type checker could see through.
+    original: str = Field(
+        validation_alias=AliasChoices("from", "original"),
+        serialization_alias="from",
+    )
     to: str
     score: float = Field(ge=0, le=1)
     entity_id: str
@@ -86,9 +101,11 @@ def _load_entities(base_url: str, cache: ResponseCache | None) -> list[Entity]:
 def _names(entities: list[Entity]) -> dict[str, list[Entity]]:
     names: dict[str, list[Entity]] = {}
     for entity in entities:
-        for name in [entity.canonical_name, *entity.aliases]:
+        surfaces = [entity.canonical_name, *entity.aliases]
+        surfaces += [name[4:] for name in surfaces if name.casefold().startswith("the ")]
+        for name in surfaces:
             if name.strip():
-                names.setdefault(name.casefold(), []).append(entity)
+                names.setdefault(_matching_text(name).casefold(), []).append(entity)
     return names
 
 
@@ -98,7 +115,9 @@ def _mentions(question: str, names: dict[str, list[Entity]]) -> list[tuple[int, 
         unique = {e.entity_id: e for e in entities}
         if len(unique) != 1:
             continue
-        for match in re.finditer(r"(?<!\w)" + re.escape(name) + r"(?!\w)", question, re.I):
+        for match in re.finditer(
+            r"(?<!\w)" + re.escape(name) + r"(?!\w)", _matching_text(question), re.I
+        ):
             found.append((match.start(), match.end(), next(iter(unique.values()))))
     selected: list[tuple[int, int, Entity]] = []
     for item in sorted(found, key=lambda x: (-(x[1] - x[0]), x[0])):
@@ -109,6 +128,7 @@ def _mentions(question: str, names: dict[str, list[Entity]]) -> list[tuple[int, 
 
 def _typo_score(source: str, target: str) -> float:
     """Require each word to agree, so a shared 'Citadel' cannot hide a new place."""
+    source, target = _matching_text(source), _matching_text(target)
     left, right = source.casefold().split(), target.casefold().split()
     if len(left) != len(right):
         return 0
@@ -140,7 +160,9 @@ def _corrections(question: str, names: dict[str, list[Entity]]) -> list[Correcti
     protected = [
         (m.start(), m.end())
         for name in names
-        for m in re.finditer(r"(?<!\w)" + re.escape(name) + r"(?!\w)", question, re.I)
+        for m in re.finditer(
+            r"(?<!\w)" + re.escape(name) + r"(?!\w)", _matching_text(question), re.I
+        )
     ]
     words = list(_WORD.finditer(question))
     proposals = []
@@ -173,7 +195,7 @@ def _corrections(question: str, names: dict[str, list[Entity]]) -> list[Correcti
                 continue
             proposals.append(
                 Correction(
-                    **{"from": source},
+                    original=source,
                     to=entity.canonical_name,
                     score=score,
                     entity_id=entity.entity_id,
@@ -181,6 +203,10 @@ def _corrections(question: str, names: dict[str, list[Entity]]) -> list[Correcti
                     end=end,
                 )
             )
+    return _non_overlapping(proposals)
+
+
+def _non_overlapping(proposals: list[Correction]) -> list[Correction]:
     accepted: list[Correction] = []
     for item in sorted(proposals, key=lambda c: (-c.score, -(c.end - c.start))):
         if not any(item.start < c.end and item.end > c.start for c in accepted):
@@ -190,10 +216,16 @@ def _corrections(question: str, names: dict[str, list[Entity]]) -> list[Correcti
 
 def _intent(question: str, seeds: list[SeedEntity]) -> QueryIntent:
     lower = question.casefold()
-    if re.search(r"\b(agree|disagree|contradict\w*|conflicting|true year|actual year)\b", lower):
+    if re.search(
+        r"\b(agree|disagree|contradict\w*|conflicting|true (?:year|founding)|"
+        r"actual year|actually forged)\b",
+        lower,
+    ):
         return "contradiction"
     if re.search(
-        r"\b(figure|plate|diagram|map|table|look like|looks like|appearance|seal)\b", lower
+        r"\b(figure|plate|diagram|map|table|look like|looks like|appearance|seal|portrait|"
+        r"banner|emblem|illustration|engraved|motif)\b",
+        lower,
     ):
         return "visual"
     if re.search(r"\b(compare|comparison|versus|difference|differ)\b", lower):
@@ -206,6 +238,11 @@ def _intent(question: str, seeds: list[SeedEntity]) -> QueryIntent:
     if re.search(r"\b(explore|overview|tell me about)\b", lower):
         return "exploratory"
     return "direct"
+
+
+def _matching_text(text: str) -> str:
+    """One-character substitutions preserve rollback offsets and user-visible text."""
+    return text.translate(str.maketrans("‑–—‐’‘“”", "----''\"\""))
 
 
 class QueryAnalyst:
@@ -222,7 +259,7 @@ class QueryAnalyst:
         base_url: str = "http://localhost:8000",
         vocabulary_loader: Callable[[], list[Entity]] | None = None,
         cache: ResponseCache | None = None,
-        llm: LLMClient | None = None,
+        llm: CompletionClient | None = None,
     ) -> None:
         self._loader = vocabulary_loader or (lambda: _load_entities(base_url, cache))
         self._entities: list[Entity] | None = None
@@ -278,7 +315,9 @@ class QueryAnalyst:
                     f"Which entities and relationships are requested by: {question}",
                     f"Using those retrieved entities, resolve: {question}",
                 ]
-        if self.llm is None:
+        # Explicit figure/contradiction requests need no decomposition. Preserve their
+        # routing instead of paying for a model that may erase the source constraint.
+        if self.llm is None or intent in {"visual", "contradiction"}:
             return Plan(intent=intent, sub_questions=questions)
         instruction = (
             "Classify and decompose the question; do not answer it or invent facts or names. "

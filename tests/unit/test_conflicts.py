@@ -181,6 +181,93 @@ def test_duplicate_chunks_do_not_manufacture_corroboration() -> None:
 # against the real corpus
 # --------------------------------------------------------------------------
 
+# --------------------------------------------------------------------------
+# one asset is one source, however many extractors read it
+# --------------------------------------------------------------------------
+
+#: The real indexed text of plate_11_location_mournwatch.png. Direct inspection of
+#: the image confirms 8,254; the gauge maximum is 9,904.
+PLATE_11 = """Plate 11 - Mournwatch (location)
+Subject: Mournwatch recorded garrison strength
+A decorative gauge plate titled 'Mournwatch' displaying a semicircular gauge for the
+recorded garrison strength. The needle-less dial is filled from 0 to the reading of
+8,254 out of a maximum of 9,904 souls under arms.
+Recorded values:
+  Mournwatch garrison strength: 8,254
+  minimum: 0
+  maximum: 9,904
+Depicted: semicircular gauge arc, filled arc segment, numerical readout
+Text in image: Mournwatch
+RECORDED GARRISON STRENGTH
+8,254
+0
+9,904
+souls under arms"""
+
+MOURNWATCH_PNG = "images/plate_11_location_mournwatch.png"
+
+
+def _plate_chunk(text: str, cid: str) -> Chunk:
+    return Chunk(
+        chunk_id=cid,
+        doc_id=MOURNWATCH_PNG,
+        text=text,
+        authority_tier=1,
+        source_type="figure_plate",
+        section_path=[],
+    )
+
+
+def test_ocr_and_vlm_reading_one_plate_are_not_two_sources() -> None:
+    """Reported against a build with Tesseract installed, which this machine lacks.
+
+    The vision model reads 8,254 off the gauge and OCR misreads it as 6,254. With OCR
+    text appended the image chunk splits, so the two readings land in two chunks of
+    the SAME png - and the old code emitted a tier-1 Conflict naming that one file on
+    both sides. An archive contradicting itself, which the archive never did.
+
+    An invented disagreement is worse than a missed one, and the 1C answers are built
+    out of exactly this layer.
+    """
+    chunks = [
+        _plate_chunk(PLATE_11, "img:mournwatch#0"),
+        _plate_chunk(PLATE_11.replace("8,254", "6,254"), "img:mournwatch#1"),
+    ]
+    report = detect_conflicts(chunks, {"Mournwatch": "Location"})
+
+    for conflict in report.conflicts:
+        assert set(conflict.sources_a) != set(
+            conflict.sources_b
+        ), f"{conflict.attribute} names {MOURNWATCH_PNG} on both sides"
+
+
+def test_the_extraction_disagreement_is_kept_for_audit() -> None:
+    """Suppressed as a conflict, not discarded. A plate whose two readers disagree is
+    worth knowing about; it is just not evidence about the world."""
+    chunks = [
+        _plate_chunk(PLATE_11, "img:mournwatch#0"),
+        _plate_chunk(PLATE_11.replace("8,254", "6,254"), "img:mournwatch#1"),
+    ]
+    report = detect_conflicts(chunks, {"Mournwatch": "Location"})
+
+    assert report.extraction_disagreements, "the disagreement must survive for audit"
+    note = report.extraction_disagreements[0]
+    assert "same image" in note
+    assert "plate_11_location_mournwatch" in note
+    assert "8254" in note and "6254" in note
+
+
+def test_two_different_documents_still_conflict_normally() -> None:
+    """The guard must be narrow. Two real documents disagreeing is the feature."""
+    chunks = [
+        _chunk("Gloamreach was founded in 812 AS.", tier=1, doc="codex/a", cid="c1"),
+        _chunk("Gloamreach was founded in 907 AS.", tier=3, doc="chronicles/b", cid="c2"),
+    ]
+    report = detect_conflicts(chunks, {"Gloamreach": "Location"})
+    assert report.conflicts, "a genuine two-document disagreement must survive"
+    assert set(report.conflicts[0].sources_a) != set(report.conflicts[0].sources_b)
+
+
 indexed = pytest.mark.skipif(
     not (INDEX / "chunks.jsonl").exists() or not (INDEX / "graph.sqlite").exists(),
     reason="index not built",

@@ -1,0 +1,2489 @@
+{
+  "trace_id": "tr_649e9bc3e2e84cf7",
+  "question": "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+  "mode": "auto",
+  "status": "running",
+  "started_at": "2026-09-07T18:11:09+00:00",
+  "ended_at": null,
+  "iterations": 10,
+  "reasoning_trace": [
+    {
+      "step": 1,
+      "agent": "A1",
+      "action": "analyze",
+      "query": "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "Intent: direct; 1 linked entities",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+      "found": 10,
+      "new_gold_docs": 5,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 4391
+    },
+    {
+      "step": 3,
+      "agent": "A3",
+      "action": "assess",
+      "query": "The Silent Choir",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "The faction that won the War of Drowned Light, The Silent Choir, was identified from the evidence. However, specific individual members who were part of this faction have not yet been provided in the evidence.",
+      "missing": "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "agent": "A2",
+      "action": "list_mentions",
+      "query": "The Silent Choir",
+      "found": 10,
+      "new_gold_docs": 3,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 4735
+    },
+    {
+      "step": 5,
+      "agent": "A3",
+      "action": "assess",
+      "query": "The Silent Choir",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "The term was discovered through multiple mentions in the evidence. It is relevant as it pertains to the faction that won the War of Drowned Light, and is necessary for deeper exploration of its members.",
+      "missing": "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "agent": "A2",
+      "action": "graph_neighbors",
+      "query": "The Silent Choir",
+      "found": 118,
+      "new_gold_docs": 0,
+      "learned": "The Silent Choir -located_in-> Vharencrag Fortress [wiki/the_silent_choir.md#infobox:Seat] | The Silent Choir -fought_in-> The War of Drowned Light [wiki/the_silent_choir.md#infobox:Belligerencies] | The Silent Choir -fought_in-> The War of Endless Vigil [wiki/the_silent_choir.md#infobox:Belligerencies] | The Silent Choir -fought_in-> The Winter Reckoning [wiki/the_silent_choir.md#infobox:Belligerencies] | The Silent Choir -has_member-> Ignatz Fellgard [wiki/the_silent_choir.md#infobox:Members] | The Silent Choir -has_member-> Brannoc Palefroth [wiki/the_silent_choir.md#infobox:Members] | The Silent Choir -has_member-> Thessaly Coldwater [wiki/the_silent_choir.md#infobox:Members] | The Silent Choir -has_member-> Lucan Hollowmere [wiki/the_silent_choir.md#infobox:Members] | The Silent Choir -has_member-> Tamsin Greyfen [wiki/the_silent_choir.md#infobox:Members] | The Silent Choir -has_member-> Ossric Ashgrove [wiki/the_silent_choir.md#infobox:Members] | The Silent Choir -located_in-> Vharencrag Fortress [wiki/the_silent_choir.md#prose] | The Silent Choir -won-> The War of Drowned Light [wiki/the_war_of_drowned_light.md#infobox:Victor] | The Silent Choir -located_in-> Gloamreach [the_ashen_chronicles_volume_i_the_kindling_years:c7] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c25] | The Silent Choir -located_in-> Gloamreach [the_ashen_chronicles_volume_i_the_kindling_years:c27] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c35] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c49] | The Silent Choir -wields-> Cindermere Hold [the_ashen_chronicles_volume_i_the_kindling_years:c51] | The Silent Choir -wields-> The Sceptre of Final Winter [the_ashen_chronicles_volume_i_the_kindling_years:c58] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c61] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c85] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c85] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c102] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c102] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c110] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c115] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c115] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c128] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c128] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c138] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c145] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c145] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c145] | The Silent Choir -wields-> The Hollow Edge [the_ashen_chronicles_volume_i_the_kindling_years:c146] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c148] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c148] | The Silent Choir -won-> Ignatz Marrowgate [the_ashen_chronicles_volume_i_the_kindling_years:c149] | The Silent Choir -secret-> Ignatz Marrowgate [the_ashen_chronicles_volume_i_the_kindling_years:c149] | The Silent Choir -located_in-> Gloamreach [the_ashen_chronicles_volume_i_the_kindling_years:c153] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c172] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c172] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c179] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c179] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c192] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c198] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c203] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c203] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c211] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c211] | The Silent Choir -secret-> House Morvain [the_ashen_chronicles_volume_i_the_kindling_years:c213] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c225] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c225] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c244] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c244] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c244] | The Silent Choir -secret-> Hollowvale [the_ashen_chronicles_volume_i_the_kindling_years:c245] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c251] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c251] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c265] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c265] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c276] | The Silent Choir -allied_with-> The Iron-Ring Cartel [the_ashen_chronicles_volume_i_the_kindling_years:c278] | The Silent Choir -allied_with-> The Bleeding Crown [the_ashen_chronicles_volume_i_the_kindling_years:c278] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c285] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c285] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c291] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c291] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c298] | The Silent Choir -commands-> The Iron-Ring Cartel [the_ashen_chronicles_volume_i_the_kindling_years:c303] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c312] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c313] | The Silent Choir -fought_in-> The Winter Reckoning [the_ashen_chronicles_volume_ii_the_long_reprisal:c31] | The Silent Choir -fought_in-> Stormmarch [the_ashen_chronicles_volume_ii_the_long_reprisal:c42] | The Silent Choir -fought_in-> Gloammarch [the_ashen_chronicles_volume_ii_the_long_reprisal:c42] | The Silent Choir -secret-> Hollowreach [the_ashen_chronicles_volume_ii_the_long_reprisal:c46] | The Silent Choir -secret-> Hollowreach [the_ashen_chronicles_volume_ii_the_long_reprisal:c48] | The Silent Choir -fought_in-> The Winter Reckoning [the_ashen_chronicles_volume_ii_the_long_reprisal:c74] | The Silent Choir -has_member-> Stormmarch [the_ashen_chronicles_volume_ii_the_long_reprisal:c285] | The Silent Choir -commands-> Corvus Hollowmere the Pale [the_ashen_chronicles_volume_ii_the_long_reprisal:c303] | The Silent Choir -fought_in-> The War of Endless Vigil [the_ashen_chronicles_volume_ii_the_long_reprisal:c313] | The Silent Choir -secret-> Corvus Hollowmere the Pale [the_ashen_chronicles_volume_ii_the_long_reprisal:c317] | The Silent Choir -located_in-> Fenspire [the_ashen_chronicles_volume_iii_a_crown_of_cinders:c56] | The Silent Choir -allied_with-> House Morvain [the_ashen_chronicles_volume_iii_a_crown_of_cinders:c96] | Corvus Hollowmere the Pale -member_of-> The Silent Choir [wiki/corvus_hollowmere_the_pale.md#prose] | Embercrag Fortress -ruled_by-> The Silent Choir [wiki/embercrag_fortress.md#infobox:Ruled by] | Embercrag Fortress -ruled_by-> The Silent Choir [wiki/embercrag_fortress.md#prose] | Isolde Mournvale -member_of-> The Silent Choir [wiki/isolde_mournvale.md#infobox:Member of] | Isolde Mournvale -member_of-> The Silent Choir [wiki/isolde_mournvale.md#prose] | Maelis Harrowick the Pale -member_of-> The Silent Choir [wiki/maelis_harrowick_the_pale.md#prose] | Morwenna Morvain -member_of-> The Silent Choir [wiki/morwenna_morvain.md#infobox:Membership] | Morwenna Morvain -member_of-> The Silent Choir [wiki/morwenna_morvain.md#prose] | Morwenna Vosgard -member_of-> The Silent Choir [wiki/morwenna_vosgard.md#infobox:Affiliation] | Morwenna Vosgard -member_of-> The Silent Choir [wiki/morwenna_vosgard.md#prose] | Ossric Ravensmoor -member_of-> The Silent Choir [wiki/ossric_ravensmoor.md#infobox:Member of] | Ossric Ravensmoor -member_of-> The Silent Choir [wiki/ossric_ravensmoor.md#prose] | Ossric Wrenfield -member_of-> The Silent Choir [wiki/ossric_wrenfield.md#infobox:Affiliation] | Ossric Wrenfield -member_of-> The Silent Choir [wiki/ossric_wrenfield.md#prose] | Palewell Abbey -ruled_by-> The Silent Choir [wiki/palewell_abbey.md#infobox:Ruling power] | Palewell Abbey -ruled_by-> The Silent Choir [wiki/palewell_abbey.md#prose] | Ravena Stormwell -member_of-> The Silent Choir [wiki/ravena_stormwell.md#infobox:Member of] | Ravena Stormwell -member_of-> The Silent Choir [wiki/ravena_stormwell.md#prose] | Vharencrag Fortress -ruled_by-> The Silent Choir [wiki/vharencrag_fortress.md#infobox:Ruled by] | The War of Drowned Light -fought_in-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c5] | The War of Drowned Light -won-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c25] | Corvus Hollowmere the Pale -member_of-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c63] | The War of Drowned Light -bore_since-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c85] | The War of Drowned Light -bore_since-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c110] | The Hollow Edge -wields-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c138] | The Hollow Edge -wields-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c145] | The War of Drowned Light -bore_since-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c198] | Diadem of Sorrowgate -wields-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c257] | The Ashen Vanguard -allied_with-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c278] | House Morvain -allied_with-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c278] | The Sceptre of Final Winter -secret-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c307] | The Crown of Burned Names -wields-> The Silent Choir [the_ashen_chronicles_volume_ii_the_long_reprisal:c270] | The Crown of Burned Names -secret-> The Silent Choir [the_ashen_chronicles_volume_ii_the_long_reprisal:c270] | Sabelle Mournvale the Twice-Crowned -commands-> The Silent Choir [the_ashen_chronicles_volume_ii_the_long_reprisal:c274] | Corvus Hollowmere the Pale -member_of-> The Silent Choir [the_ashen_chronicles_volume_ii_the_long_reprisal:c303]",
+      "missing": "",
+      "latency_ms": 546
+    },
+    {
+      "step": 7,
+      "agent": "A3",
+      "action": "assess",
+      "query": "The Crown of Burned Names Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "Latest evidence names The Crown of Burned Names; retrieve its source.",
+      "missing": "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "agent": "A4",
+      "action": "merge",
+      "query": null,
+      "found": 16,
+      "new_gold_docs": 0,
+      "learned": "0 detected conflicts; 16 distinct chunks",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 9,
+      "agent": "A5",
+      "action": "compose",
+      "query": null,
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "",
+      "missing": "Which individual was a member of the faction that ultimately won the War of Drowned Light?; Composition could not be verified: Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+      "latency_ms": 0
+    },
+    {
+      "step": 10,
+      "agent": "A6",
+      "action": "verify",
+      "query": null,
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "0 downgraded, 0 removed",
+      "missing": "",
+      "latency_ms": 0
+    }
+  ],
+  "retrieval_evidence": [
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c76",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_silent_choir:c4",
+          "doc_id": "the_silent_choir"
+        },
+        {
+          "chunk_id": "the_ashen_vanguard:c0",
+          "doc_id": "the_ashen_vanguard"
+        },
+        {
+          "chunk_id": "the_silent_choir:c0",
+          "doc_id": "the_silent_choir"
+        },
+        {
+          "chunk_id": "the_war_of_drowned_light:c0",
+          "doc_id": "the_war_of_drowned_light"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c73",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_war_of_drowned_light:c4",
+          "doc_id": "the_war_of_drowned_light"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c77",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c61",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "sermon_concerning_the_war_of_drowned_light:c0",
+          "doc_id": "sermon_concerning_the_war_of_drowned_light"
+        }
+      ],
+      "edges": [],
+      "step": 2
+    },
+    {
+      "action": {
+        "action": "list_mentions",
+        "query": "The Silent Choir",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "the_silent_choir:c0",
+          "doc_id": "the_silent_choir"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c74",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c73",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c76",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_silent_choir:c5",
+          "doc_id": "the_silent_choir"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c309",
+          "doc_id": "the_ashen_chronicles_volume_i_the_kindling_years"
+        },
+        {
+          "chunk_id": "letter_concerning_the_silent_choir:c0",
+          "doc_id": "letter_concerning_the_silent_choir"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c75",
+          "doc_id": "the_ashen_chronicles_volume_ii_the_long_reprisal"
+        },
+        {
+          "chunk_id": "the_silent_choir:c2",
+          "doc_id": "the_silent_choir"
+        },
+        {
+          "chunk_id": "the_silent_choir:c4",
+          "doc_id": "the_silent_choir"
+        }
+      ],
+      "edges": [],
+      "step": 4
+    },
+    {
+      "action": {
+        "action": "graph_neighbors",
+        "query": "The Silent Choir",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {
+          "entity_id": "The Silent Choir"
+        }
+      },
+      "chunks": [],
+      "edges": [
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "located_in",
+          "object_id": "ent_vharencrag_fortress",
+          "object": "Vharencrag Fortress",
+          "evidence_chunk_id": "wiki/the_silent_choir.md#infobox:Seat",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "wiki/the_silent_choir.md#infobox:Belligerencies",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_war_of_endless_vigil",
+          "object": "The War of Endless Vigil",
+          "evidence_chunk_id": "wiki/the_silent_choir.md#infobox:Belligerencies",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_winter_reckoning",
+          "object": "The Winter Reckoning",
+          "evidence_chunk_id": "wiki/the_silent_choir.md#infobox:Belligerencies",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "has_member",
+          "object_id": "ent_ignatz_fellgard",
+          "object": "Ignatz Fellgard",
+          "evidence_chunk_id": "wiki/the_silent_choir.md#infobox:Members",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "has_member",
+          "object_id": "ent_brannoc_palefroth",
+          "object": "Brannoc Palefroth",
+          "evidence_chunk_id": "wiki/the_silent_choir.md#infobox:Members",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "has_member",
+          "object_id": "ent_thessaly_coldwater",
+          "object": "Thessaly Coldwater",
+          "evidence_chunk_id": "wiki/the_silent_choir.md#infobox:Members",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "has_member",
+          "object_id": "ent_lucan_hollowmere",
+          "object": "Lucan Hollowmere",
+          "evidence_chunk_id": "wiki/the_silent_choir.md#infobox:Members",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "has_member",
+          "object_id": "ent_tamsin_greyfen",
+          "object": "Tamsin Greyfen",
+          "evidence_chunk_id": "wiki/the_silent_choir.md#infobox:Members",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "has_member",
+          "object_id": "ent_ossric_ashgrove",
+          "object": "Ossric Ashgrove",
+          "evidence_chunk_id": "wiki/the_silent_choir.md#infobox:Members",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "located_in",
+          "object_id": "ent_vharencrag_fortress",
+          "object": "Vharencrag Fortress",
+          "evidence_chunk_id": "wiki/the_silent_choir.md#prose",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "wiki/the_war_of_drowned_light.md#infobox:Victor",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "located_in",
+          "object_id": "ent_gloamreach",
+          "object": "Gloamreach",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c7",
+          "authority_tier": 3,
+          "qualifier": "may be stirring old embers"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c25",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "located_in",
+          "object_id": "ent_gloamreach",
+          "object": "Gloamreach",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c27",
+          "authority_tier": 3,
+          "qualifier": "under quarantine"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c35",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c49",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "wields",
+          "object_id": "ent_cindermere_hold",
+          "object": "Cindermere Hold",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c51",
+          "authority_tier": 3,
+          "qualifier": "desires a ward placed there"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "wields",
+          "object_id": "ent_sceptre_of_final_winter",
+          "object": "The Sceptre of Final Winter",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c58",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c61",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c85",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c85",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c102",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c102",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c110",
+          "authority_tier": 3,
+          "qualifier": "in 235 AS"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c115",
+          "authority_tier": 3,
+          "qualifier": "from 225 AS to 235 AS"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c115",
+          "authority_tier": 3,
+          "qualifier": "from 225 AS to 235 AS"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c128",
+          "authority_tier": 3,
+          "qualifier": "in 235 AS"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c128",
+          "authority_tier": 3,
+          "qualifier": "staged the spark"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c138",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c145",
+          "authority_tier": 3,
+          "qualifier": "225-235 AS"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c145",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c145",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "wields",
+          "object_id": "ent_hollow_edge",
+          "object": "The Hollow Edge",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c146",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c148",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c148",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_ignatz_marrowgate",
+          "object": "Ignatz Marrowgate",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c149",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_ignatz_marrowgate",
+          "object": "Ignatz Marrowgate",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c149",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "located_in",
+          "object_id": "ent_gloamreach",
+          "object": "Gloamreach",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c153",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c172",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c172",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c179",
+          "authority_tier": 3,
+          "qualifier": "225 AS to 235 AS"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c179",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c192",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c198",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c203",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c203",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c211",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c211",
+          "authority_tier": 3,
+          "qualifier": "staged the spark"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_house_morvain",
+          "object": "House Morvain",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c213",
+          "authority_tier": 3,
+          "qualifier": "if the corpse served a claim"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c225",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c225",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c244",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c244",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c244",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_hollowvale",
+          "object": "Hollowvale",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c245",
+          "authority_tier": 3,
+          "qualifier": "staged the spark of the war"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c251",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c251",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c265",
+          "authority_tier": 3,
+          "qualifier": "225-235 AS"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c265",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c276",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "allied_with",
+          "object_id": "ent_iron_ring_cartel",
+          "object": "The Iron-Ring Cartel",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c278",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "allied_with",
+          "object_id": "ent_bleeding_crown",
+          "object": "The Bleeding Crown",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c278",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c285",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c285",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c291",
+          "authority_tier": 3,
+          "qualifier": "recorded as victor"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c291",
+          "authority_tier": 3,
+          "qualifier": "secretly staged the spark"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c298",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "commands",
+          "object_id": "ent_iron_ring_cartel",
+          "object": "The Iron-Ring Cartel",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c303",
+          "authority_tier": 3,
+          "qualifier": "implied through Corvus's obedience to the oath"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c312",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "won",
+          "object_id": "ent_war_of_drowned_light",
+          "object": "The War of Drowned Light",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c313",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_winter_reckoning",
+          "object": "The Winter Reckoning",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c31",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_stormmarch",
+          "object": "Stormmarch",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c42",
+          "authority_tier": 3,
+          "qualifier": "since 71 AS"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_gloammarch",
+          "object": "Gloammarch",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c42",
+          "authority_tier": 3,
+          "qualifier": "since 321 AS"
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_hollowreach",
+          "object": "Hollowreach",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c46",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_hollowreach",
+          "object": "Hollowreach",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c48",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_winter_reckoning",
+          "object": "The Winter Reckoning",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c74",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "has_member",
+          "object_id": "ent_stormmarch",
+          "object": "Stormmarch",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c285",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "commands",
+          "object_id": "ent_corvus_hollowmere_the_pale",
+          "object": "Corvus Hollowmere the Pale",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c303",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "fought_in",
+          "object_id": "ent_war_of_endless_vigil",
+          "object": "The War of Endless Vigil",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c313",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "secret",
+          "object_id": "ent_corvus_hollowmere_the_pale",
+          "object": "Corvus Hollowmere the Pale",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c317",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "located_in",
+          "object_id": "ent_fenspire",
+          "object": "Fenspire",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders:c56",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_silent_choir",
+          "subject": "The Silent Choir",
+          "predicate": "allied_with",
+          "object_id": "ent_house_morvain",
+          "object": "House Morvain",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_iii_a_crown_of_cinders:c96",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_corvus_hollowmere_the_pale",
+          "subject": "Corvus Hollowmere the Pale",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/corvus_hollowmere_the_pale.md#prose",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_embercrag_fortress",
+          "subject": "Embercrag Fortress",
+          "predicate": "ruled_by",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/embercrag_fortress.md#infobox:Ruled by",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_embercrag_fortress",
+          "subject": "Embercrag Fortress",
+          "predicate": "ruled_by",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/embercrag_fortress.md#prose",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_isolde_mournvale",
+          "subject": "Isolde Mournvale",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/isolde_mournvale.md#infobox:Member of",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_isolde_mournvale",
+          "subject": "Isolde Mournvale",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/isolde_mournvale.md#prose",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_maelis_harrowick_the_pale",
+          "subject": "Maelis Harrowick the Pale",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/maelis_harrowick_the_pale.md#prose",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_morwenna_morvain",
+          "subject": "Morwenna Morvain",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/morwenna_morvain.md#infobox:Membership",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_morwenna_morvain",
+          "subject": "Morwenna Morvain",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/morwenna_morvain.md#prose",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_morwenna_vosgard",
+          "subject": "Morwenna Vosgard",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/morwenna_vosgard.md#infobox:Affiliation",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_morwenna_vosgard",
+          "subject": "Morwenna Vosgard",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/morwenna_vosgard.md#prose",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_ossric_ravensmoor",
+          "subject": "Ossric Ravensmoor",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/ossric_ravensmoor.md#infobox:Member of",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_ossric_ravensmoor",
+          "subject": "Ossric Ravensmoor",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/ossric_ravensmoor.md#prose",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_ossric_wrenfield",
+          "subject": "Ossric Wrenfield",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/ossric_wrenfield.md#infobox:Affiliation",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_ossric_wrenfield",
+          "subject": "Ossric Wrenfield",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/ossric_wrenfield.md#prose",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_palewell_abbey",
+          "subject": "Palewell Abbey",
+          "predicate": "ruled_by",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/palewell_abbey.md#infobox:Ruling power",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_palewell_abbey",
+          "subject": "Palewell Abbey",
+          "predicate": "ruled_by",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/palewell_abbey.md#prose",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_ravena_stormwell",
+          "subject": "Ravena Stormwell",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/ravena_stormwell.md#infobox:Member of",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_ravena_stormwell",
+          "subject": "Ravena Stormwell",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/ravena_stormwell.md#prose",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_vharencrag_fortress",
+          "subject": "Vharencrag Fortress",
+          "predicate": "ruled_by",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/vharencrag_fortress.md#infobox:Ruled by",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_war_of_drowned_light",
+          "subject": "The War of Drowned Light",
+          "predicate": "fought_in",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c5",
+          "authority_tier": 3,
+          "qualifier": "225 AS to 235 AS"
+        },
+        {
+          "subject_id": "ent_war_of_drowned_light",
+          "subject": "The War of Drowned Light",
+          "predicate": "won",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c25",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_corvus_hollowmere_the_pale",
+          "subject": "Corvus Hollowmere the Pale",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c63",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_war_of_drowned_light",
+          "subject": "The War of Drowned Light",
+          "predicate": "bore_since",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c85",
+          "authority_tier": 3,
+          "qualifier": "225 AS to 235 AS"
+        },
+        {
+          "subject_id": "ent_war_of_drowned_light",
+          "subject": "The War of Drowned Light",
+          "predicate": "bore_since",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c110",
+          "authority_tier": 3,
+          "qualifier": "from 225 AS to 235 AS"
+        },
+        {
+          "subject_id": "ent_hollow_edge",
+          "subject": "The Hollow Edge",
+          "predicate": "wields",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c138",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_hollow_edge",
+          "subject": "The Hollow Edge",
+          "predicate": "wields",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c145",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_war_of_drowned_light",
+          "subject": "The War of Drowned Light",
+          "predicate": "bore_since",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c198",
+          "authority_tier": 3,
+          "qualifier": "since 225 AS"
+        },
+        {
+          "subject_id": "ent_diadem_of_sorrowgate",
+          "subject": "Diadem of Sorrowgate",
+          "predicate": "wields",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c257",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_ashen_vanguard",
+          "subject": "The Ashen Vanguard",
+          "predicate": "allied_with",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c278",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_house_morvain",
+          "subject": "House Morvain",
+          "predicate": "allied_with",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c278",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_sceptre_of_final_winter",
+          "subject": "The Sceptre of Final Winter",
+          "predicate": "secret",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c307",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_crown_of_burned_names",
+          "subject": "The Crown of Burned Names",
+          "predicate": "wields",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c270",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_crown_of_burned_names",
+          "subject": "The Crown of Burned Names",
+          "predicate": "secret",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c270",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_sabelle_mournvale_the_twice_crowned",
+          "subject": "Sabelle Mournvale the Twice-Crowned",
+          "predicate": "commands",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c274",
+          "authority_tier": 3,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_corvus_hollowmere_the_pale",
+          "subject": "Corvus Hollowmere the Pale",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c303",
+          "authority_tier": 3,
+          "qualifier": null
+        }
+      ],
+      "step": 6
+    }
+  ],
+  "usage": [
+    {
+      "step": 1,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A1: analyze",
+      "tokens_in": 143,
+      "tokens_out": 15,
+      "latency_ms": 1684,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": false
+    },
+    {
+      "step": 3,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 4722,
+      "tokens_out": 137,
+      "latency_ms": 3283,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": true
+    },
+    {
+      "step": 5,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 7199,
+      "tokens_out": 147,
+      "latency_ms": 2984,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": true
+    }
+  ],
+  "total_cost_usd": 0.0,
+  "total_tokens": 12363,
+  "cache_hits": 0,
+  "packet": {
+    "trace_id": "tr_649e9bc3e2e84cf7",
+    "mode": "agent",
+    "answer_markdown": "I could not establish an answer from the retrieved evidence.\n\nStill unresolved:\n- Which individual was a member of the faction that ultimately won the War of Drowned Light?\n- Composition could not be verified: Which individual was a member of the faction that ultimately won the War of Drowned Light?\n- One or more requested facts could not be verified against their cited evidence.\n\nInvestigation stopped: token budget exhausted",
+    "claims": [],
+    "citations": [],
+    "visuals": [],
+    "evidence_graph": {
+      "nodes": [
+        {
+          "id": "ent_silent_choir",
+          "type": "entity",
+          "label": "The Silent Choir"
+        },
+        {
+          "id": "ent_vharencrag_fortress",
+          "type": "entity",
+          "label": "Vharencrag Fortress"
+        },
+        {
+          "id": "ent_war_of_drowned_light",
+          "type": "entity",
+          "label": "The War of Drowned Light"
+        },
+        {
+          "id": "ent_war_of_endless_vigil",
+          "type": "entity",
+          "label": "The War of Endless Vigil"
+        },
+        {
+          "id": "ent_winter_reckoning",
+          "type": "entity",
+          "label": "The Winter Reckoning"
+        },
+        {
+          "id": "ent_ignatz_fellgard",
+          "type": "entity",
+          "label": "Ignatz Fellgard"
+        },
+        {
+          "id": "ent_brannoc_palefroth",
+          "type": "entity",
+          "label": "Brannoc Palefroth"
+        },
+        {
+          "id": "ent_thessaly_coldwater",
+          "type": "entity",
+          "label": "Thessaly Coldwater"
+        },
+        {
+          "id": "ent_lucan_hollowmere",
+          "type": "entity",
+          "label": "Lucan Hollowmere"
+        },
+        {
+          "id": "ent_tamsin_greyfen",
+          "type": "entity",
+          "label": "Tamsin Greyfen"
+        },
+        {
+          "id": "ent_ossric_ashgrove",
+          "type": "entity",
+          "label": "Ossric Ashgrove"
+        },
+        {
+          "id": "ent_gloamreach",
+          "type": "entity",
+          "label": "Gloamreach"
+        },
+        {
+          "id": "ent_cindermere_hold",
+          "type": "entity",
+          "label": "Cindermere Hold"
+        },
+        {
+          "id": "ent_sceptre_of_final_winter",
+          "type": "entity",
+          "label": "The Sceptre of Final Winter"
+        },
+        {
+          "id": "ent_hollow_edge",
+          "type": "entity",
+          "label": "The Hollow Edge"
+        },
+        {
+          "id": "ent_ignatz_marrowgate",
+          "type": "entity",
+          "label": "Ignatz Marrowgate"
+        },
+        {
+          "id": "ent_house_morvain",
+          "type": "entity",
+          "label": "House Morvain"
+        },
+        {
+          "id": "ent_hollowvale",
+          "type": "entity",
+          "label": "Hollowvale"
+        },
+        {
+          "id": "ent_iron_ring_cartel",
+          "type": "entity",
+          "label": "The Iron-Ring Cartel"
+        },
+        {
+          "id": "ent_bleeding_crown",
+          "type": "entity",
+          "label": "The Bleeding Crown"
+        },
+        {
+          "id": "ent_stormmarch",
+          "type": "entity",
+          "label": "Stormmarch"
+        },
+        {
+          "id": "ent_gloammarch",
+          "type": "entity",
+          "label": "Gloammarch"
+        },
+        {
+          "id": "ent_hollowreach",
+          "type": "entity",
+          "label": "Hollowreach"
+        },
+        {
+          "id": "ent_corvus_hollowmere_the_pale",
+          "type": "entity",
+          "label": "Corvus Hollowmere the Pale"
+        },
+        {
+          "id": "ent_fenspire",
+          "type": "entity",
+          "label": "Fenspire"
+        },
+        {
+          "id": "ent_embercrag_fortress",
+          "type": "entity",
+          "label": "Embercrag Fortress"
+        },
+        {
+          "id": "ent_isolde_mournvale",
+          "type": "entity",
+          "label": "Isolde Mournvale"
+        },
+        {
+          "id": "ent_maelis_harrowick_the_pale",
+          "type": "entity",
+          "label": "Maelis Harrowick the Pale"
+        },
+        {
+          "id": "ent_morwenna_morvain",
+          "type": "entity",
+          "label": "Morwenna Morvain"
+        },
+        {
+          "id": "ent_morwenna_vosgard",
+          "type": "entity",
+          "label": "Morwenna Vosgard"
+        },
+        {
+          "id": "ent_ossric_ravensmoor",
+          "type": "entity",
+          "label": "Ossric Ravensmoor"
+        },
+        {
+          "id": "ent_ossric_wrenfield",
+          "type": "entity",
+          "label": "Ossric Wrenfield"
+        },
+        {
+          "id": "ent_palewell_abbey",
+          "type": "entity",
+          "label": "Palewell Abbey"
+        },
+        {
+          "id": "ent_ravena_stormwell",
+          "type": "entity",
+          "label": "Ravena Stormwell"
+        },
+        {
+          "id": "ent_diadem_of_sorrowgate",
+          "type": "entity",
+          "label": "Diadem of Sorrowgate"
+        },
+        {
+          "id": "ent_ashen_vanguard",
+          "type": "entity",
+          "label": "The Ashen Vanguard"
+        },
+        {
+          "id": "ent_crown_of_burned_names",
+          "type": "entity",
+          "label": "The Crown of Burned Names"
+        },
+        {
+          "id": "ent_sabelle_mournvale_the_twice_crowned",
+          "type": "entity",
+          "label": "Sabelle Mournvale the Twice-Crowned"
+        }
+      ],
+      "edges": [
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_vharencrag_fortress",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_endless_vigil",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_winter_reckoning",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_ignatz_fellgard",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_brannoc_palefroth",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_thessaly_coldwater",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_lucan_hollowmere",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_tamsin_greyfen",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_ossric_ashgrove",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_vharencrag_fortress",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_gloamreach",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_gloamreach",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_cindermere_hold",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_sceptre_of_final_winter",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_hollow_edge",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_ignatz_marrowgate",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_ignatz_marrowgate",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_gloamreach",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_house_morvain",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_hollowvale",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_iron_ring_cartel",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_bleeding_crown",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_iron_ring_cartel",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_drowned_light",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_winter_reckoning",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_stormmarch",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_gloammarch",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_hollowreach",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_hollowreach",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_winter_reckoning",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_stormmarch",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_corvus_hollowmere_the_pale",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_war_of_endless_vigil",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_corvus_hollowmere_the_pale",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_fenspire",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_silent_choir",
+          "to_id": "ent_house_morvain",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_corvus_hollowmere_the_pale",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_embercrag_fortress",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_embercrag_fortress",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_isolde_mournvale",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_isolde_mournvale",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_maelis_harrowick_the_pale",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_morwenna_morvain",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_morwenna_morvain",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_morwenna_vosgard",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_morwenna_vosgard",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_ossric_ravensmoor",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_ossric_ravensmoor",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_ossric_wrenfield",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_ossric_wrenfield",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_palewell_abbey",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_palewell_abbey",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_ravena_stormwell",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_ravena_stormwell",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_vharencrag_fortress",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_war_of_drowned_light",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_war_of_drowned_light",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_corvus_hollowmere_the_pale",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_war_of_drowned_light",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_war_of_drowned_light",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_hollow_edge",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_hollow_edge",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_war_of_drowned_light",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_diadem_of_sorrowgate",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_ashen_vanguard",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_house_morvain",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_sceptre_of_final_winter",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_crown_of_burned_names",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_crown_of_burned_names",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_sabelle_mournvale_the_twice_crowned",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_corvus_hollowmere_the_pale",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        }
+      ],
+      "paths": []
+    },
+    "conflicts": [],
+    "missing_information": [
+      "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+      "Composition could not be verified: Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+      "One or more requested facts could not be verified against their cited evidence.",
+      "Investigation stopped: token budget exhausted"
+    ],
+    "warnings": [
+      {
+        "type": "tool_failure",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": "composition_failed",
+        "detail": "BudgetExceeded"
+      },
+      {
+        "type": "normalization_skipped",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": null,
+        "detail": null
+      },
+      {
+        "type": "tool_failure",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": "critic_degraded",
+        "detail": "Coverage could not be validated"
+      },
+      {
+        "type": "budget_exhausted",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": null,
+        "detail": "token budget exhausted"
+      },
+      {
+        "type": "budget_exhausted",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": null,
+        "detail": "token budget exhausted"
+      }
+    ],
+    "corrections": [],
+    "confidence": 0.0,
+    "iterations": 3,
+    "partial": true,
+    "reasoning_trace": [
+      {
+        "step": 1,
+        "agent": "A1",
+        "action": "analyze",
+        "query": "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "Intent: direct; 1 linked entities",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 2,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+        "found": 10,
+        "new_gold_docs": 5,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 4391
+      },
+      {
+        "step": 3,
+        "agent": "A3",
+        "action": "assess",
+        "query": "The Silent Choir",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "The faction that won the War of Drowned Light, The Silent Choir, was identified from the evidence. However, specific individual members who were part of this faction have not yet been provided in the evidence.",
+        "missing": "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+        "latency_ms": 0
+      },
+      {
+        "step": 4,
+        "agent": "A2",
+        "action": "list_mentions",
+        "query": "The Silent Choir",
+        "found": 10,
+        "new_gold_docs": 3,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 4735
+      },
+      {
+        "step": 5,
+        "agent": "A3",
+        "action": "assess",
+        "query": "The Silent Choir",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "The term was discovered through multiple mentions in the evidence. It is relevant as it pertains to the faction that won the War of Drowned Light, and is necessary for deeper exploration of its members.",
+        "missing": "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+        "latency_ms": 0
+      },
+      {
+        "step": 6,
+        "agent": "A2",
+        "action": "graph_neighbors",
+        "query": "The Silent Choir",
+        "found": 118,
+        "new_gold_docs": 0,
+        "learned": "The Silent Choir -located_in-> Vharencrag Fortress [wiki/the_silent_choir.md#infobox:Seat] | The Silent Choir -fought_in-> The War of Drowned Light [wiki/the_silent_choir.md#infobox:Belligerencies] | The Silent Choir -fought_in-> The War of Endless Vigil [wiki/the_silent_choir.md#infobox:Belligerencies] | The Silent Choir -fought_in-> The Winter Reckoning [wiki/the_silent_choir.md#infobox:Belligerencies] | The Silent Choir -has_member-> Ignatz Fellgard [wiki/the_silent_choir.md#infobox:Members] | The Silent Choir -has_member-> Brannoc Palefroth [wiki/the_silent_choir.md#infobox:Members] | The Silent Choir -has_member-> Thessaly Coldwater [wiki/the_silent_choir.md#infobox:Members] | The Silent Choir -has_member-> Lucan Hollowmere [wiki/the_silent_choir.md#infobox:Members] | The Silent Choir -has_member-> Tamsin Greyfen [wiki/the_silent_choir.md#infobox:Members] | The Silent Choir -has_member-> Ossric Ashgrove [wiki/the_silent_choir.md#infobox:Members] | The Silent Choir -located_in-> Vharencrag Fortress [wiki/the_silent_choir.md#prose] | The Silent Choir -won-> The War of Drowned Light [wiki/the_war_of_drowned_light.md#infobox:Victor] | The Silent Choir -located_in-> Gloamreach [the_ashen_chronicles_volume_i_the_kindling_years:c7] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c25] | The Silent Choir -located_in-> Gloamreach [the_ashen_chronicles_volume_i_the_kindling_years:c27] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c35] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c49] | The Silent Choir -wields-> Cindermere Hold [the_ashen_chronicles_volume_i_the_kindling_years:c51] | The Silent Choir -wields-> The Sceptre of Final Winter [the_ashen_chronicles_volume_i_the_kindling_years:c58] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c61] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c85] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c85] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c102] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c102] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c110] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c115] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c115] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c128] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c128] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c138] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c145] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c145] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c145] | The Silent Choir -wields-> The Hollow Edge [the_ashen_chronicles_volume_i_the_kindling_years:c146] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c148] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c148] | The Silent Choir -won-> Ignatz Marrowgate [the_ashen_chronicles_volume_i_the_kindling_years:c149] | The Silent Choir -secret-> Ignatz Marrowgate [the_ashen_chronicles_volume_i_the_kindling_years:c149] | The Silent Choir -located_in-> Gloamreach [the_ashen_chronicles_volume_i_the_kindling_years:c153] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c172] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c172] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c179] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c179] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c192] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c198] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c203] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c203] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c211] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c211] | The Silent Choir -secret-> House Morvain [the_ashen_chronicles_volume_i_the_kindling_years:c213] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c225] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c225] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c244] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c244] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c244] | The Silent Choir -secret-> Hollowvale [the_ashen_chronicles_volume_i_the_kindling_years:c245] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c251] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c251] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c265] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c265] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c276] | The Silent Choir -allied_with-> The Iron-Ring Cartel [the_ashen_chronicles_volume_i_the_kindling_years:c278] | The Silent Choir -allied_with-> The Bleeding Crown [the_ashen_chronicles_volume_i_the_kindling_years:c278] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c285] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c285] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c291] | The Silent Choir -secret-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c291] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c298] | The Silent Choir -commands-> The Iron-Ring Cartel [the_ashen_chronicles_volume_i_the_kindling_years:c303] | The Silent Choir -fought_in-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c312] | The Silent Choir -won-> The War of Drowned Light [the_ashen_chronicles_volume_i_the_kindling_years:c313] | The Silent Choir -fought_in-> The Winter Reckoning [the_ashen_chronicles_volume_ii_the_long_reprisal:c31] | The Silent Choir -fought_in-> Stormmarch [the_ashen_chronicles_volume_ii_the_long_reprisal:c42] | The Silent Choir -fought_in-> Gloammarch [the_ashen_chronicles_volume_ii_the_long_reprisal:c42] | The Silent Choir -secret-> Hollowreach [the_ashen_chronicles_volume_ii_the_long_reprisal:c46] | The Silent Choir -secret-> Hollowreach [the_ashen_chronicles_volume_ii_the_long_reprisal:c48] | The Silent Choir -fought_in-> The Winter Reckoning [the_ashen_chronicles_volume_ii_the_long_reprisal:c74] | The Silent Choir -has_member-> Stormmarch [the_ashen_chronicles_volume_ii_the_long_reprisal:c285] | The Silent Choir -commands-> Corvus Hollowmere the Pale [the_ashen_chronicles_volume_ii_the_long_reprisal:c303] | The Silent Choir -fought_in-> The War of Endless Vigil [the_ashen_chronicles_volume_ii_the_long_reprisal:c313] | The Silent Choir -secret-> Corvus Hollowmere the Pale [the_ashen_chronicles_volume_ii_the_long_reprisal:c317] | The Silent Choir -located_in-> Fenspire [the_ashen_chronicles_volume_iii_a_crown_of_cinders:c56] | The Silent Choir -allied_with-> House Morvain [the_ashen_chronicles_volume_iii_a_crown_of_cinders:c96] | Corvus Hollowmere the Pale -member_of-> The Silent Choir [wiki/corvus_hollowmere_the_pale.md#prose] | Embercrag Fortress -ruled_by-> The Silent Choir [wiki/embercrag_fortress.md#infobox:Ruled by] | Embercrag Fortress -ruled_by-> The Silent Choir [wiki/embercrag_fortress.md#prose] | Isolde Mournvale -member_of-> The Silent Choir [wiki/isolde_mournvale.md#infobox:Member of] | Isolde Mournvale -member_of-> The Silent Choir [wiki/isolde_mournvale.md#prose] | Maelis Harrowick the Pale -member_of-> The Silent Choir [wiki/maelis_harrowick_the_pale.md#prose] | Morwenna Morvain -member_of-> The Silent Choir [wiki/morwenna_morvain.md#infobox:Membership] | Morwenna Morvain -member_of-> The Silent Choir [wiki/morwenna_morvain.md#prose] | Morwenna Vosgard -member_of-> The Silent Choir [wiki/morwenna_vosgard.md#infobox:Affiliation] | Morwenna Vosgard -member_of-> The Silent Choir [wiki/morwenna_vosgard.md#prose] | Ossric Ravensmoor -member_of-> The Silent Choir [wiki/ossric_ravensmoor.md#infobox:Member of] | Ossric Ravensmoor -member_of-> The Silent Choir [wiki/ossric_ravensmoor.md#prose] | Ossric Wrenfield -member_of-> The Silent Choir [wiki/ossric_wrenfield.md#infobox:Affiliation] | Ossric Wrenfield -member_of-> The Silent Choir [wiki/ossric_wrenfield.md#prose] | Palewell Abbey -ruled_by-> The Silent Choir [wiki/palewell_abbey.md#infobox:Ruling power] | Palewell Abbey -ruled_by-> The Silent Choir [wiki/palewell_abbey.md#prose] | Ravena Stormwell -member_of-> The Silent Choir [wiki/ravena_stormwell.md#infobox:Member of] | Ravena Stormwell -member_of-> The Silent Choir [wiki/ravena_stormwell.md#prose] | Vharencrag Fortress -ruled_by-> The Silent Choir [wiki/vharencrag_fortress.md#infobox:Ruled by] | The War of Drowned Light -fought_in-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c5] | The War of Drowned Light -won-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c25] | Corvus Hollowmere the Pale -member_of-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c63] | The War of Drowned Light -bore_since-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c85] | The War of Drowned Light -bore_since-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c110] | The Hollow Edge -wields-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c138] | The Hollow Edge -wields-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c145] | The War of Drowned Light -bore_since-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c198] | Diadem of Sorrowgate -wields-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c257] | The Ashen Vanguard -allied_with-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c278] | House Morvain -allied_with-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c278] | The Sceptre of Final Winter -secret-> The Silent Choir [the_ashen_chronicles_volume_i_the_kindling_years:c307] | The Crown of Burned Names -wields-> The Silent Choir [the_ashen_chronicles_volume_ii_the_long_reprisal:c270] | The Crown of Burned Names -secret-> The Silent Choir [the_ashen_chronicles_volume_ii_the_long_reprisal:c270] | Sabelle Mournvale the Twice-Crowned -commands-> The Silent Choir [the_ashen_chronicles_volume_ii_the_long_reprisal:c274] | Corvus Hollowmere the Pale -member_of-> The Silent Choir [the_ashen_chronicles_volume_ii_the_long_reprisal:c303]",
+        "missing": "",
+        "latency_ms": 546
+      },
+      {
+        "step": 7,
+        "agent": "A3",
+        "action": "assess",
+        "query": "The Crown of Burned Names Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "Latest evidence names The Crown of Burned Names; retrieve its source.",
+        "missing": "Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+        "latency_ms": 0
+      },
+      {
+        "step": 8,
+        "agent": "A4",
+        "action": "merge",
+        "query": null,
+        "found": 16,
+        "new_gold_docs": 0,
+        "learned": "0 detected conflicts; 16 distinct chunks",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 9,
+        "agent": "A5",
+        "action": "compose",
+        "query": null,
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "",
+        "missing": "Which individual was a member of the faction that ultimately won the War of Drowned Light?; Composition could not be verified: Which individual was a member of the faction that ultimately won the War of Drowned Light?",
+        "latency_ms": 0
+      },
+      {
+        "step": 10,
+        "agent": "A6",
+        "action": "verify",
+        "query": null,
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "0 downgraded, 0 removed",
+        "missing": "",
+        "latency_ms": 0
+      }
+    ],
+    "usage": [
+      {
+        "step": 1,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A1: analyze",
+        "tokens_in": 143,
+        "tokens_out": 15,
+        "latency_ms": 1684,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": false
+      },
+      {
+        "step": 3,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 4722,
+        "tokens_out": 137,
+        "latency_ms": 3283,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": true
+      },
+      {
+        "step": 5,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 7199,
+        "tokens_out": 147,
+        "latency_ms": 2984,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": true
+      }
+    ]
+  },
+  "verification": {
+    "claims_checked": 0,
+    "claims_downgraded": 0,
+    "claims_removed": 0,
+    "markers_stripped": 0,
+    "citations_dropped": 0,
+    "confidence_adjustment": 0,
+    "entailment_skipped": false
+  }
+}

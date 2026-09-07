@@ -61,8 +61,15 @@ class Settings(BaseSettings):
 
     # --- budgets (A3 stop rules) -----------------------------------------
     max_steps: int = Field(default=6, ge=1)
-    max_tokens_per_query: int = Field(default=60_000, ge=1)
-    max_wall_ms: int = Field(default=25_000, ge=1)
+    # Sized from a measured 20-question run, not guessed. A single-lookup 1A question
+    # finishes in ~5s and one LLM call; a multi-hop 1B question runs A2/A3 three times
+    # over and merges 16-30 chunks, and was observed at 20-27s. The old 25s ceiling cut
+    # those off mid-composition - "Investigation stopped: LLM deadline exceeded" - and
+    # the old 60,000-token allowance ran out on the same questions. Both limits landed
+    # on 1B and 1C, which are the spine and its contradiction loop, while 1A never
+    # noticed. A budget that only fits the easy half of the corpus is mis-set.
+    max_tokens_per_query: int = Field(default=200_000, ge=1)
+    max_wall_ms: int = Field(default=90_000, ge=1)
 
     @property
     def corpus_root(self) -> Path:
