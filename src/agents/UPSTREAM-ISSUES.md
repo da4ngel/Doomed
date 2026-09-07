@@ -65,59 +65,74 @@ fails with "vector count moved across a search: 2444 -> -1".
 
 Formal acceptance was not relaxed to tolerate a degraded readiness state.
 
-## 2. One image as two sources - DID NOT REPRODUCE, FIXED REGARDLESS
+## 2. One image as two sources - REPRODUCED IN FULL, FIXED
 
-`test_every_conflict_names_two_real_sources` passes here, 22/22 in that file. The
-reason is environmental, not a difference of opinion: **this machine has no Tesseract**,
-so all 70 images carry `ocr_available: false` and `ocr_char_count: 0`. There is no
-6,254 anywhere in the index. Your build has OCR; mine does not.
+**Correction to an earlier draft of this file, which said this machine had no
+Tesseract.** It does: 5.4.0 at `C:\Program Files\Tesseract-OCR`, and `ocr.py` already
+knows to look there. The binary was installed after the index was built, so every
+image record carried a stale `ocr_available: false`. Re-running the image step - all
+70 descriptions served from cache, $0.00 - populated OCR and reproduced your bug
+exactly.
 
-You are right on the substance. Direct inspection confirms **8,254**, gauge maximum
-9,904, and 6,254 is an extraction error rather than an independent archive source.
+**You were right, and the image settles it.** Direct inspection of
+`plate_11_location_mournwatch.png` shows **8,254** on a 0-9,904 gauge, `souls under
+arms`. The vision model read it correctly. Tesseract returned:
 
-Mechanism, which also explains issue 3: the assertion extractor keeps one value per
-(entity, attribute) per chunk, so the two readings cannot collide inside a single
-chunk. They must have been in **two chunks of the same image** - meaning appended OCR
-text pushed those image chunks past the split threshold.
+```
+Mournwatch RECORDED GARRISON STRENGTH 6,254 souls under arms
+```
+
+**at 0.899 mean confidence.** That is the part worth keeping: the misread is
+*confident*. A confidence threshold would not have caught it, so the fix cannot be a
+quality gate - it has to be structural.
+
+With OCR present, `test_every_conflict_names_two_real_sources` now fails here on the
+real index, exactly as you reported: same png on both sides, tier 1 against tier 1.
 
 `detect_conflicts` now treats a cluster whose two sides resolve to the same single
 doc_id, with every assertion from an `img:` chunk, as one picture read twice. It is
 recorded in the new `MergeReport.extraction_disagreements` - preserved for audit, as
 you asked, never rendered as an archive disagreement and never silently discarded.
-The guard is narrow: a control test proves two genuinely different documents still
-conflict normally.
+Against the rebuilt index the layer now returns **6 genuine conflicts and 1 extraction
+disagreement**, so the guard suppressed the false one without touching the real ones.
 
-The regression tests build the case directly from the real indexed plate text with
-the digit misread, so they do not depend on whichever VLM or OCR run is in the index.
-Removing the guard reproduces your failure verbatim:
+Scope, measured across all 70 images: **Mournwatch is the only plate in the corpus
+where OCR and the VLM disagree on a value.** One case - but a tier-1 figure, and the
+1C answers are built out of this layer.
 
-```
-Mournwatch garrison strength names images/plate_11_location_mournwatch.png
-on both sides
-```
+Two further things the OCR run confirmed, both previously asserted:
 
-## 3. Count differences - TWO OF THREE EXPLAINED
+| claim | measured |
+|---|---|
+| `atmo_*` yields no OCR text | 54 of 55 yield nothing |
+| `plate_*` yields clean text | 15/15, 58-147 chars |
+| "Tesseract missed 1,114 entirely" on the Emberdeep trap | it missed **every number on that chart** - 141 chars of labels, no digits at all, at 0.95 confidence, while the VLM recovered all four values including 1,114 |
+
+## 3. Count differences - TWO OF THREE EXPLAINED, ONE HYPOTHESIS DISPROVEN
 
 | | yours | here | verdict |
 |---|---|---|---|
 | entities | 198 | 198 | **agree.** The handbook's 203 was stale; main corrected it before you read it |
 | relations | 379 | 742 | **explained.** 379 is the deterministic wiki graph. The other 363 are LLM-extracted and merged by `python -m src.graph.extract --apply-only`, which landed after this branch forked |
-| chunks | 2,487 | 2,474 | **13 unexplained**, two candidate causes below |
+| chunks | 2,487 | 2,474 | **13 still unexplained** |
 
-The chunker has not changed since the branch point and the corpus is read-only, so
-the code is identical on both sides. That leaves two candidates:
+**A hypothesis this file previously called leading is now disproven.** The idea was
+that appended OCR text pushed image chunks past the split threshold, producing both
+your extra chunks and the same-image conflict. It does not: rebuilt with OCR fully
+populated, the chunker still returns **2,474 chunks, 70 figure chunks** - unchanged.
+Image chunks top out around 1,195 characters and OCR adds at most 147, nowhere near
+the 450-token boundary. The two symptoms have different causes.
 
-- **Tesseract.** OCR text appended to image chunks pushes the largest past the split
-  threshold. The same mechanism issue 2 requires. This is the leading explanation.
-- **The tokenizer.** You were right to name it. `estimate_tokens` fell back to a
-  4-chars-per-token estimate *silently*, and `tiktoken.get_encoding` DOWNLOADS its BPE
-  table on first use, so an offline machine chunks differently from identical inputs.
+That leaves the image descriptions themselves as the remaining candidate: a different
+VLM run produces different `searchable_text`, and figure chunks are the only ones a
+VLM run can move. Ours came from `minimax/minimax-m3:free`, all 70 cached.
 
-The silence was the real defect. The fallback now warns once per process in terms that
-say what it costs, and `TOKENIZER_USED` records which counter actually ran, so a chunk
-count can be traced to its denominator instead of argued about. A test asserts this
-build is genuinely on tiktoken rather than hoping so.
+The tokenizer is no longer a candidate *here* but was worth your raising, and it is
+now traceable rather than silent: `estimate_tokens` fell back to a 4-chars-per-token
+estimate without saying so, and `tiktoken.get_encoding` DOWNLOADS its BPE table on
+first use, so an offline machine chunks differently from identical inputs. It now
+warns once per process and `TOKENIZER_USED` records which counter ran.
 
-Reproducible here: **236 documents, 2,474 chunks, 70 described images (15 figure_plate
-+ 55 wiki_image), 198 entities, 379 wiki relations / 742 after extraction**, tiktoken
-cl100k_base, no Tesseract, Qdrant server mode.
+Reproducible here: **236 documents, 3,134 blocks, 2,474 chunks, 70 described images
+(15 figure_plate + 55 wiki_image, 16 carrying OCR), 198 entities, 379 wiki relations /
+742 after extraction**, tiktoken cl100k_base, Tesseract 5.4.0, Qdrant server mode.
