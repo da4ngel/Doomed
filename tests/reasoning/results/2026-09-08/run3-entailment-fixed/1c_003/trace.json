@@ -1,0 +1,651 @@
+{
+  "trace_id": "tr_a149483d3ae14dce",
+  "question": "In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+  "mode": "auto",
+  "status": "partial",
+  "started_at": "2026-09-07T22:28:11+00:00",
+  "ended_at": "2026-09-07T22:28:13+00:00",
+  "iterations": 10,
+  "reasoning_trace": [
+    {
+      "step": 1,
+      "agent": "A1",
+      "action": "analyze",
+      "query": "In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "Intent: contradiction; 1 linked entities",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+      "found": 10,
+      "new_gold_docs": 6,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "agent": "A3",
+      "action": "assess",
+      "query": "Gauntlet of Sorrowfell",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "This term is relevant as it directly addresses the artifact in question and may yield further information regarding its forging context.",
+      "missing": "In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "Gauntlet of Sorrowfell",
+      "found": 10,
+      "new_gold_docs": 4,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "agent": "A3",
+      "action": "assess",
+      "query": "Gauntlet of Sorrowfell",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "",
+      "missing": "In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "Gauntlet of Sorrowfell",
+      "found": 10,
+      "new_gold_docs": 0,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 7,
+      "agent": "A3",
+      "action": "assess",
+      "query": null,
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "The evidence indicates the forging date of the 'Gauntlet of Sorrowfell' is recorded as 391 AS, making it necessary to present that information clearly.",
+      "missing": "The complete relationship chain for In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "agent": "A4",
+      "action": "merge",
+      "query": null,
+      "found": 17,
+      "new_gold_docs": 0,
+      "learned": "0 detected conflicts; 17 distinct chunks",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 9,
+      "agent": "A5",
+      "action": "compose",
+      "query": null,
+      "found": 1,
+      "new_gold_docs": 0,
+      "learned": "",
+      "missing": "The complete relationship chain for In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+      "latency_ms": 0
+    },
+    {
+      "step": 10,
+      "agent": "A6",
+      "action": "verify",
+      "query": null,
+      "found": 1,
+      "new_gold_docs": 0,
+      "learned": "0 downgraded, 0 removed",
+      "missing": "",
+      "latency_ms": 0
+    }
+  ],
+  "retrieval_evidence": [
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c161",
+          "doc_id": "the_ashen_chronicles_volume_ii_the_long_reprisal"
+        },
+        {
+          "chunk_id": "the_psalter_of_seven_sorrows:c2",
+          "doc_id": "the_psalter_of_seven_sorrows"
+        },
+        {
+          "chunk_id": "gauntlet_of_sorrowfell:c2",
+          "doc_id": "gauntlet_of_sorrowfell"
+        },
+        {
+          "chunk_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary:c46",
+          "doc_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary"
+        },
+        {
+          "chunk_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary:c17",
+          "doc_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary"
+        },
+        {
+          "chunk_id": "gauntlet_of_sorrowfell:c0",
+          "doc_id": "gauntlet_of_sorrowfell"
+        },
+        {
+          "chunk_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary:c16",
+          "doc_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary"
+        },
+        {
+          "chunk_id": "decree_concerning_vharencrag_fortress:c1",
+          "doc_id": "decree_concerning_vharencrag_fortress"
+        },
+        {
+          "chunk_id": "sermon_concerning_ignatz_fellgard:c0",
+          "doc_id": "sermon_concerning_ignatz_fellgard"
+        },
+        {
+          "chunk_id": "gauntlet_of_sorrowfell:c3",
+          "doc_id": "gauntlet_of_sorrowfell"
+        }
+      ],
+      "edges": [],
+      "step": 2
+    },
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "Gauntlet of Sorrowfell",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {
+          "k": 10,
+          "rerank": true,
+          "filters": {
+            "source_type": null,
+            "authority_tier": null,
+            "doc_id": null,
+            "block_type": null
+          }
+        }
+      },
+      "chunks": [
+        {
+          "chunk_id": "img:img_35a683b57e68a543",
+          "doc_id": "wiki/images/atmo_relic_artifact_gauntlet_of_sorrowfell.png"
+        },
+        {
+          "chunk_id": "gauntlet_of_sorrowfell:c0",
+          "doc_id": "gauntlet_of_sorrowfell"
+        },
+        {
+          "chunk_id": "auction_catalogue_concerning_thorncairn:c3",
+          "doc_id": "auction_catalogue_concerning_thorncairn"
+        },
+        {
+          "chunk_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary:c17",
+          "doc_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary"
+        },
+        {
+          "chunk_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary:c16",
+          "doc_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary"
+        },
+        {
+          "chunk_id": "quartermaster_ledger_concerning_gauntlet_of_sorrowfell:c1",
+          "doc_id": "quartermaster_ledger_concerning_gauntlet_of_sorrowfell"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c172",
+          "doc_id": "the_ashen_chronicles_volume_ii_the_long_reprisal"
+        },
+        {
+          "chunk_id": "quartermaster_ledger_concerning_crookvale:c0",
+          "doc_id": "quartermaster_ledger_concerning_crookvale"
+        },
+        {
+          "chunk_id": "quartermaster_ledger_concerning_gauntlet_of_sorrowfell:c0",
+          "doc_id": "quartermaster_ledger_concerning_gauntlet_of_sorrowfell"
+        },
+        {
+          "chunk_id": "gauntlet_of_sorrowfell:c4",
+          "doc_id": "gauntlet_of_sorrowfell"
+        }
+      ],
+      "edges": [],
+      "step": 4
+    },
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "Gauntlet of Sorrowfell",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "img:img_35a683b57e68a543",
+          "doc_id": "wiki/images/atmo_relic_artifact_gauntlet_of_sorrowfell.png"
+        },
+        {
+          "chunk_id": "gauntlet_of_sorrowfell:c0",
+          "doc_id": "gauntlet_of_sorrowfell"
+        },
+        {
+          "chunk_id": "auction_catalogue_concerning_thorncairn:c3",
+          "doc_id": "auction_catalogue_concerning_thorncairn"
+        },
+        {
+          "chunk_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary:c17",
+          "doc_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary"
+        },
+        {
+          "chunk_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary:c16",
+          "doc_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary"
+        },
+        {
+          "chunk_id": "quartermaster_ledger_concerning_gauntlet_of_sorrowfell:c1",
+          "doc_id": "quartermaster_ledger_concerning_gauntlet_of_sorrowfell"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c172",
+          "doc_id": "the_ashen_chronicles_volume_ii_the_long_reprisal"
+        },
+        {
+          "chunk_id": "quartermaster_ledger_concerning_crookvale:c0",
+          "doc_id": "quartermaster_ledger_concerning_crookvale"
+        },
+        {
+          "chunk_id": "quartermaster_ledger_concerning_gauntlet_of_sorrowfell:c0",
+          "doc_id": "quartermaster_ledger_concerning_gauntlet_of_sorrowfell"
+        },
+        {
+          "chunk_id": "gauntlet_of_sorrowfell:c4",
+          "doc_id": "gauntlet_of_sorrowfell"
+        }
+      ],
+      "edges": [],
+      "step": 6
+    }
+  ],
+  "usage": [
+    {
+      "step": 3,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 5015,
+      "tokens_out": 176,
+      "latency_ms": 3252,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    },
+    {
+      "step": 5,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 7785,
+      "tokens_out": 94,
+      "latency_ms": 2301,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    },
+    {
+      "step": 7,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 7850,
+      "tokens_out": 168,
+      "latency_ms": 3118,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    },
+    {
+      "step": 9,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A5: compose",
+      "tokens_in": 7759,
+      "tokens_out": 165,
+      "latency_ms": 2143,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    },
+    {
+      "step": 10,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A6: verify",
+      "tokens_in": 204,
+      "tokens_out": 19,
+      "latency_ms": 1219,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": true
+    }
+  ],
+  "total_cost_usd": 0.0,
+  "total_tokens": 29235,
+  "cache_hits": 4,
+  "packet": {
+    "trace_id": "tr_a149483d3ae14dce",
+    "mode": "agent",
+    "answer_markdown": "The Gauntlet of Sorrowfell was forged in 391 AS.\n\n[cite_d22c4185b9784003] [cite_c0290ebc49ab1e43]\n\nStill unresolved:\n- The complete relationship chain for In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+    "claims": [
+      {
+        "claim_id": "claim_1",
+        "text": "The Gauntlet of Sorrowfell was forged in 391 AS.",
+        "citation_ids": [
+          "cite_d22c4185b9784003",
+          "cite_c0290ebc49ab1e43"
+        ],
+        "support": "single_source",
+        "confidence": 0.0
+      }
+    ],
+    "citations": [
+      {
+        "id": "cite_d22c4185b9784003",
+        "chunk_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary:c16",
+        "doc_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+        "title": "Ashfall Colossus > Chalice of Ashdeep > Gauntlet of Sorrowfell",
+        "page": 11,
+        "bbox": null,
+        "section_path": [
+          "Ashfall Colossus",
+          "Chalice of Ashdeep",
+          "Gauntlet of Sorrowfell"
+        ],
+        "source_type": "codex",
+        "authority_tier": 1,
+        "excerpt": "The authoritative record states plainly: Gauntlet of Sorrowfell's forged is 391 AS.",
+        "excerpt_sha256": "812d20407edb8d300eff4276b034eeec851b101d7ddb1809df19312d3543a792",
+        "score": 0.032002,
+        "relation": "supports"
+      },
+      {
+        "id": "cite_c0290ebc49ab1e43",
+        "chunk_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary:c17",
+        "doc_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+        "title": "Ashfall Colossus > Chalice of Ashdeep > Gauntlet of Sorrowfell",
+        "page": 11,
+        "bbox": null,
+        "section_path": [
+          "Ashfall Colossus",
+          "Chalice of Ashdeep",
+          "Gauntlet of Sorrowfell"
+        ],
+        "source_type": "codex",
+        "authority_tier": 1,
+        "excerpt": "Gauntlet of Sorrowfell - forged: 391 AS.",
+        "excerpt_sha256": "1a1e7d2a365fddf264b88147d72b35b2fa9caf152813d35fc0d15301f997b31a",
+        "score": 0.031778,
+        "relation": "supports"
+      }
+    ],
+    "visuals": [],
+    "evidence_graph": {
+      "nodes": [
+        {
+          "id": "claim_1",
+          "type": "claim",
+          "label": "The Gauntlet of Sorrowfell was forged in 391 AS."
+        },
+        {
+          "id": "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+          "type": "document",
+          "label": "Ashfall Colossus > Chalice of Ashdeep > Gauntlet of Sorrowfell"
+        }
+      ],
+      "edges": [
+        {
+          "from_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+          "to_id": "claim_1",
+          "type": "supports"
+        },
+        {
+          "from_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+          "to_id": "claim_1",
+          "type": "supports"
+        }
+      ],
+      "paths": []
+    },
+    "conflicts": [],
+    "missing_information": [
+      "The complete relationship chain for In which year was the 'Gauntlet of Sorrowfell' actually forged?"
+    ],
+    "warnings": [
+      {
+        "type": "normalization_skipped",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": null,
+        "detail": null
+      }
+    ],
+    "corrections": [],
+    "confidence": 0.0,
+    "iterations": 3,
+    "partial": true,
+    "reasoning_trace": [
+      {
+        "step": 1,
+        "agent": "A1",
+        "action": "analyze",
+        "query": "In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "Intent: contradiction; 1 linked entities",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 2,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+        "found": 10,
+        "new_gold_docs": 6,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 3,
+        "agent": "A3",
+        "action": "assess",
+        "query": "Gauntlet of Sorrowfell",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "This term is relevant as it directly addresses the artifact in question and may yield further information regarding its forging context.",
+        "missing": "In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+        "latency_ms": 0
+      },
+      {
+        "step": 4,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "Gauntlet of Sorrowfell",
+        "found": 10,
+        "new_gold_docs": 4,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 5,
+        "agent": "A3",
+        "action": "assess",
+        "query": "Gauntlet of Sorrowfell",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "",
+        "missing": "In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+        "latency_ms": 0
+      },
+      {
+        "step": 6,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "Gauntlet of Sorrowfell",
+        "found": 10,
+        "new_gold_docs": 0,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 7,
+        "agent": "A3",
+        "action": "assess",
+        "query": null,
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "The evidence indicates the forging date of the 'Gauntlet of Sorrowfell' is recorded as 391 AS, making it necessary to present that information clearly.",
+        "missing": "The complete relationship chain for In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+        "latency_ms": 0
+      },
+      {
+        "step": 8,
+        "agent": "A4",
+        "action": "merge",
+        "query": null,
+        "found": 17,
+        "new_gold_docs": 0,
+        "learned": "0 detected conflicts; 17 distinct chunks",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 9,
+        "agent": "A5",
+        "action": "compose",
+        "query": null,
+        "found": 1,
+        "new_gold_docs": 0,
+        "learned": "",
+        "missing": "The complete relationship chain for In which year was the 'Gauntlet of Sorrowfell' actually forged?",
+        "latency_ms": 0
+      },
+      {
+        "step": 10,
+        "agent": "A6",
+        "action": "verify",
+        "query": null,
+        "found": 1,
+        "new_gold_docs": 0,
+        "learned": "0 downgraded, 0 removed",
+        "missing": "",
+        "latency_ms": 0
+      }
+    ],
+    "usage": [
+      {
+        "step": 3,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 5015,
+        "tokens_out": 176,
+        "latency_ms": 3252,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      },
+      {
+        "step": 5,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 7785,
+        "tokens_out": 94,
+        "latency_ms": 2301,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      },
+      {
+        "step": 7,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 7850,
+        "tokens_out": 168,
+        "latency_ms": 3118,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      },
+      {
+        "step": 9,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A5: compose",
+        "tokens_in": 7759,
+        "tokens_out": 165,
+        "latency_ms": 2143,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      },
+      {
+        "step": 10,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A6: verify",
+        "tokens_in": 204,
+        "tokens_out": 19,
+        "latency_ms": 1219,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": true
+      }
+    ]
+  },
+  "verification": {
+    "claims_checked": 1,
+    "claims_downgraded": 0,
+    "claims_removed": 0,
+    "markers_stripped": 0,
+    "citations_dropped": 0,
+    "confidence_adjustment": 0.0,
+    "entailment_skipped": false
+  }
+}

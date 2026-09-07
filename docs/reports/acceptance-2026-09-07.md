@@ -1,6 +1,7 @@
 # Acceptance run — 20 dev questions, 7 September
 
-First full acceptance run against the real corpus on the merged tree. Artifacts in
+Three full acceptance runs against the real corpus on the merged tree, each after a
+fix the previous run exposed. Artifacts in
 `tests/reasoning/results/2026-09-08/`; the runner's own verdict is
 `manual_review_required`, and this document does not overrule it.
 
@@ -127,6 +128,68 @@ The five `1a_v*` questions show gold coverage 0.00 and recall 0.50 — the evide
 reached A5. That is a retrieval result, and it matches the paraphrase finding already
 recorded in `limitations.md`: expansion seeds on exact entity matches, so a question
 that names nothing we can match falls back to plain hybrid retrieval.
+
+---
+
+---
+
+## Three runs, two fixes, and what each one bought
+
+| run | claims | empty | lexical* | **mean groundedness** | structural errors |
+|---|---|---|---|---|---|
+| 1 — as handed over | 7 | 15 | 5 | **0.250** | 0 |
+| 2 — budgets raised | 13 | 12 | 6 | **0.375** | 0 |
+| 3 — entailment fixed | 13 | **7** | **11** | **0.650** | 0 |
+
+\* lexical is a substring check and is **not** a correctness score. It moved because
+real answers appeared where there had been none, but it must not be quoted as accuracy.
+
+### Fix 1 — the budgets (run 1 → 2)
+
+Six questions gained claims, including both 1C questions. Zero budget stop reasons
+remain in run 2; every `token budget exhausted` and `LLM deadline exceeded` is gone.
+
+### Fix 2 — A6's entailment call was never running (run 2 → 3)
+
+The finding this run existed to produce. OpenAI refuses `response_format:
+json_object` unless the literal word "json" appears in the messages. A6's entailment
+prompt showed the exact shape it wanted and never said the word, so **every**
+entailment call returned 400, the verifier swallowed it as `entailment_skipped`, and
+every non-extractive claim was stamped "Inference (not verified)".
+
+It hid behind a literal-substring fast path: an extractive answer like
+`Emberdeep: 1,114` matches its excerpt verbatim and never needs an LLM call. That is
+why 1A sat at groundedness 1.00 throughout while everything else sat at 0.00, and why
+this looked like a strict verifier rather than a broken one.
+
+Mean groundedness went 0.375 → 0.650 on that one fix. Six answers became verified,
+including both 1C questions:
+
+```
+Gloamreach was founded in 246 AS.   [cite_0c8f83ffa2c999b5]
+Sources disagree about Gloamreach founding year: 246 AS (tier 1) versus
+286 AS (tier 4). Tier 1 outranks tier 4.
+```
+
+No "Inference (not verified)" prefix. The year is answered and the disagreement is
+surfaced and resolved by tier - which is the whole 1C requirement.
+
+### What is left, and it is now a real verdict
+
+Four of seven 1B questions still return nothing, and `1b_007` now says:
+
+```
+No proposed claim had valid supporting evidence
+```
+
+That is A6 **running** and rejecting the claims, not A6 failing to run. A5 composes a
+multi-hop claim and its cited excerpts do not support it. Whether the citation binding
+is wrong or the claim genuinely overreaches is the open question, and it is the honest
+remaining limitation of this system.
+
+Three of the five `1a_v*` variants still fail in retrieval, with gold coverage 0.00 -
+unchanged by either fix, because no amount of reasoning recovers evidence that was
+never retrieved.
 
 ---
 

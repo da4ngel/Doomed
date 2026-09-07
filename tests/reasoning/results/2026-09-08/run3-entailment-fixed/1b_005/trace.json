@@ -1,0 +1,730 @@
+{
+  "trace_id": "tr_b682c18970d8474f",
+  "question": "Which war was won by the organization that included Isolde Mournvale as one of its members?",
+  "mode": "auto",
+  "status": "partial",
+  "started_at": "2026-09-07T22:28:00+00:00",
+  "ended_at": "2026-09-07T22:28:02+00:00",
+  "iterations": 10,
+  "reasoning_trace": [
+    {
+      "step": 1,
+      "agent": "A1",
+      "action": "analyze",
+      "query": "Which war was won by the organization that included Isolde Mournvale as one of its members?",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "Intent: multi_hop; 1 linked entities",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "agent": "A2",
+      "action": "graph_neighbors",
+      "query": "Isolde Mournvale",
+      "found": 4,
+      "new_gold_docs": 0,
+      "learned": "Isolde Mournvale -born_in-> 341 AS [wiki/isolde_mournvale.md#infobox:Born] | Isolde Mournvale -member_of-> The Silent Choir [wiki/isolde_mournvale.md#infobox:Member of] | Isolde Mournvale -located_in-> Stormmarch [wiki/isolde_mournvale.md#infobox:Serves at] | Isolde Mournvale -member_of-> The Silent Choir [wiki/isolde_mournvale.md#prose]",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "agent": "A3",
+      "action": "assess",
+      "query": "The Silent Choir",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "Discovered as the organization related to Isolde Mournvale, allowing further exploration of associated wars and outcomes.",
+      "missing": "What wars were fought by that organization?; Which wars did that organization win?; What other notable figures were involved in that war?; What were the outcomes of the wars won by that organization?; How does Isolde Mournvale's involvement relate to the war won?",
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "The Silent Choir",
+      "found": 10,
+      "new_gold_docs": 5,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "agent": "A3",
+      "action": "assess",
+      "query": "Which war was won by the organization that included Isolde Mournvale as one of its members?",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "Isolde Mournvale was mentioned in the context of her association with The Silent Choir, indicating her relevance to the inquiry about notable figures in the wars.",
+      "missing": "Who is Isolde Mournvale?; What is the significance of Isolde Mournvale in the context of the war?; What other notable figures were involved in that war?; What were the outcomes of the wars won by that organization?; How does Isolde Mournvale's involvement relate to the war won?",
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "Which war was won by the organization that included Isolde Mournvale as one of its members?",
+      "found": 10,
+      "new_gold_docs": 4,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 7,
+      "agent": "A3",
+      "action": "assess",
+      "query": null,
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "The term was recently confirmed as the organization to which Isolde Mournvale belongs, and it is necessary for further exploration of the wars it has fought.",
+      "missing": "What wars were fought by that organization?; Which wars did that organization win?; What is the significance of Isolde Mournvale in the context of the war?; What other notable figures were involved in that war?; What were the outcomes of the wars won by that organization?; How does Isolde Mournvale's involvement relate to the war won?",
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "agent": "A4",
+      "action": "merge",
+      "query": null,
+      "found": 20,
+      "new_gold_docs": 0,
+      "learned": "0 detected conflicts; 20 distinct chunks",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 9,
+      "agent": "A5",
+      "action": "compose",
+      "query": null,
+      "found": 2,
+      "new_gold_docs": 0,
+      "learned": "",
+      "missing": "What wars were fought by that organization?; Which wars did that organization win?; What is the significance of Isolde Mournvale in the context of the war?; What other notable figures were involved in that war?; What were the outcomes of the wars won by that organization?; How does Isolde Mournvale's involvement relate to the war won?",
+      "latency_ms": 0
+    },
+    {
+      "step": 10,
+      "agent": "A6",
+      "action": "verify",
+      "query": null,
+      "found": 2,
+      "new_gold_docs": 0,
+      "learned": "0 downgraded, 0 removed",
+      "missing": "",
+      "latency_ms": 0
+    }
+  ],
+  "retrieval_evidence": [
+    {
+      "action": {
+        "action": "graph_neighbors",
+        "query": "Isolde Mournvale",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {
+          "entity_id": "ent_isolde_mournvale",
+          "hops": 1
+        }
+      },
+      "chunks": [],
+      "edges": [
+        {
+          "subject_id": "ent_isolde_mournvale",
+          "subject": "Isolde Mournvale",
+          "predicate": "born_in",
+          "object_id": "ent_341_as",
+          "object": "341 AS",
+          "evidence_chunk_id": "wiki/isolde_mournvale.md#infobox:Born",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_isolde_mournvale",
+          "subject": "Isolde Mournvale",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/isolde_mournvale.md#infobox:Member of",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_isolde_mournvale",
+          "subject": "Isolde Mournvale",
+          "predicate": "located_in",
+          "object_id": "ent_stormmarch",
+          "object": "Stormmarch",
+          "evidence_chunk_id": "wiki/isolde_mournvale.md#infobox:Serves at",
+          "authority_tier": 2,
+          "qualifier": null
+        },
+        {
+          "subject_id": "ent_isolde_mournvale",
+          "subject": "Isolde Mournvale",
+          "predicate": "member_of",
+          "object_id": "ent_silent_choir",
+          "object": "The Silent Choir",
+          "evidence_chunk_id": "wiki/isolde_mournvale.md#prose",
+          "authority_tier": 2,
+          "qualifier": null
+        }
+      ],
+      "step": 2
+    },
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "The Silent Choir",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "the_silent_choir:c0",
+          "doc_id": "the_silent_choir"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c74",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c73",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c76",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_silent_choir:c5",
+          "doc_id": "the_silent_choir"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c309",
+          "doc_id": "the_ashen_chronicles_volume_i_the_kindling_years"
+        },
+        {
+          "chunk_id": "letter_concerning_the_silent_choir:c0",
+          "doc_id": "letter_concerning_the_silent_choir"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_ii_the_long_reprisal:c75",
+          "doc_id": "the_ashen_chronicles_volume_ii_the_long_reprisal"
+        },
+        {
+          "chunk_id": "the_silent_choir:c2",
+          "doc_id": "the_silent_choir"
+        },
+        {
+          "chunk_id": "the_silent_choir:c4",
+          "doc_id": "the_silent_choir"
+        }
+      ],
+      "edges": [],
+      "step": 4
+    },
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "Which war was won by the organization that included Isolde Mournvale as one of its members?",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "the_ashen_vanguard:c4",
+          "doc_id": "the_ashen_vanguard"
+        },
+        {
+          "chunk_id": "isolde_mournvale:c2",
+          "doc_id": "isolde_mournvale"
+        },
+        {
+          "chunk_id": "isolde_mournvale:c0",
+          "doc_id": "isolde_mournvale"
+        },
+        {
+          "chunk_id": "the_accord_of_mournthrone:c0",
+          "doc_id": "the_accord_of_mournthrone"
+        },
+        {
+          "chunk_id": "the_ashen_vanguard:c0",
+          "doc_id": "the_ashen_vanguard"
+        },
+        {
+          "chunk_id": "auction_catalogue_concerning_isolde_mournvale:c0",
+          "doc_id": "auction_catalogue_concerning_isolde_mournvale"
+        },
+        {
+          "chunk_id": "isolde_mournvale:c3",
+          "doc_id": "isolde_mournvale"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c277",
+          "doc_id": "the_ashen_chronicles_volume_i_the_kindling_years"
+        },
+        {
+          "chunk_id": "isolde_mournvale:c1",
+          "doc_id": "isolde_mournvale"
+        },
+        {
+          "chunk_id": "isolde_mournvale:c4",
+          "doc_id": "isolde_mournvale"
+        }
+      ],
+      "edges": [],
+      "step": 6
+    }
+  ],
+  "usage": [
+    {
+      "step": 1,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A1: analyze",
+      "tokens_in": 143,
+      "tokens_out": 123,
+      "latency_ms": 1878,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    },
+    {
+      "step": 3,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 1105,
+      "tokens_out": 342,
+      "latency_ms": 4239,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    },
+    {
+      "step": 5,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 4551,
+      "tokens_out": 396,
+      "latency_ms": 7241,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    },
+    {
+      "step": 7,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 8620,
+      "tokens_out": 740,
+      "latency_ms": 8146,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    },
+    {
+      "step": 9,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A5: compose",
+      "tokens_in": 8246,
+      "tokens_out": 200,
+      "latency_ms": 2821,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    },
+    {
+      "step": 10,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A6: verify",
+      "tokens_in": 193,
+      "tokens_out": 19,
+      "latency_ms": 1308,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": true
+    }
+  ],
+  "total_cost_usd": 0.0,
+  "total_tokens": 24678,
+  "cache_hits": 5,
+  "packet": {
+    "trace_id": "tr_b682c18970d8474f",
+    "mode": "graph",
+    "answer_markdown": "The Silent Choir was the victor of The War of Drowned Light.\n\n[cite_2ac82c803c11e1ec]\n\n[[Isolde Mournvale]] is a member of [[The Silent Choir]].\n\n[cite_f5fa46c20c768099]\n\nStill unresolved:\n- What wars were fought by that organization?\n- Which wars did that organization win?\n- What is the significance of Isolde Mournvale in the context of the war?\n- What other notable figures were involved in that war?\n- What were the outcomes of the wars won by that organization?\n- How does Isolde Mournvale's involvement relate to the war won?",
+    "claims": [
+      {
+        "claim_id": "claim_1",
+        "text": "The Silent Choir was the victor of The War of Drowned Light.",
+        "citation_ids": [
+          "cite_2ac82c803c11e1ec"
+        ],
+        "support": "single_source",
+        "confidence": 0.0
+      },
+      {
+        "claim_id": "claim_2",
+        "text": "[[Isolde Mournvale]] is a member of [[The Silent Choir]].",
+        "citation_ids": [
+          "cite_f5fa46c20c768099"
+        ],
+        "support": "single_source",
+        "confidence": 0.0
+      }
+    ],
+    "citations": [
+      {
+        "id": "cite_2ac82c803c11e1ec",
+        "chunk_id": "the_annals_of_the_ashen_era:c76",
+        "doc_id": "the_annals_of_the_ashen_era",
+        "title": "House Morvain > Registry: Aldous Wrenfield the Last Warden > The Silent Choir > War Register",
+        "page": 68,
+        "bbox": null,
+        "section_path": [
+          "House Morvain",
+          "Registry: Aldous Wrenfield the Last Warden",
+          "The Silent Choir",
+          "War Register"
+        ],
+        "source_type": "codex",
+        "authority_tier": 1,
+        "excerpt": "The Silent Choir was belligerent in The War of Drowned Light and was victor of The War of Drowned Light.",
+        "excerpt_sha256": "7334d6e936f8504eb9186cd694b56960cb7f9e86d945730f2c04cc7c55120e8f",
+        "score": 0.031054,
+        "relation": "supports"
+      },
+      {
+        "id": "cite_f5fa46c20c768099",
+        "chunk_id": "isolde_mournvale:c3",
+        "doc_id": "isolde_mournvale",
+        "title": "[[Isolde Mournvale]] (character) > Relationships & Affiliations",
+        "page": 1,
+        "bbox": null,
+        "section_path": [
+          "[[Isolde Mournvale]] (character)",
+          "Relationships & Affiliations"
+        ],
+        "source_type": "wiki",
+        "authority_tier": 2,
+        "excerpt": "[[Isolde Mournvale]] is a member of [[The Silent Choir]].",
+        "excerpt_sha256": "2ea4765ba652bc85d30627199b6b98ac1b8eb13247930a60c23cd0d1f966d9aa",
+        "score": 0.027109,
+        "relation": "supports"
+      }
+    ],
+    "visuals": [],
+    "evidence_graph": {
+      "nodes": [
+        {
+          "id": "ent_isolde_mournvale",
+          "type": "entity",
+          "label": "Isolde Mournvale"
+        },
+        {
+          "id": "ent_341_as",
+          "type": "entity",
+          "label": "341 AS"
+        },
+        {
+          "id": "ent_silent_choir",
+          "type": "entity",
+          "label": "The Silent Choir"
+        },
+        {
+          "id": "ent_stormmarch",
+          "type": "entity",
+          "label": "Stormmarch"
+        },
+        {
+          "id": "claim_1",
+          "type": "claim",
+          "label": "The Silent Choir was the victor of The War of Drowned Light."
+        },
+        {
+          "id": "the_annals_of_the_ashen_era",
+          "type": "document",
+          "label": "House Morvain > Registry: Aldous Wrenfield the Last Warden > The Silent Choir > War Register"
+        },
+        {
+          "id": "claim_2",
+          "type": "claim",
+          "label": "[[Isolde Mournvale]] is a member of [[The Silent Choir]]."
+        },
+        {
+          "id": "isolde_mournvale",
+          "type": "document",
+          "label": "[[Isolde Mournvale]] (character) > Relationships & Affiliations"
+        }
+      ],
+      "edges": [
+        {
+          "from_id": "ent_isolde_mournvale",
+          "to_id": "ent_341_as",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_isolde_mournvale",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_isolde_mournvale",
+          "to_id": "ent_stormmarch",
+          "type": "relates"
+        },
+        {
+          "from_id": "ent_isolde_mournvale",
+          "to_id": "ent_silent_choir",
+          "type": "relates"
+        },
+        {
+          "from_id": "the_annals_of_the_ashen_era",
+          "to_id": "claim_1",
+          "type": "supports"
+        },
+        {
+          "from_id": "isolde_mournvale",
+          "to_id": "claim_2",
+          "type": "supports"
+        }
+      ],
+      "paths": []
+    },
+    "conflicts": [],
+    "missing_information": [
+      "What wars were fought by that organization?",
+      "Which wars did that organization win?",
+      "What is the significance of Isolde Mournvale in the context of the war?",
+      "What other notable figures were involved in that war?",
+      "What were the outcomes of the wars won by that organization?",
+      "How does Isolde Mournvale's involvement relate to the war won?"
+    ],
+    "warnings": [
+      {
+        "type": "normalization_skipped",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": null,
+        "detail": null
+      }
+    ],
+    "corrections": [],
+    "confidence": 0.0,
+    "iterations": 3,
+    "partial": true,
+    "reasoning_trace": [
+      {
+        "step": 1,
+        "agent": "A1",
+        "action": "analyze",
+        "query": "Which war was won by the organization that included Isolde Mournvale as one of its members?",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "Intent: multi_hop; 1 linked entities",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 2,
+        "agent": "A2",
+        "action": "graph_neighbors",
+        "query": "Isolde Mournvale",
+        "found": 4,
+        "new_gold_docs": 0,
+        "learned": "Isolde Mournvale -born_in-> 341 AS [wiki/isolde_mournvale.md#infobox:Born] | Isolde Mournvale -member_of-> The Silent Choir [wiki/isolde_mournvale.md#infobox:Member of] | Isolde Mournvale -located_in-> Stormmarch [wiki/isolde_mournvale.md#infobox:Serves at] | Isolde Mournvale -member_of-> The Silent Choir [wiki/isolde_mournvale.md#prose]",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 3,
+        "agent": "A3",
+        "action": "assess",
+        "query": "The Silent Choir",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "Discovered as the organization related to Isolde Mournvale, allowing further exploration of associated wars and outcomes.",
+        "missing": "What wars were fought by that organization?; Which wars did that organization win?; What other notable figures were involved in that war?; What were the outcomes of the wars won by that organization?; How does Isolde Mournvale's involvement relate to the war won?",
+        "latency_ms": 0
+      },
+      {
+        "step": 4,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "The Silent Choir",
+        "found": 10,
+        "new_gold_docs": 5,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 5,
+        "agent": "A3",
+        "action": "assess",
+        "query": "Which war was won by the organization that included Isolde Mournvale as one of its members?",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "Isolde Mournvale was mentioned in the context of her association with The Silent Choir, indicating her relevance to the inquiry about notable figures in the wars.",
+        "missing": "Who is Isolde Mournvale?; What is the significance of Isolde Mournvale in the context of the war?; What other notable figures were involved in that war?; What were the outcomes of the wars won by that organization?; How does Isolde Mournvale's involvement relate to the war won?",
+        "latency_ms": 0
+      },
+      {
+        "step": 6,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "Which war was won by the organization that included Isolde Mournvale as one of its members?",
+        "found": 10,
+        "new_gold_docs": 4,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 7,
+        "agent": "A3",
+        "action": "assess",
+        "query": null,
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "The term was recently confirmed as the organization to which Isolde Mournvale belongs, and it is necessary for further exploration of the wars it has fought.",
+        "missing": "What wars were fought by that organization?; Which wars did that organization win?; What is the significance of Isolde Mournvale in the context of the war?; What other notable figures were involved in that war?; What were the outcomes of the wars won by that organization?; How does Isolde Mournvale's involvement relate to the war won?",
+        "latency_ms": 0
+      },
+      {
+        "step": 8,
+        "agent": "A4",
+        "action": "merge",
+        "query": null,
+        "found": 20,
+        "new_gold_docs": 0,
+        "learned": "0 detected conflicts; 20 distinct chunks",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 9,
+        "agent": "A5",
+        "action": "compose",
+        "query": null,
+        "found": 2,
+        "new_gold_docs": 0,
+        "learned": "",
+        "missing": "What wars were fought by that organization?; Which wars did that organization win?; What is the significance of Isolde Mournvale in the context of the war?; What other notable figures were involved in that war?; What were the outcomes of the wars won by that organization?; How does Isolde Mournvale's involvement relate to the war won?",
+        "latency_ms": 0
+      },
+      {
+        "step": 10,
+        "agent": "A6",
+        "action": "verify",
+        "query": null,
+        "found": 2,
+        "new_gold_docs": 0,
+        "learned": "0 downgraded, 0 removed",
+        "missing": "",
+        "latency_ms": 0
+      }
+    ],
+    "usage": [
+      {
+        "step": 1,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A1: analyze",
+        "tokens_in": 143,
+        "tokens_out": 123,
+        "latency_ms": 1878,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      },
+      {
+        "step": 3,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 1105,
+        "tokens_out": 342,
+        "latency_ms": 4239,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      },
+      {
+        "step": 5,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 4551,
+        "tokens_out": 396,
+        "latency_ms": 7241,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      },
+      {
+        "step": 7,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 8620,
+        "tokens_out": 740,
+        "latency_ms": 8146,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      },
+      {
+        "step": 9,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A5: compose",
+        "tokens_in": 8246,
+        "tokens_out": 200,
+        "latency_ms": 2821,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      },
+      {
+        "step": 10,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A6: verify",
+        "tokens_in": 193,
+        "tokens_out": 19,
+        "latency_ms": 1308,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": true
+      }
+    ]
+  },
+  "verification": {
+    "claims_checked": 2,
+    "claims_downgraded": 0,
+    "claims_removed": 0,
+    "markers_stripped": 0,
+    "citations_dropped": 0,
+    "confidence_adjustment": 0.0,
+    "entailment_skipped": false
+  }
+}

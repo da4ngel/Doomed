@@ -1,0 +1,599 @@
+{
+  "trace_id": "tr_b43b14e7e5d84b6e",
+  "question": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+  "mode": "auto",
+  "status": "partial",
+  "started_at": "2026-09-07T22:28:03+00:00",
+  "ended_at": "2026-09-07T22:28:03+00:00",
+  "iterations": 10,
+  "reasoning_trace": [
+    {
+      "step": 1,
+      "agent": "A1",
+      "action": "analyze",
+      "query": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "Intent: direct; 1 linked entities",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+      "found": 10,
+      "new_gold_docs": 6,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "agent": "A3",
+      "action": "assess",
+      "query": "The Iron-Ring Cartel",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "The Iron-Ring Cartel is confirmed as the group to which Ederon Fellgard belongs, making it a relevant term to search for information regarding any accords they might have won.",
+      "missing": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "The Iron-Ring Cartel",
+      "found": 10,
+      "new_gold_docs": 2,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "agent": "A3",
+      "action": "assess",
+      "query": "The Leaden Accord",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "The Iron-Ring Cartel, which Ederon Fellgard is a member of, is recorded as a victor in The Leaden Accord.",
+      "missing": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "The Leaden Accord",
+      "found": 10,
+      "new_gold_docs": 4,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 7,
+      "agent": "A3",
+      "action": "assess",
+      "query": null,
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "This term was discovered during the evidence review regarding the faction and its conflict.",
+      "missing": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "agent": "A4",
+      "action": "merge",
+      "query": null,
+      "found": 30,
+      "new_gold_docs": 0,
+      "learned": "0 detected conflicts; 30 distinct chunks",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 9,
+      "agent": "A5",
+      "action": "compose",
+      "query": null,
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "",
+      "missing": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?; No proposed claim had valid supporting evidence: Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+      "latency_ms": 0
+    },
+    {
+      "step": 10,
+      "agent": "A6",
+      "action": "verify",
+      "query": null,
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "0 downgraded, 0 removed",
+      "missing": "",
+      "latency_ms": 0
+    }
+  ],
+  "retrieval_evidence": [
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "ederon_fellgard:c0",
+          "doc_id": "ederon_fellgard"
+        },
+        {
+          "chunk_id": "ederon_fellgard:c3",
+          "doc_id": "ederon_fellgard"
+        },
+        {
+          "chunk_id": "ederon_fellgard:c4",
+          "doc_id": "ederon_fellgard"
+        },
+        {
+          "chunk_id": "morwenna_ashgrove:c0",
+          "doc_id": "morwenna_ashgrove"
+        },
+        {
+          "chunk_id": "ederon_fellgard:c2",
+          "doc_id": "ederon_fellgard"
+        },
+        {
+          "chunk_id": "the_bleeding_crown:c3",
+          "doc_id": "the_bleeding_crown"
+        },
+        {
+          "chunk_id": "isolde_fellgard_the_unforgiven:c4",
+          "doc_id": "isolde_fellgard_the_unforgiven"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c15",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_bleeding_crown:c4",
+          "doc_id": "the_bleeding_crown"
+        },
+        {
+          "chunk_id": "auction_catalogue_concerning_lucan_hollowmere:c1",
+          "doc_id": "auction_catalogue_concerning_lucan_hollowmere"
+        }
+      ],
+      "edges": [],
+      "step": 2
+    },
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "The Iron-Ring Cartel",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {
+          "k": 10,
+          "rerank": true,
+          "filters": {
+            "source_type": null,
+            "authority_tier": null,
+            "doc_id": null,
+            "block_type": null
+          }
+        }
+      },
+      "chunks": [
+        {
+          "chunk_id": "the_iron_ring_cartel:c0",
+          "doc_id": "the_iron_ring_cartel"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c68",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "quartermaster_ledger_concerning_bryony_nightbrook:c2",
+          "doc_id": "quartermaster_ledger_concerning_bryony_nightbrook"
+        },
+        {
+          "chunk_id": "quartermaster_ledger_concerning_bryony_nightbrook:c3",
+          "doc_id": "quartermaster_ledger_concerning_bryony_nightbrook"
+        },
+        {
+          "chunk_id": "morwenna_ashgrove:c4",
+          "doc_id": "morwenna_ashgrove"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c69",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_iron_ring_cartel:c2",
+          "doc_id": "the_iron_ring_cartel"
+        },
+        {
+          "chunk_id": "the_iron_ring_cartel:c4",
+          "doc_id": "the_iron_ring_cartel"
+        },
+        {
+          "chunk_id": "the_iron_ring_cartel:c5",
+          "doc_id": "the_iron_ring_cartel"
+        },
+        {
+          "chunk_id": "the_iron_ring_cartel:c3",
+          "doc_id": "the_iron_ring_cartel"
+        }
+      ],
+      "edges": [],
+      "step": 4
+    },
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "The Leaden Accord",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "the_leaden_accord:c0",
+          "doc_id": "the_leaden_accord"
+        },
+        {
+          "chunk_id": "the_annals_of_the_ashen_era:c70",
+          "doc_id": "the_annals_of_the_ashen_era"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_iv_the_silent_accounting:c252",
+          "doc_id": "the_ashen_chronicles_volume_iv_the_silent_accounting"
+        },
+        {
+          "chunk_id": "the_leaden_accord:c2",
+          "doc_id": "the_leaden_accord"
+        },
+        {
+          "chunk_id": "the_leaden_accord:c5",
+          "doc_id": "the_leaden_accord"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c96",
+          "doc_id": "the_ashen_chronicles_volume_i_the_kindling_years"
+        },
+        {
+          "chunk_id": "the_leaden_accord:c4",
+          "doc_id": "the_leaden_accord"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_iv_the_silent_accounting:c153",
+          "doc_id": "the_ashen_chronicles_volume_iv_the_silent_accounting"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c97",
+          "doc_id": "the_ashen_chronicles_volume_i_the_kindling_years"
+        },
+        {
+          "chunk_id": "lantern_moth_swarm:c1",
+          "doc_id": "lantern_moth_swarm"
+        }
+      ],
+      "edges": [],
+      "step": 6
+    }
+  ],
+  "usage": [
+    {
+      "step": 1,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A1: analyze",
+      "tokens_in": 143,
+      "tokens_out": 15,
+      "latency_ms": 1477,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    },
+    {
+      "step": 3,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 4785,
+      "tokens_out": 193,
+      "latency_ms": 4807,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    },
+    {
+      "step": 5,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 9094,
+      "tokens_out": 129,
+      "latency_ms": 3682,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    },
+    {
+      "step": 7,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 13204,
+      "tokens_out": 328,
+      "latency_ms": 4745,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    },
+    {
+      "step": 9,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A5: compose",
+      "tokens_in": 12806,
+      "tokens_out": 343,
+      "latency_ms": 5481,
+      "cost_usd": 0.0,
+      "cache": "hit",
+      "fallback_used": true
+    }
+  ],
+  "total_cost_usd": 0.0,
+  "total_tokens": 41040,
+  "cache_hits": 5,
+  "packet": {
+    "trace_id": "tr_b43b14e7e5d84b6e",
+    "mode": "agent",
+    "answer_markdown": "I could not establish an answer from the retrieved evidence.\n\nStill unresolved:\n- Which accord was ultimately won by the faction of which Ederon Fellgard is a member?\n- No proposed claim had valid supporting evidence: Which accord was ultimately won by the faction of which Ederon Fellgard is a member?\n- One or more requested facts could not be verified against their cited evidence.",
+    "claims": [],
+    "citations": [],
+    "visuals": [],
+    "evidence_graph": {
+      "nodes": [],
+      "edges": [],
+      "paths": []
+    },
+    "conflicts": [],
+    "missing_information": [
+      "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+      "No proposed claim had valid supporting evidence: Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+      "One or more requested facts could not be verified against their cited evidence."
+    ],
+    "warnings": [
+      {
+        "type": "claim_downgraded",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": "removed",
+        "detail": "Proposed claim cites an absent chunk or fabricated quote"
+      },
+      {
+        "type": "claim_downgraded",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": "removed",
+        "detail": "Proposed claim cites an absent chunk or fabricated quote"
+      },
+      {
+        "type": "normalization_skipped",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": null,
+        "detail": null
+      }
+    ],
+    "corrections": [],
+    "confidence": 0.0,
+    "iterations": 3,
+    "partial": true,
+    "reasoning_trace": [
+      {
+        "step": 1,
+        "agent": "A1",
+        "action": "analyze",
+        "query": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "Intent: direct; 1 linked entities",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 2,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+        "found": 10,
+        "new_gold_docs": 6,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 3,
+        "agent": "A3",
+        "action": "assess",
+        "query": "The Iron-Ring Cartel",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "The Iron-Ring Cartel is confirmed as the group to which Ederon Fellgard belongs, making it a relevant term to search for information regarding any accords they might have won.",
+        "missing": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+        "latency_ms": 0
+      },
+      {
+        "step": 4,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "The Iron-Ring Cartel",
+        "found": 10,
+        "new_gold_docs": 2,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 5,
+        "agent": "A3",
+        "action": "assess",
+        "query": "The Leaden Accord",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "The Iron-Ring Cartel, which Ederon Fellgard is a member of, is recorded as a victor in The Leaden Accord.",
+        "missing": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+        "latency_ms": 0
+      },
+      {
+        "step": 6,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "The Leaden Accord",
+        "found": 10,
+        "new_gold_docs": 4,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 7,
+        "agent": "A3",
+        "action": "assess",
+        "query": null,
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "This term was discovered during the evidence review regarding the faction and its conflict.",
+        "missing": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+        "latency_ms": 0
+      },
+      {
+        "step": 8,
+        "agent": "A4",
+        "action": "merge",
+        "query": null,
+        "found": 30,
+        "new_gold_docs": 0,
+        "learned": "0 detected conflicts; 30 distinct chunks",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 9,
+        "agent": "A5",
+        "action": "compose",
+        "query": null,
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "",
+        "missing": "Which accord was ultimately won by the faction of which Ederon Fellgard is a member?; No proposed claim had valid supporting evidence: Which accord was ultimately won by the faction of which Ederon Fellgard is a member?",
+        "latency_ms": 0
+      },
+      {
+        "step": 10,
+        "agent": "A6",
+        "action": "verify",
+        "query": null,
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "0 downgraded, 0 removed",
+        "missing": "",
+        "latency_ms": 0
+      }
+    ],
+    "usage": [
+      {
+        "step": 1,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A1: analyze",
+        "tokens_in": 143,
+        "tokens_out": 15,
+        "latency_ms": 1477,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      },
+      {
+        "step": 3,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 4785,
+        "tokens_out": 193,
+        "latency_ms": 4807,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      },
+      {
+        "step": 5,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 9094,
+        "tokens_out": 129,
+        "latency_ms": 3682,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      },
+      {
+        "step": 7,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 13204,
+        "tokens_out": 328,
+        "latency_ms": 4745,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      },
+      {
+        "step": 9,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A5: compose",
+        "tokens_in": 12806,
+        "tokens_out": 343,
+        "latency_ms": 5481,
+        "cost_usd": 0.0,
+        "cache": "hit",
+        "fallback_used": true
+      }
+    ]
+  },
+  "verification": {
+    "claims_checked": 0,
+    "claims_downgraded": 0,
+    "claims_removed": 0,
+    "markers_stripped": 0,
+    "citations_dropped": 0,
+    "confidence_adjustment": 0,
+    "entailment_skipped": false
+  }
+}
