@@ -66,17 +66,14 @@ def test_readiness_survives_a_real_search() -> None:
     """
     before = client.get("/v1/ready").json()
 
-    search = client.post(
-        "/v1/search", json={"query": "Greyfell Citadel garrison strength", "k": 5}
-    )
+    search = client.post("/v1/search", json={"query": "Greyfell Citadel garrison strength", "k": 5})
     assert search.status_code == 200, search.text
     assert search.json()["hits"], "the search must actually return evidence"
 
     after = client.get("/v1/ready").json()
 
     assert after["vectors"] == before["vectors"], (
-        f"vector count moved across a search: "
-        f"{before['vectors']} -> {after['vectors']}"
+        f"vector count moved across a search: " f"{before['vectors']} -> {after['vectors']}"
     )
     assert after["status"] == before["status"]
     assert after["vectors"] > 0, "a searchable index cannot report zero or unreachable"
