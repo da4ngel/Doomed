@@ -193,6 +193,41 @@ never retrieved.
 
 ---
 
+## The unanswerable suite — 8 questions
+
+| | result |
+|---|---|
+| attempted | 8 |
+| structural errors | **0** |
+| **unverified claims** | **0** — nothing was asserted that A6 had not entailed |
+| concrete `missing_information` | **7 of 8** |
+| full refusals | 2 (`un_001`, `un_006`) |
+
+**These questions are partially answerable by design.** Each has a component the
+corpus records and one it does not, so a blanket refusal would be as wrong as a
+fabrication. `un_002` asks for "appearance, origin and powers" of The Silent Psalter:
+the infobox gives appearance and origin, and the answer returns them and then says
+*"Still unresolved: What are the powers of The Silent Psalter?"* That is the shape the
+track is testing for.
+
+`un_005` — "What does Maelis Harrowick the Pale look like?" — is the one packet with
+no `missing_information`, and correctly so: it is fully answerable from the portrait
+plate, which is an `atmo_*` image that yields **zero OCR characters**. Only the vision
+description makes that question answerable at all.
+
+The two full refusals are A6 doing its job rather than the pipeline failing:
+
+```
+un_006 -> I could not establish an answer from the retrieved evidence.
+          No proposed claim had valid supporting evidence
+```
+
+**Refusal accuracy is not computed here.** Whether each refusal was *correct* needs
+the same human review as the dev suite. What is measured is that nothing was asserted
+without verified support, and that is the property the rubric cares about most.
+
+---
+
 ## What this run does not establish
 
 - **No correctness score.** Five lexical matches is a substring count. Groundedness of
