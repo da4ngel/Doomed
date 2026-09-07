@@ -1,6 +1,6 @@
 # Reasoning layer handoff
 
-The P2 service implements A1–A6, the bounded orchestrator, mode routing, durable traces, and the UI. P1's vocabulary endpoint and conflict detector are now integrated through their actual contracts. This is not yet a validated competition submission: the raw corpus is absent locally, and live knowledge/chat acceptance targets were unavailable at the latest preflight.
+The P2 service implements A1–A6, the bounded orchestrator, mode routing, durable traces, and the UI. P1's vocabulary endpoint and conflict detector are now integrated through their actual contracts. This is not yet a validated competition submission: the raw corpus has now been located outside the checkout; local knowledge indexing and real answer validation are still pending.
 
 ## Run against the knowledge service
 
@@ -20,7 +20,7 @@ The UI polls the job trace, shows citations with source excerpts, places verifie
 
 1. A1 and A4 share one validated `EntityVocabularyResponse` from `GET /v1/graph/entities?limit=1000`. The service rejects truncated or empty named-entity vocabularies and filters out `Title` records. Failed vocabulary leaves names unchanged with `normalization_skipped`.
 2. `ConflictAdapter` translates original `SearchHit` evidence into frozen `Chunk` objects and calls P1's `detect_conflicts(chunks, typed_entities)`. A4 preserves its conflicts and reliability notes. The default chat factory installs this adapter automatically; a custom detector remains injectable. Fixture tests cover founding/forging discrepancies and numeric versus missing attunement values. Actual planted conflict 1a_004 still requires live corpus evaluation.
-3. All 20 dev-question texts are now available in P1's checked-in gold suites and pass an A1 smoke test. The original raw `sample_questions.json` acceptance test remains skipped because the corpus is missing. Unicode punctuation links to canonical entities without changing the user's text; both 1C questions route to contradiction.
+3. All 20 dev-question texts are now available in P1's checked-in gold suites and pass an A1 smoke test. The original raw `sample_questions.json` acceptance test now passes when `ASHEN_SAMPLE_QUESTIONS` points to the supplied file. Unicode punctuation links to canonical entities without changing the user's text; both 1C questions route to contradiction.
 4. The graph seam returns sourced edges but does not include full citation document metadata. A2 keeps those edges and their evidence IDs; later search supplies actual source chunks. It never fabricates documents or chunks from graph edges. The asset metadata seam lacks page dimensions/page count, so A6 checks against returned source pages and drops unverifiable bounding boxes. Global registry/page-bound verification requires an upstream metadata seam; it is not claimed here.
 5. `read_section` does not exist. A2 emits a tool failure for it, and A3's prompt excludes it. `list_mentions` is implemented as search on the supplied entity name, as the handbook specifies.
 
@@ -96,4 +96,12 @@ The 6 September integration preflight returned `blocked`, with zero questions at
 
 Human review can now be summarized with `python -m tests.reasoning.review_report RUN_DIRECTORY` after filling in `human-review.csv`. Blank judgments remain unreviewed; failed requests cannot become scored successes, and blocked/empty runs cannot become completed reviews. `review_complete` describes review coverage, not answer acceptance. See [DELIVERY-CHECKLIST.md](DELIVERY-CHECKLIST.md) for the real-corpus demonstration and submission sequence.
 
-CI follow-up: the hosted deadline test previously raced a 20 ms setup window; it now advances an injected clock after the first failed transport call. Hosted cache cleanup also timed out on a lock held by the long-running `uv run` fixture. CI now starts the installed uvicorn executable directly and stops the fixture before cache cleanup. These fixes require confirmation on the new hosted run.
+CI follow-up: the hosted deadline test previously raced a 20 ms setup window; it now advances an injected clock after the first failed transport call. Hosted cache cleanup also timed out on a lock held by the long-running `uv run` fixture. CI now starts the installed uvicorn executable directly and stops the fixture before cache cleanup. Both fixes passed hosted CI, including Newman and cache cleanup: [run 34052033186](https://github.com/da4ngel/Doomed/actions/runs/34052033186).
+
+To test A1 against an archive outside the checkout without copying it:
+
+```sh
+ASHEN_SAMPLE_QUESTIONS='/path/to/Ashen_Era_Archive/sample_questions.json' uv run pytest tests/unit/test_analyst.py
+```
+
+The supplied original question file passed all 27 A1 tests. Its 20 IDs match the checked-in suites; `1a_001` differs only in a curly versus straight apostrophe. This verifies query handling, not real entity-endpoint or answer accuracy.

@@ -1,6 +1,7 @@
 """A1 acceptance and adversarial regressions, without upstream imports or credentials."""
 
 import json
+import os
 import time
 from pathlib import Path
 from unittest.mock import Mock
@@ -189,8 +190,14 @@ def test_llm_cannot_rewrite_question(vocabulary):
 
 
 def test_all_twenty_sample_questions(analyst):
-    path = (
-        Path(__file__).resolve().parents[2] / "data/corpus/Ashen_Era_Archive/sample_questions.json"
+    path = Path(
+        os.environ.get(
+            "ASHEN_SAMPLE_QUESTIONS",
+            str(
+                Path(__file__).resolve().parents[2]
+                / "data/corpus/Ashen_Era_Archive/sample_questions.json"
+            ),
+        )
     )
     if not path.exists():
         pytest.skip("Corpus is not shipped in this checkout; real 20-question acceptance pending")
