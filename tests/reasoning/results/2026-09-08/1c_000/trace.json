@@ -1,0 +1,568 @@
+{
+  "trace_id": "tr_f97e9850732b4b23",
+  "question": "State the precise year in the Age of Shadows that marks the true founding of Gloamreach.",
+  "mode": "auto",
+  "status": "partial",
+  "started_at": "2026-09-07T18:13:59+00:00",
+  "ended_at": "2026-09-07T18:14:24+00:00",
+  "iterations": 10,
+  "reasoning_trace": [
+    {
+      "step": 1,
+      "agent": "A1",
+      "action": "analyze",
+      "query": "State the precise year in the Age of Shadows that marks the true founding of Gloamreach.",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "Intent: contradiction; 1 linked entities",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "State the precise year in the Age of Shadows that marks the true founding of Gloamreach.",
+      "found": 10,
+      "new_gold_docs": 9,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 4485
+    },
+    {
+      "step": 3,
+      "agent": "A3",
+      "action": "assess",
+      "query": "Gloamreach",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "The term 'Gloamreach' was referred to in multiple records concerning its founding year, highlighting its significance and the existence of other potentially contrasting information.",
+      "missing": "What is the contrasting founding year mentioned in the evidence?",
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "Gloamreach",
+      "found": 10,
+      "new_gold_docs": 3,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 5062
+    },
+    {
+      "step": 5,
+      "agent": "A3",
+      "action": "assess",
+      "query": "Gloamreach",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "The term was identified in the sources detailing the differing claims about Gloamreach's founding year.",
+      "missing": "What are the contested accounts regarding the founding year of Gloamreach?",
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "agent": "A2",
+      "action": "hybrid_search",
+      "query": "Gloamreach",
+      "found": 10,
+      "new_gold_docs": 0,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 15
+    },
+    {
+      "step": 7,
+      "agent": "A3",
+      "action": "assess",
+      "query": null,
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "Coverage remains unverified.",
+      "missing": "State the precise year in the Age of Shadows that marks the true founding of Gloamreach.",
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "agent": "A4",
+      "action": "merge",
+      "query": null,
+      "found": 16,
+      "new_gold_docs": 0,
+      "learned": "1 detected conflicts; 16 distinct chunks",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 9,
+      "agent": "A5",
+      "action": "compose",
+      "query": null,
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "",
+      "missing": "State the precise year in the Age of Shadows that marks the true founding of Gloamreach.; Composition could not be verified: State the precise year in the Age of Shadows that marks the true founding of Gloamreach.",
+      "latency_ms": 0
+    },
+    {
+      "step": 10,
+      "agent": "A6",
+      "action": "verify",
+      "query": null,
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "0 downgraded, 0 removed",
+      "missing": "",
+      "latency_ms": 0
+    }
+  ],
+  "retrieval_evidence": [
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "State the precise year in the Age of Shadows that marks the true founding of Gloamreach.",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "contract_concerning_thessaly_coldwater:c1",
+          "doc_id": "contract_concerning_thessaly_coldwater"
+        },
+        {
+          "chunk_id": "contract_concerning_the_sceptre_of_final_winter:c1",
+          "doc_id": "contract_concerning_the_sceptre_of_final_winter"
+        },
+        {
+          "chunk_id": "gloamreach:c2",
+          "doc_id": "gloamreach"
+        },
+        {
+          "chunk_id": "codex_vaeloria_i_gazetteer_of_the_sundered_realms:c20",
+          "doc_id": "codex_vaeloria_i_gazetteer_of_the_sundered_realms"
+        },
+        {
+          "chunk_id": "gloammarch:c2",
+          "doc_id": "gloammarch"
+        },
+        {
+          "chunk_id": "gloammarch:c0",
+          "doc_id": "gloammarch"
+        },
+        {
+          "chunk_id": "hollowreach:c2",
+          "doc_id": "hollowreach"
+        },
+        {
+          "chunk_id": "edge_of_gloamreach:c2",
+          "doc_id": "edge_of_gloamreach"
+        },
+        {
+          "chunk_id": "quartermaster_ledger_concerning_maelis_greyfen:c0",
+          "doc_id": "quartermaster_ledger_concerning_maelis_greyfen"
+        },
+        {
+          "chunk_id": "the_ashen_chronicles_volume_i_the_kindling_years:c108",
+          "doc_id": "the_ashen_chronicles_volume_i_the_kindling_years"
+        }
+      ],
+      "edges": [],
+      "step": 2
+    },
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "Gloamreach",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {
+          "k": 10,
+          "rerank": true,
+          "filters": {
+            "source_type": null,
+            "authority_tier": null,
+            "doc_id": null,
+            "block_type": null
+          }
+        }
+      },
+      "chunks": [
+        {
+          "chunk_id": "gloamreach:c0",
+          "doc_id": "gloamreach"
+        },
+        {
+          "chunk_id": "gloammarch:c0",
+          "doc_id": "gloammarch"
+        },
+        {
+          "chunk_id": "contract_concerning_thessaly_coldwater:c1",
+          "doc_id": "contract_concerning_thessaly_coldwater"
+        },
+        {
+          "chunk_id": "field_report_concerning_gloamreach:c1",
+          "doc_id": "field_report_concerning_gloamreach"
+        },
+        {
+          "chunk_id": "contract_concerning_the_sceptre_of_final_winter:c1",
+          "doc_id": "contract_concerning_the_sceptre_of_final_winter"
+        },
+        {
+          "chunk_id": "img:img_273d5d639c63e6a4",
+          "doc_id": "wiki/images/atmo_relic_artifact_edge_of_gloamreach.png"
+        },
+        {
+          "chunk_id": "edge_of_gloamreach:c0",
+          "doc_id": "edge_of_gloamreach"
+        },
+        {
+          "chunk_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary:c13",
+          "doc_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary"
+        },
+        {
+          "chunk_id": "gloamreach:c4",
+          "doc_id": "gloamreach"
+        },
+        {
+          "chunk_id": "codex_vaeloria_i_gazetteer_of_the_sundered_realms:c20",
+          "doc_id": "codex_vaeloria_i_gazetteer_of_the_sundered_realms"
+        }
+      ],
+      "edges": [],
+      "step": 4
+    },
+    {
+      "action": {
+        "action": "hybrid_search",
+        "query": "Gloamreach",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "gloamreach:c0",
+          "doc_id": "gloamreach"
+        },
+        {
+          "chunk_id": "gloammarch:c0",
+          "doc_id": "gloammarch"
+        },
+        {
+          "chunk_id": "contract_concerning_thessaly_coldwater:c1",
+          "doc_id": "contract_concerning_thessaly_coldwater"
+        },
+        {
+          "chunk_id": "field_report_concerning_gloamreach:c1",
+          "doc_id": "field_report_concerning_gloamreach"
+        },
+        {
+          "chunk_id": "contract_concerning_the_sceptre_of_final_winter:c1",
+          "doc_id": "contract_concerning_the_sceptre_of_final_winter"
+        },
+        {
+          "chunk_id": "img:img_273d5d639c63e6a4",
+          "doc_id": "wiki/images/atmo_relic_artifact_edge_of_gloamreach.png"
+        },
+        {
+          "chunk_id": "edge_of_gloamreach:c0",
+          "doc_id": "edge_of_gloamreach"
+        },
+        {
+          "chunk_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary:c13",
+          "doc_id": "codex_vaeloria_ii_armory_of_relics_and_bestiary"
+        },
+        {
+          "chunk_id": "gloamreach:c4",
+          "doc_id": "gloamreach"
+        },
+        {
+          "chunk_id": "codex_vaeloria_i_gazetteer_of_the_sundered_realms:c20",
+          "doc_id": "codex_vaeloria_i_gazetteer_of_the_sundered_realms"
+        }
+      ],
+      "edges": [],
+      "step": 6
+    }
+  ],
+  "usage": [
+    {
+      "step": 3,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 4976,
+      "tokens_out": 331,
+      "latency_ms": 4683,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": true
+    },
+    {
+      "step": 5,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 7278,
+      "tokens_out": 265,
+      "latency_ms": 4125,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": true
+    }
+  ],
+  "total_cost_usd": 0.0,
+  "total_tokens": 12850,
+  "cache_hits": 0,
+  "packet": {
+    "trace_id": "tr_f97e9850732b4b23",
+    "mode": "agent",
+    "answer_markdown": "Sources disagree about Gloamreach founding year: 246 AS (tier 1) versus 286 AS (tier 4). Tier 1 outranks tier 4. Tier 4 is primary evidence but partial.\n\nI could not establish an answer from the retrieved evidence.\n\nStill unresolved:\n- State the precise year in the Age of Shadows that marks the true founding of Gloamreach.\n- Composition could not be verified: State the precise year in the Age of Shadows that marks the true founding of Gloamreach.\n- One or more requested facts could not be verified against their cited evidence.\n\nInvestigation stopped: LLM deadline exceeded; in-flight usage unknown",
+    "claims": [],
+    "citations": [],
+    "visuals": [],
+    "evidence_graph": {
+      "nodes": [],
+      "edges": [],
+      "paths": []
+    },
+    "conflicts": [
+      {
+        "attribute": "Gloamreach founding year",
+        "claim_a": "246 AS",
+        "sources_a": [
+          "codex_vaeloria_i_gazetteer_of_the_sundered_realms"
+        ],
+        "tier_a": 1,
+        "claim_b": "286 AS",
+        "sources_b": [
+          "contract_concerning_the_sceptre_of_final_winter"
+        ],
+        "tier_b": 4,
+        "resolution": "higher_tier",
+        "rationale": "Tier 1 outranks tier 4. Tier 4 is primary evidence but partial."
+      }
+    ],
+    "missing_information": [
+      "State the precise year in the Age of Shadows that marks the true founding of Gloamreach.",
+      "Composition could not be verified: State the precise year in the Age of Shadows that marks the true founding of Gloamreach.",
+      "One or more requested facts could not be verified against their cited evidence.",
+      "Investigation stopped: LLM deadline exceeded; in-flight usage unknown"
+    ],
+    "warnings": [
+      {
+        "type": "tool_failure",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": "composition_failed",
+        "detail": "BudgetExceeded"
+      },
+      {
+        "type": "normalization_skipped",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": null,
+        "detail": null
+      },
+      {
+        "type": "tool_failure",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": "critic_degraded",
+        "detail": "Coverage could not be validated"
+      },
+      {
+        "type": "asset_unresolved",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": null,
+        "detail": "img_273d5d639c63e6a4: BudgetExceeded"
+      },
+      {
+        "type": "budget_exhausted",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": null,
+        "detail": "LLM deadline exceeded; in-flight usage unknown"
+      }
+    ],
+    "corrections": [],
+    "confidence": 0.0,
+    "iterations": 3,
+    "partial": true,
+    "reasoning_trace": [
+      {
+        "step": 1,
+        "agent": "A1",
+        "action": "analyze",
+        "query": "State the precise year in the Age of Shadows that marks the true founding of Gloamreach.",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "Intent: contradiction; 1 linked entities",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 2,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "State the precise year in the Age of Shadows that marks the true founding of Gloamreach.",
+        "found": 10,
+        "new_gold_docs": 9,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 4485
+      },
+      {
+        "step": 3,
+        "agent": "A3",
+        "action": "assess",
+        "query": "Gloamreach",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "The term 'Gloamreach' was referred to in multiple records concerning its founding year, highlighting its significance and the existence of other potentially contrasting information.",
+        "missing": "What is the contrasting founding year mentioned in the evidence?",
+        "latency_ms": 0
+      },
+      {
+        "step": 4,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "Gloamreach",
+        "found": 10,
+        "new_gold_docs": 3,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 5062
+      },
+      {
+        "step": 5,
+        "agent": "A3",
+        "action": "assess",
+        "query": "Gloamreach",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "The term was identified in the sources detailing the differing claims about Gloamreach's founding year.",
+        "missing": "What are the contested accounts regarding the founding year of Gloamreach?",
+        "latency_ms": 0
+      },
+      {
+        "step": 6,
+        "agent": "A2",
+        "action": "hybrid_search",
+        "query": "Gloamreach",
+        "found": 10,
+        "new_gold_docs": 0,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 15
+      },
+      {
+        "step": 7,
+        "agent": "A3",
+        "action": "assess",
+        "query": null,
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "Coverage remains unverified.",
+        "missing": "State the precise year in the Age of Shadows that marks the true founding of Gloamreach.",
+        "latency_ms": 0
+      },
+      {
+        "step": 8,
+        "agent": "A4",
+        "action": "merge",
+        "query": null,
+        "found": 16,
+        "new_gold_docs": 0,
+        "learned": "1 detected conflicts; 16 distinct chunks",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 9,
+        "agent": "A5",
+        "action": "compose",
+        "query": null,
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "",
+        "missing": "State the precise year in the Age of Shadows that marks the true founding of Gloamreach.; Composition could not be verified: State the precise year in the Age of Shadows that marks the true founding of Gloamreach.",
+        "latency_ms": 0
+      },
+      {
+        "step": 10,
+        "agent": "A6",
+        "action": "verify",
+        "query": null,
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "0 downgraded, 0 removed",
+        "missing": "",
+        "latency_ms": 0
+      }
+    ],
+    "usage": [
+      {
+        "step": 3,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 4976,
+        "tokens_out": 331,
+        "latency_ms": 4683,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": true
+      },
+      {
+        "step": 5,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 7278,
+        "tokens_out": 265,
+        "latency_ms": 4125,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": true
+      }
+    ]
+  },
+  "verification": {
+    "claims_checked": 0,
+    "claims_downgraded": 0,
+    "claims_removed": 0,
+    "markers_stripped": 0,
+    "citations_dropped": 0,
+    "confidence_adjustment": 0,
+    "entailment_skipped": false
+  }
+}

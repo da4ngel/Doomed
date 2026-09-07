@@ -1,0 +1,331 @@
+{
+  "trace_id": "tr_e2f46a72fbe84ca7",
+  "question": "According to the figure plate illustrating Emberdeep's forces, what is the recorded total of its garrison strength?",
+  "mode": "auto",
+  "status": "ok",
+  "started_at": "2026-09-07T18:09:33+00:00",
+  "ended_at": "2026-09-07T18:09:38+00:00",
+  "iterations": 6,
+  "reasoning_trace": [
+    {
+      "step": 1,
+      "agent": "A1",
+      "action": "analyze",
+      "query": "According to the figure plate illustrating Emberdeep's forces, what is the recorded total of its garrison strength?",
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "Intent: visual; 1 linked entities",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "agent": "A2",
+      "action": "figure_search",
+      "query": "According to the figure plate illustrating Emberdeep's forces, what is the recorded total of its garrison strength?",
+      "found": 10,
+      "new_gold_docs": 10,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "agent": "A3",
+      "action": "assess",
+      "query": null,
+      "found": 0,
+      "new_gold_docs": 0,
+      "learned": "The term 'Emberdeep' was discovered in the context of its recorded garrison strength, which is relevant to the question asked.",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "agent": "A4",
+      "action": "merge",
+      "query": null,
+      "found": 1,
+      "new_gold_docs": 0,
+      "learned": "0 detected conflicts; 1 distinct chunks",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "agent": "A5",
+      "action": "compose",
+      "query": null,
+      "found": 1,
+      "new_gold_docs": 0,
+      "learned": "",
+      "missing": "",
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "agent": "A6",
+      "action": "verify",
+      "query": null,
+      "found": 1,
+      "new_gold_docs": 0,
+      "learned": "0 downgraded, 0 removed",
+      "missing": "",
+      "latency_ms": 0
+    }
+  ],
+  "retrieval_evidence": [
+    {
+      "action": {
+        "action": "figure_search",
+        "query": "According to the figure plate illustrating Emberdeep's forces, what is the recorded total of its garrison strength?",
+        "k": 10,
+        "rerank": true,
+        "filters": {
+          "source_type": null,
+          "authority_tier": null,
+          "doc_id": null,
+          "block_type": null
+        },
+        "args": {}
+      },
+      "chunks": [
+        {
+          "chunk_id": "img:img_29ea682914218630",
+          "doc_id": "images/plate_01_location_emberdeep.png"
+        },
+        {
+          "chunk_id": "img:img_f9666fa1ac501ed3",
+          "doc_id": "images/plate_05_location_embercrag_fortress.png"
+        },
+        {
+          "chunk_id": "img:img_104c12108dc9735d",
+          "doc_id": "images/plate_12_location_thorncairn.png"
+        },
+        {
+          "chunk_id": "img:img_ab5db116ceab55ae",
+          "doc_id": "images/plate_06_location_hollowreach.png"
+        },
+        {
+          "chunk_id": "img:img_e932e09ca6dd3375",
+          "doc_id": "images/plate_00_location_marrowwatch.png"
+        },
+        {
+          "chunk_id": "img:img_db50536afd5d9bb6",
+          "doc_id": "images/plate_11_location_mournwatch.png"
+        },
+        {
+          "chunk_id": "img:img_72c8395a0d4bbe86",
+          "doc_id": "images/plate_03_location_crookgate_keep.png"
+        },
+        {
+          "chunk_id": "img:img_dbcafc216d7109ab",
+          "doc_id": "images/plate_09_location_greyfell_citadel.png"
+        },
+        {
+          "chunk_id": "img:img_fa555a25f79add80",
+          "doc_id": "images/plate_02_conflict_the_accord_of_mournthrone.png"
+        },
+        {
+          "chunk_id": "img:img_a5bd9182332b98c0",
+          "doc_id": "wiki/images/atmo_creature_creature_ashfall_colossus.png"
+        }
+      ],
+      "edges": [],
+      "step": 2
+    }
+  ],
+  "usage": [
+    {
+      "step": 3,
+      "model": "gpt-4o-mini",
+      "routing_reason": "A3: assess",
+      "tokens_in": 1066,
+      "tokens_out": 144,
+      "latency_ms": 5469,
+      "cost_usd": 0.0,
+      "cache": "miss",
+      "fallback_used": false
+    }
+  ],
+  "total_cost_usd": 0.0,
+  "total_tokens": 1210,
+  "cache_hits": 0,
+  "packet": {
+    "trace_id": "tr_e2f46a72fbe84ca7",
+    "mode": "rich",
+    "answer_markdown": "Emberdeep: 1,114\n\n[cite_2dd8409c5fb01689]\n\n[FIG:img_29ea682914218630]",
+    "claims": [
+      {
+        "claim_id": "claim_1",
+        "text": "Emberdeep: 1,114",
+        "citation_ids": [
+          "cite_2dd8409c5fb01689"
+        ],
+        "support": "single_source",
+        "confidence": 0.9
+      }
+    ],
+    "citations": [
+      {
+        "id": "cite_2dd8409c5fb01689",
+        "chunk_id": "img:img_29ea682914218630",
+        "doc_id": "images/plate_01_location_emberdeep.png",
+        "title": "Plate 01 - Emberdeep (location)",
+        "page": null,
+        "bbox": null,
+        "section_path": [
+          "Plate 01 - Emberdeep (location)"
+        ],
+        "source_type": "figure_plate",
+        "authority_tier": 1,
+        "excerpt": "Emberdeep: 1,114",
+        "excerpt_sha256": "917e617b048d3d5b1a3c0ba7dd3b74602743f9a4c16542f776e85c12d5b5f937",
+        "score": 0.032787,
+        "relation": "supports"
+      }
+    ],
+    "visuals": [
+      {
+        "id": "img_29ea682914218630",
+        "type": "figure",
+        "url": "/v1/assets/img_29ea682914218630",
+        "caption": "Plate 01 - Emberdeep (location)",
+        "doc_id": "images/plate_01_location_emberdeep.png",
+        "page": null,
+        "bbox": null,
+        "relevance": 0.95,
+        "why": "Shows the cited evidence for Emberdeep Recorded Garrison Strength compared against three reference standards."
+      }
+    ],
+    "evidence_graph": {
+      "nodes": [
+        {
+          "id": "claim_1",
+          "type": "claim",
+          "label": "Emberdeep: 1,114"
+        },
+        {
+          "id": "images/plate_01_location_emberdeep.png",
+          "type": "document",
+          "label": "Plate 01 - Emberdeep (location)"
+        }
+      ],
+      "edges": [
+        {
+          "from_id": "images/plate_01_location_emberdeep.png",
+          "to_id": "claim_1",
+          "type": "supports"
+        }
+      ],
+      "paths": []
+    },
+    "conflicts": [],
+    "missing_information": [],
+    "warnings": [
+      {
+        "type": "normalization_skipped",
+        "doc_id": null,
+        "chunk_id": null,
+        "page": null,
+        "value": null,
+        "action": null,
+        "detail": null
+      }
+    ],
+    "corrections": [],
+    "confidence": 0.9,
+    "iterations": 1,
+    "partial": false,
+    "reasoning_trace": [
+      {
+        "step": 1,
+        "agent": "A1",
+        "action": "analyze",
+        "query": "According to the figure plate illustrating Emberdeep's forces, what is the recorded total of its garrison strength?",
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "Intent: visual; 1 linked entities",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 2,
+        "agent": "A2",
+        "action": "figure_search",
+        "query": "According to the figure plate illustrating Emberdeep's forces, what is the recorded total of its garrison strength?",
+        "found": 10,
+        "new_gold_docs": 10,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 3,
+        "agent": "A3",
+        "action": "assess",
+        "query": null,
+        "found": 0,
+        "new_gold_docs": 0,
+        "learned": "The term 'Emberdeep' was discovered in the context of its recorded garrison strength, which is relevant to the question asked.",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 4,
+        "agent": "A4",
+        "action": "merge",
+        "query": null,
+        "found": 1,
+        "new_gold_docs": 0,
+        "learned": "0 detected conflicts; 1 distinct chunks",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 5,
+        "agent": "A5",
+        "action": "compose",
+        "query": null,
+        "found": 1,
+        "new_gold_docs": 0,
+        "learned": "",
+        "missing": "",
+        "latency_ms": 0
+      },
+      {
+        "step": 6,
+        "agent": "A6",
+        "action": "verify",
+        "query": null,
+        "found": 1,
+        "new_gold_docs": 0,
+        "learned": "0 downgraded, 0 removed",
+        "missing": "",
+        "latency_ms": 0
+      }
+    ],
+    "usage": [
+      {
+        "step": 3,
+        "model": "gpt-4o-mini",
+        "routing_reason": "A3: assess",
+        "tokens_in": 1066,
+        "tokens_out": 144,
+        "latency_ms": 5469,
+        "cost_usd": 0.0,
+        "cache": "miss",
+        "fallback_used": false
+      }
+    ]
+  },
+  "verification": {
+    "claims_checked": 1,
+    "claims_downgraded": 0,
+    "claims_removed": 0,
+    "markers_stripped": 0,
+    "citations_dropped": 0,
+    "confidence_adjustment": 0.0,
+    "entailment_skipped": false
+  }
+}
