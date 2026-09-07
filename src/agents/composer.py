@@ -9,6 +9,7 @@ from src.agents.runtime import CompletionClient
 from src.api.schemas import AnswerMode, AnswerPacket, Claim, SearchHit, SupportLabel, Warning
 from src.synthesis.citations import citation_for
 from src.synthesis.claims import Draft, ProposedClaim
+from src.synthesis.extractive import numeric_figure_draft
 from src.synthesis.prompts import messages
 from src.synthesis.render import render_packet
 from src.synthesis.visuals import bound_value, make_visual, score_asset, subject_matches
@@ -16,11 +17,14 @@ from src.synthesis.visuals import bound_value, make_visual, score_asset, subject
 INSTRUCTION = """Compose an answer only from supplied evidence. Return JSON:
 {claims: [{text, sources: [{chunk_id, quote}], asset_ids: [], confidence: 0.0}],
 missing_information: []}. Every claim requires exact source quotes that entail it.
+Copy quotes only from evidence_bundle text, never from candidate asset metadata.
 Do not emit bibliography metadata, invented IDs or free-standing answer prose.
 For a table, put the verbatim Markdown table in one claim's text and source quote.
 For figures, name the exact subject in the claim. Select only assets that support that
 claim. Read values as LABEL -> VALUE pairs; reference bars, axes, tolerance standards
-are not the named subject. Edge and Lantern are different; Greyfell and Ironfell are
+are not the named subject. Report only the requested subject value in a numeric claim;
+omit unrequested axis endpoints and tolerance values. Edge and Lantern are different;
+Greyfell and Ironfell are
 different. Never substitute a nearby entity when the requested subject is absent.
 Prefer lower-numbered authority tiers on the SAME subject and attribute, even when
 lower-authority text ranks first. Report conflicts; never silently blend values.
@@ -56,7 +60,10 @@ class AnswerComposer:
         if not bundle.chunks or self.llm is None:
             return self._refuse(packet, question, "No verified composition is available")
         try:
-            draft = self._propose(question, bundle, assets, missing)
+            extractive = (
+                numeric_figure_draft(question, bundle.chunks, assets) if requires_visual else None
+            )
+            draft = extractive or self._propose(question, bundle, assets, missing)
         except Exception as error:
             packet.warnings.append(
                 Warning(
@@ -66,8 +73,14 @@ class AnswerComposer:
             return self._refuse(packet, question, "Composition could not be verified")
         placement = self._accept_draft(packet, draft, bundle, assets, question, requires_visual)
         packet.missing_information = list(dict.fromkeys(missing + draft.missing_information))
+        packet.partial = packet.partial or bool(packet.missing_information)
         if not packet.claims:
             return self._refuse(packet, question, "No proposed claim had valid supporting evidence")
+        if re.search(r"\byear\b", question, re.I) and not any(
+            re.search(r"\d", claim.text) for claim in packet.claims
+        ):
+            packet.partial = True
+            packet.missing_information.append("The requested year has not been established.")
         packet.answer_markdown = render_packet(packet, placement)
         packet.confidence = min(c.confidence for c in packet.claims)
         return packet

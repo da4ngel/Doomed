@@ -115,3 +115,65 @@ def test_latest_evidence_references_existing_text_without_duplication(chunk):
     assert payload["latest"]["chunk_ids"] == [chunk.chunk_id]
     assert payload["evidence_so_far"][0]["text"] == chunk.text
     assert "chunks" not in payload["latest"]
+
+
+def test_completed_coverage_accepts_no_discovered_term(chunk):
+    llm = ScriptedLLM(
+        {
+            "sufficient": True,
+            "covered": [
+                {"sub_question": "Question", "chunk_id": chunk.chunk_id, "quote": chunk.text}
+            ],
+            "next_action": None,
+            "discovered_term": None,
+        }
+    )
+    result = SufficiencyCritic(llm).assess(
+        Analysis(normalized="Question", sub_questions=["Question"]),
+        [chunk],
+        Evidence(chunks=[chunk]),
+        1,
+        [],
+    )
+    assert result.sufficient and not result.degraded
+    assert len(llm.calls) == 1
+
+
+def test_graph_discovery_retrieves_citable_text_before_more_graph_hops():
+    from src.api.schemas import GraphEdgeOut
+
+    edge = GraphEdgeOut(
+        subject_id="beast",
+        subject="Beast",
+        predicate="lair_of",
+        object_id="abbey",
+        object="Hidden Abbey",
+        evidence_chunk_id="wiki/beast.md#row",
+        authority_tier=2,
+    )
+    llm = ScriptedLLM(
+        {
+            "sufficient": False,
+            "missing": ["Who rules Hidden Abbey?"],
+            "discovered_term": "Hidden Abbey",
+            "next_action": {
+                "action": "graph_neighbors",
+                "query": "Hidden Abbey",
+                "args": {"entity_id": "abbey"},
+            },
+        }
+    )
+    result = SufficiencyCritic(llm).assess(
+        Analysis(
+            normalized="Who rules the lair of Beast?",
+            intent="multi_hop",
+            sub_questions=["Who rules the lair of Beast?"],
+        ),
+        [],
+        Evidence(edges=[edge]),
+        1,
+        [Action(action="graph_neighbors", query="Beast")],
+    )
+    assert result.next_action.action == "hybrid_search"
+    assert result.next_action.query == "Hidden Abbey"
+    assert not result.sufficient

@@ -7,6 +7,7 @@ from typing import Any
 
 from src.agents.analyst import Analysis, QueryAnalyst
 from src.agents.composer import AnswerComposer
+from src.agents.context import focused_chunks
 from src.agents.critic import Critique, SufficiencyCritic
 from src.agents.merger import merge_evidence
 from src.agents.retriever import Action, Evidence, RetrievalAgent
@@ -129,7 +130,7 @@ class Orchestrator:
     def _compose(
         self, analysis: Analysis, mode: AnswerMode, trace_id: str, state: RunState
     ) -> tuple:
-        chunks = list(state.chunks.values())
+        chunks = focused_chunks(analysis, list(state.chunks.values()))
         enriched = self.retriever.assets(chunks)
         state.warnings.extend(enriched.warnings)
         bundle = merge_evidence(
@@ -197,7 +198,11 @@ class Orchestrator:
             self.budget.remaining()
             result = self._retrieve(action, trace_id, state)
             state.critique = self.critic.assess(
-                analysis, list(state.chunks.values()), result, step, state.history
+                analysis,
+                focused_chunks(analysis, list(state.chunks.values())),
+                result,
+                step,
+                state.history,
             )
             self._record(
                 trace_id,

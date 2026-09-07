@@ -183,3 +183,46 @@ def test_table_question_does_not_require_an_image_asset(chunk):
     chunk.text = "| House | Year |\n| --- | --- |\n| Greyfell | 412 |"
     packet = compose(chunk, requires_visual=True)
     assert packet.claims and chunk.text in packet.answer_markdown
+
+
+def test_true_background_statement_does_not_complete_a_year_question(chunk):
+    chunk = chunk.model_copy(update={"text": "The forging date is not established."})
+    llm = ScriptedLLM(
+        {
+            "claims": [
+                {"text": chunk.text, "sources": [{"chunk_id": chunk.chunk_id, "quote": chunk.text}]}
+            ]
+        }
+    )
+    packet = AnswerComposer(llm).compose(
+        "In which year was the artifact forged?",
+        Bundle(chunks=[chunk]),
+        [],
+        trace_id="year",
+        mode="agent",
+        missing=[],
+        partial=False,
+    )
+    assert packet.partial
+    assert "The requested year has not been established." in packet.missing_information
+
+
+def test_composer_missing_information_cannot_be_marked_complete(chunk):
+    llm = ScriptedLLM(
+        {
+            "claims": [
+                {"text": chunk.text, "sources": [{"chunk_id": chunk.chunk_id, "quote": chunk.text}]}
+            ],
+            "missing_information": ["The reason for this assignment is not recorded."],
+        }
+    )
+    packet = AnswerComposer(llm).compose(
+        "Why was this garrison assigned?",
+        Bundle(chunks=[chunk]),
+        [],
+        trace_id="missing",
+        mode="agent",
+        missing=[],
+        partial=False,
+    )
+    assert packet.partial and packet.missing_information

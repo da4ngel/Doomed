@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from src.agents.analyst import Analysis
 from src.agents.retriever import Action, Evidence
@@ -27,6 +27,12 @@ class Critique(Frozen):
     confidence: float = Field(default=0, ge=0, le=1)
     degraded: bool = False
 
+    @field_validator("discovered_term", mode="before")
+    @classmethod
+    def empty_discovery(cls, value: object) -> object:
+        """A completed lookup has no next discovery; null means the empty string."""
+        return "" if value is None else value
+
 
 INSTRUCTION = """You are A3, a sufficiency critic, not an answer composer.
 Return JSON: {sufficient: bool, covered: [{sub_question, chunk_id, quote}],
@@ -40,6 +46,8 @@ graph_neighbors uses entity_id. list_mentions query must be the entity NAME.
 On multi-hop tasks, choose a term first discovered in latest evidence as discovered_term,
 copy it into next_action.query and explain the discovery in reason. Do not invent a term.
 Latest chunk_ids refer to the complete text in evidence_so_far; do not require duplicate text.
+Graph edges identify discoveries but cannot supply citation excerpts. After graph discovery,
+use hybrid_search on the discovered term to obtain source chunks before more graph traversal.
 Never repeat a failed action. Figure questions require evidence from the correct figure;
 a wiki about a similar name is not coverage. Conflicting sources must remain visible.
 """
@@ -131,6 +139,13 @@ class SufficiencyCritic:
                     or term.casefold() not in result.next_action.query.casefold()
                 ):
                     result.next_action = None
+        if (
+            latest.edges
+            and not latest.chunks
+            and result.next_action
+            and result.next_action.action in {"graph_neighbors", "graph_paths"}
+        ):
+            result.next_action = Action(query=result.next_action.query)
         if not result.sufficient and result.next_action is None:
             result.next_action = self._fallback(analysis, latest, history).next_action
         return result
