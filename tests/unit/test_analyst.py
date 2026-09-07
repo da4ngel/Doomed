@@ -209,3 +209,18 @@ def test_all_twenty_sample_questions(analyst):
         Analysis.model_validate(result.model_dump())
         assert result.sub_questions
         assert result.normalized == item["question"]
+
+
+@pytest.mark.parametrize(
+    "question,intent",
+    [
+        ("State the true founding year of Gloamreach.", "contradiction"),
+        ("Show the figure plate for Greyfell Citadel.", "visual"),
+    ],
+)
+def test_explicit_source_intent_is_not_overwritten_by_llm(vocabulary, question, intent):
+    llm = Mock()
+    result = QueryAnalyst(vocabulary_loader=lambda: vocabulary, llm=llm).analyze(question)
+    assert result.intent == intent
+    assert result.sub_questions == [question]
+    llm.complete.assert_not_called()

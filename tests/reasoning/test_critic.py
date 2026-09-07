@@ -95,3 +95,23 @@ def test_a_repeated_old_entity_is_not_a_new_discovery(chunk):
     assert first.next_action is not None
     second = critic.assess(analysis, [chunk], Evidence(chunks=[chunk]), 2, [Action(query=question)])
     assert second.next_action is None
+
+
+def test_latest_evidence_references_existing_text_without_duplication(chunk):
+    import json
+
+    from tests.reasoning.conftest import ScriptedLLM
+
+    llm = ScriptedLLM({"sufficient": False, "missing": ["unknown"]})
+    SufficiencyCritic(llm).assess(
+        Analysis(normalized="Question", sub_questions=["Question"]),
+        [chunk],
+        Evidence(chunks=[chunk]),
+        1,
+        [],
+    )
+    text = llm.calls[0][0][1]["parts"][0]["text"]
+    payload = json.loads(text.removeprefix("<evidence>").removesuffix("</evidence>"))
+    assert payload["latest"]["chunk_ids"] == [chunk.chunk_id]
+    assert payload["evidence_so_far"][0]["text"] == chunk.text
+    assert "chunks" not in payload["latest"]

@@ -39,6 +39,7 @@ list_mentions. Do not use read_section (not available). graph_paths args use fro
 graph_neighbors uses entity_id. list_mentions query must be the entity NAME.
 On multi-hop tasks, choose a term first discovered in latest evidence as discovered_term,
 copy it into next_action.query and explain the discovery in reason. Do not invent a term.
+Latest chunk_ids refer to the complete text in evidence_so_far; do not require duplicate text.
 Never repeat a failed action. Figure questions require evidence from the correct figure;
 a wiki about a similar name is not coverage. Conflicting sources must remain visible.
 """
@@ -64,7 +65,11 @@ class SufficiencyCritic:
             "question": analysis.normalized,
             "sub_questions": analysis.sub_questions,
             "evidence_so_far": [c.model_dump() for c in chunks],
-            "latest": latest.model_dump(),
+            "latest": {
+                "chunk_ids": [c.chunk_id for c in latest.chunks],
+                "entities": [e.model_dump() for e in latest.entities],
+                "edges": [e.model_dump() for e in latest.edges],
+            },
             "steps_taken": step,
             "previous_actions": [a.model_dump() for a in history],
         }

@@ -301,7 +301,9 @@ class QueryAnalyst:
                     f"Which entities and relationships are requested by: {question}",
                     f"Using those retrieved entities, resolve: {question}",
                 ]
-        if self.llm is None:
+        # Explicit figure/contradiction requests need no decomposition. Preserve their
+        # routing instead of paying for a model that may erase the source constraint.
+        if self.llm is None or intent in {"visual", "contradiction"}:
             return Plan(intent=intent, sub_questions=questions)
         instruction = (
             "Classify and decompose the question; do not answer it or invent facts or names. "
