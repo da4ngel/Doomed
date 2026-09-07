@@ -14,7 +14,7 @@ from difflib import SequenceMatcher
 from typing import Literal
 
 import httpx
-from pydantic import Field
+from pydantic import AliasChoices, Field
 
 from src.agents.runtime import CompletionClient
 from src.api.schemas import Entity, EntityType, Frozen, QueryIntent
@@ -34,7 +34,21 @@ _COMMON = set(
 
 
 class Correction(Frozen):
-    original: str = Field(alias="from")
+    # `from` is the wire name - {"from": ..., "to": ...} is how a correction reads in
+    # JSON and in a trace - but it cannot be a Python attribute, so the field is
+    # `original` and the alias carries the wire spelling.
+    #
+    # Split into validation_alias/serialization_alias rather than a single `alias`,
+    # for two reasons. AliasChoices accepts BOTH spellings on the way in, so
+    # model_validate(model_dump()) round-trips; a plain alias accepted only "from"
+    # while model_dump() emitted "original", and re-reading a persisted Analysis
+    # raised. And `alias` renames the synthesised __init__ parameter to `from`, which
+    # is not a legal keyword argument, which is why the construction site below used
+    # to need a **{"from": ...} splat that no type checker could see through.
+    original: str = Field(
+        validation_alias=AliasChoices("from", "original"),
+        serialization_alias="from",
+    )
     to: str
     score: float = Field(ge=0, le=1)
     entity_id: str
@@ -181,7 +195,7 @@ def _corrections(question: str, names: dict[str, list[Entity]]) -> list[Correcti
                 continue
             proposals.append(
                 Correction(
-                    **{"from": source},
+                    original=source,
                     to=entity.canonical_name,
                     score=score,
                     entity_id=entity.entity_id,
