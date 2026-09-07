@@ -80,3 +80,30 @@ def test_gold_in_conflict_prose_does_not_make_a_wrong_claim_correct():
 def test_all_twenty_dev_questions_available_for_live_runner():
     assert len(load_questions("dev")) == 20
     assert len({row["qid"] for row in load_questions("dev")}) == 20
+
+
+def test_ready_text_index_without_images_cannot_pass_full_acceptance(tmp_path):
+    def handler(request):
+        if request.url.path == "/v1/ready":
+            return httpx.Response(
+                200, json={"status": "ready", "chunks": 2000, "images_described": 0}
+            )
+        if request.url.path == "/v1/graph/entities":
+            return httpx.Response(
+                200,
+                json={
+                    "total": 1,
+                    "entities": [
+                        {"entity_id": "e", "canonical_name": "Greyfell Citadel", "type": "Location"}
+                    ],
+                },
+            )
+        return httpx.Response(200, json={"paths": {"/v1/chat/jobs": {}}})
+
+    client = LiveHTTP(
+        "http://knowledge", ResponseCache(tmp_path / "cache"), httpx.MockTransport(handler)
+    )
+    result = preflight(client, client)
+    assert result["blockers"] == [
+        "Knowledge API has no image descriptions; rich acceptance is incomplete"
+    ]

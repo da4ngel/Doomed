@@ -75,10 +75,15 @@ def preflight(knowledge: LiveHTTP, chat: LiveHTTP) -> dict:
             data = client.request("GET", path)
             if name == "knowledge":
                 checks[name] = {
-                    key: data.get(key) for key in ["status", "chunks", "entities", "warm"]
+                    key: data.get(key)
+                    for key in ["status", "chunks", "entities", "warm", "images_described"]
                 }
                 if data.get("status") != "ready" or not data.get("chunks"):
                     blockers.append("Knowledge API is not ready with a nonempty index")
+                elif not data.get("images_described"):
+                    blockers.append(
+                        "Knowledge API has no image descriptions; rich acceptance is incomplete"
+                    )
             elif name == "vocabulary":
                 vocabulary = EntityVocabularyResponse.model_validate(data)
                 named = sum(e.type != "Title" for e in vocabulary.entities)

@@ -105,3 +105,9 @@ ASHEN_SAMPLE_QUESTIONS='/path/to/Ashen_Era_Archive/sample_questions.json' uv run
 ```
 
 The supplied original question file passed all 27 A1 tests. Its 20 IDs match the checked-in suites; `1a_001` differs only in a curly versus straight apostrophe. This verifies query handling, not real entity-endpoint or answer accuracy.
+
+## Local corpus setup observation (7 September)
+
+The supplied archive is linked read-only by convention at the expected `data/corpus/Ashen_Era_Archive` path. P1's existing ingestion and graph commands produced 236 documents, 3,134 blocks, 2,747 text chunks, 198 entities and 379 relations, with zero ingestion dead letters. These counts differ from the handbook; this build has no VLM figure chunks yet. BM25 is built. All 167 scoped tests, including the previously skipped real sample/conflict tests, passed against this local text index. This does not establish model answer accuracy or visual acceptance. Full acceptance now blocks when the knowledge API reports zero image descriptions, even if its general readiness status is `ready`.
+
+The locally detected provider is Bedrock while configured synthesis/vision IDs name OpenRouter models. Resolve provider/model configuration before image description and answer evaluation. Do not treat credential-file presence as verified model access.
