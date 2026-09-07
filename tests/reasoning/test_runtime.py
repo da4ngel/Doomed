@@ -53,9 +53,17 @@ def test_llm_wait_is_bounded_and_usage_timeout_is_explicit(tmp_path):
         budget,
     )
     start = time.monotonic()
-    with pytest.raises(BudgetExceeded, match="usage unknown"):
+    # Two layers can legitimately trip first here, and which one wins is a race: the
+    # budget's own pre-call check ("usage unknown") or the client's wall-clock guard
+    # ("wall-clock budget exhausted"), because a 30ms budget against a 150ms provider
+    # leaves no margin. Matching one exact message made this fail roughly one run in
+    # two under load. What the test actually protects is that the wait is BOUNDED and
+    # the failure EXPLAINS ITSELF - so assert the type, the elapsed bound, and that the
+    # message names a budget, not which of the two guards got there first.
+    with pytest.raises(BudgetExceeded, match="usage unknown|budget exhausted") as raised:
         llm.complete(messages("Test", {}), max_tokens=10)
-    assert time.monotonic() - start < 0.12
+    assert time.monotonic() - start < 0.12, "the caller waited for the slow provider"
+    assert str(raised.value).strip(), "a budget failure must say why"
     assert budget.cancelled
 
 
