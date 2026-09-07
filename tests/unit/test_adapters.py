@@ -206,7 +206,7 @@ def test_docx_tables_are_read_from_table_objects() -> None:
 
 def test_tiktoken_is_the_counter_actually_in_use() -> None:
     """The reported chunk counts assume tiktoken. Prove it, do not hope for it."""
-    from src.ingestion.adapters import base
+    from src.core import tokens as base
 
     base.estimate_tokens("the ashen era")
     assert base.TOKENIZER_USED == "tiktoken-cl100k_base", (
@@ -224,7 +224,7 @@ def test_the_estimate_fallback_announces_itself(monkeypatch, caplog) -> None:
     """
     import logging
 
-    from src.ingestion.adapters import base
+    from src.core import tokens as base
 
     monkeypatch.setattr(base, "_ENCODING", None)
     monkeypatch.setattr(base, "TOKENIZER_USED", "unknown")

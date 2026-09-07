@@ -16,6 +16,7 @@ import httpx
 from src.core.cache import ResponseCache
 from src.core.llm import LLMClient, LLMResponse, Provider
 from src.core.retry import RetryPolicy, call_with_retry
+from src.core.tokens import estimate_tokens
 
 
 class CompletionClient(Protocol):
@@ -84,8 +85,16 @@ class _GuardedProvider:
 
     def complete(self, model: str, messages: list[dict[str, Any]], **params: Any) -> LLMResponse:
         params["timeout"] = min(params.get("timeout", 120), self.budget.remaining())
-        # UTF-8 bytes conservatively bound input tokens, including evidence.
-        reserved = len(json.dumps(messages).encode()) + params.get("max_tokens", 800)
+        # Reserve in TOKENS, using the same counter the chunker sizes chunks with.
+        #
+        # This used to reserve len(json.dumps(messages).encode()) - UTF-8 BYTES - on the
+        # grounds that bytes conservatively bound tokens. They do, by about 4x, and the
+        # budget is only 60,000. An evidence-heavy prompt reserved 15-30k per call, so
+        # the third call failed with "token budget exhausted" while the run had barely
+        # started, and the packet came back partial for a reason that had nothing to do
+        # with the evidence. A budget denominated in a different unit from the thing it
+        # is budgeting is not a budget.
+        reserved = estimate_tokens(json.dumps(messages)) + params.get("max_tokens", 800)
         self.budget.reserve(reserved)
         response = self.provider.complete(model, messages, **params)
         actual = response.tokens_in + response.tokens_out
