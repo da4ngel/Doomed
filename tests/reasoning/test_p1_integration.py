@@ -118,7 +118,7 @@ def test_all_twenty_checked_in_dev_texts_are_preserved():
     rows = [
         row
         for name in ["rich_1a", "multihop_1b", "contradiction_1c"]
-        for row in json.loads((suites / f"{name}.json").read_text())["questions"]
+        for row in json.loads((suites / f"{name}.json").read_text(encoding="utf-8"))["questions"]
     ]
     assert len(rows) == 20
     analyst = QueryAnalyst(vocabulary_loader=lambda: [])

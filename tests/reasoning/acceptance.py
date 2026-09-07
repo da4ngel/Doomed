@@ -194,7 +194,7 @@ def load_questions(suite: str) -> list[dict]:
     return [
         row
         for name in names
-        for row in json.loads((SUITES / f"{name}.json").read_text())["questions"]
+        for row in json.loads((SUITES / f"{name}.json").read_text(encoding="utf-8"))["questions"]
     ]
 
 

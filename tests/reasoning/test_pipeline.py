@@ -220,7 +220,7 @@ def test_all_available_rich_questions_route_to_visual():
     from pathlib import Path
 
     path = Path(__file__).resolve().parents[2] / "eval/suites/rich_1a.json"
-    questions = json.loads(path.read_text())["questions"]
+    questions = json.loads(path.read_text(encoding="utf-8"))["questions"]
     assert len(questions) == 11
     agent = QueryAnalyst(vocabulary_loader=lambda: [])
     for row in questions:

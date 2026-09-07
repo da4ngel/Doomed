@@ -47,7 +47,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("directory", type=Path)
     directory = parser.parse_args().directory
-    report = json.loads((directory / "report.json").read_text())
+    report = json.loads((directory / "report.json").read_text(encoding="utf-8"))
     with (directory / "human-review.csv").open(newline="") as handle:
         reviews = list(csv.DictReader(handle))
     summary = summarize(report, reviews)

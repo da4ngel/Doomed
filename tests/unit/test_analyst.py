@@ -201,7 +201,7 @@ def test_all_twenty_sample_questions(analyst):
     )
     if not path.exists():
         pytest.skip("Corpus is not shipped in this checkout; real 20-question acceptance pending")
-    payload = json.loads(path.read_text())
+    payload = json.loads(path.read_text(encoding="utf-8"))
     questions = payload if isinstance(payload, list) else payload["questions"]
     assert len(questions) == 20
     for item in questions:

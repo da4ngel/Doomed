@@ -124,7 +124,7 @@ def create_app() -> FastAPI:
 
     @app.get("/", response_class=HTMLResponse)
     def index() -> str:
-        html = (Path(__file__).resolve().parents[2] / "ui/index.html").read_text()
+        html = (Path(__file__).resolve().parents[2] / "ui/index.html").read_text(encoding="utf-8")
         return html.replace(
             "<body>",
             '<body><p class="notice">TEST FIXTURE — scripted responses; '
