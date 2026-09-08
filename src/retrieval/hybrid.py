@@ -80,7 +80,19 @@ class Retriever:
             log.warning("rerank unavailable, using fused order: %s", exc)
             return hits[:limit]
 
-        for hit, score in zip(hits, scores, strict=False):
+        if len(scores) != len(hits):
+            # strict=False silently left the tail of `hits` unscored, so those chunks
+            # sorted to the bottom on a default of 0.0 and effectively vanished, with
+            # nothing logged. A reranker that returns the wrong number of scores is
+            # broken; fall back to the fused order rather than quietly dropping evidence.
+            log.warning(
+                "rerank returned %d scores for %d hits; using fused order",
+                len(scores),
+                len(hits),
+            )
+            return hits[:limit]
+
+        for hit, score in zip(hits, scores, strict=True):
             hit.rerank_score = float(score)
         return sorted(hits, key=lambda h: -getattr(h, "rerank_score", 0.0))[:limit]
 

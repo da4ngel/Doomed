@@ -106,7 +106,7 @@ class RetrievalAgent:
         filters = action.filters.model_dump(exclude_none=True)
         if action.action == "figure_search":
             filters["source_type"] = ["figure_plate", "wiki_image"]
-        query = action.args.get("entity_name", action.query)
+        query = action.query
         body = {
             "query": query,
             "k": action.k,

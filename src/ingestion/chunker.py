@@ -350,7 +350,7 @@ def chunk_document(
     return chunks
 
 
-def _image_chunks(settings: Settings, start_index: int) -> list[Chunk]:
+def _image_chunks(settings: Settings) -> list[Chunk]:
     """Fold described images in as standalone chunks.
 
     Their `searchable_text` already renders `values[]` as explicit `label: value` lines,
@@ -420,7 +420,7 @@ def run(settings: Settings | None = None, target_tokens: int = TARGET_TOKENS) ->
             )
         )
 
-    images = _image_chunks(settings, len(all_chunks))
+    images = _image_chunks(settings)
     stats.figure_chunks += len(images)
     stats.chunks += len(images)
     all_chunks.extend(images)
