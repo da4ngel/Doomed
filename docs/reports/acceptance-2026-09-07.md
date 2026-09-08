@@ -264,6 +264,69 @@ the same commit, which is exactly what the merge delivers.
 
 ---
 
+## Audit remediation - runs 4 and 5
+
+A full read of both layers produced eighteen findings. Everything that could change
+answer quality was gated on a fresh dev run and kept only on evidence.
+
+| | run 3 | run 4 quote fix | run 5 intent policy |
+|---|---|---|---|
+| claims > 0 | 13 | 13 | 13 |
+| empty | 7 | 7 | 7 |
+| mean groundedness | 0.650 | 0.650 | 0.650 |
+| **gold coverage** | 11/20 | 11/20 | **13/20** |
+| **median latency** | - | 12,922 ms | **9,156 ms** |
+| structural errors | 0 | 0 | 0 |
+
+### Retrieval configuration was the largest single win
+
+The reasoning agent used one setting for every question - rerank on, expansion never -
+which is the **worst** recorded row for multi-hop and the best for figures:
+
+| multihop_1b | coverage@10 |
+|---|---|
+| hybrid + rerank *(what it did)* | 0.143 |
+| hybrid | 0.429 |
+| + graph expand *(what it does now)* | 0.714 |
+
+Choosing per intent took gold coverage to 13/20 and cut median latency by 29%, because
+multi-hop stopped paying ~2.4 s for a reranker that was making it worse. `1b_007`, which
+had never once retrieved its gold documents, now does.
+
+### The quote check was the headline defect, and it did not move the aggregate
+
+The composer tested `quote in chunk.text` byte-for-byte and dropped the whole claim on
+any failure. A multi-hop claim needs one quote per hop, so its survival odds were the
+single-quote odds raised to the number of hops - the exact asymmetry behind multi-hop
+answers vanishing while single-fact ones passed. Quotes are now matched on words and
+the span is sliced from the source, so citations stay verbatim and a quote that does
+not occur still fails.
+
+It recovered `1b_006` and `1b_013` (0 to 2 verified claims each) and **the aggregate did
+not move**, because two other questions lost claims in the same run. That loss cannot be
+caused by the change, which only ever accepts more - an exact match short-circuits.
+Re-running one of them showed the model fabricating a quote, correctly rejected. Kept on
+that reasoning, not on the aggregate.
+
+### What the audit fixed that no metric shows
+
+- **The cache hit rate was always 0.0** - counters were per-instance while the endpoint
+  built a new instance per call, and the two services are separate processes anyway.
+- **BM25 over-fetched 5x on every search**, filtered or not, because an empty
+  `SearchFilters` is truthy. Retrieve depth 800 to 160.
+- **Every LLM call earned a guaranteed 402** before falling through to the right
+  provider, because only half the provider-pinning rule existed.
+- The graph queried two unindexed columns on every unresolved name lookup.
+
+### Still open
+
+Composition, not retrieval, is now the binding constraint. `1b_007` retrieves its gold
+documents and still produces no claim, and the three `1a_v*` portrait questions retrieve
+the right image and compose nothing from it. Both are A5 problems, and neither is
+something a retrieval or matching change can reach.
+
+---
+
 ## What this run does not establish
 
 - **No correctness score.** Five lexical matches is a substring count. Groundedness of
