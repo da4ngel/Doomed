@@ -91,8 +91,22 @@ class BM25Store:
         path = self.dir / "chunk_ids.json"
         return len(json.loads(path.read_text("utf-8"))) if path.exists() else 0
 
-    def _passes(self, chunk_id: str, filters: SearchFilters | None) -> bool:
+    @staticmethod
+    def _is_active(filters: SearchFilters | None) -> bool:
+        """True only when a filter would actually exclude something.
+
+        WHY this is not `if filters`: SearchRequest.filters is built with
+        `default_factory=SearchFilters`, so it is NEVER None, and a plain pydantic model
+        has no __bool__ - an empty SearchFilters is truthy. The over-fetch below read as
+        "5x depth when filtering", but took that branch on every search ever made,
+        filtered or not, on top of the 4x the caller already asks for.
+        """
         if filters is None:
+            return False
+        return bool(filters.authority_tier or filters.source_type or filters.doc_id)
+
+    def _passes(self, chunk_id: str, filters: SearchFilters | None) -> bool:
+        if filters is None or not self._is_active(filters):
             return True
         meta = self._meta.get(chunk_id, {})
         if filters.authority_tier and meta.get("authority_tier") not in filters.authority_tier:
@@ -108,8 +122,9 @@ class BM25Store:
         tokens = tokenize(query)
         if not tokens:
             return []
-        # Over-fetch so filtering cannot silently shrink k below what was asked for.
-        depth = min(k * 5 if filters else k, len(self._chunk_ids))
+        # Over-fetch so filtering cannot silently shrink k below what was asked for -
+        # but only when a filter is actually set. See _is_active.
+        depth = min(k * 5 if self._is_active(filters) else k, len(self._chunk_ids))
         indices, scores = retriever.retrieve([tokens], k=depth)
 
         results: list[tuple[str, float, dict]] = []

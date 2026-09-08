@@ -30,6 +30,14 @@ CREATE TABLE IF NOT EXISTS responses (
     value      TEXT NOT NULL,
     created_at REAL NOT NULL DEFAULT (unixepoch('subsec'))
 );
+
+-- Hit/miss totals live in the DATABASE, not on the instance. The knowledge API and the
+-- reasoning service are separate processes and the LLM calls happen in the latter, so an
+-- in-process counter read by GET /v1/metrics in the former is structurally always zero.
+CREATE TABLE IF NOT EXISTS counters (
+    name  TEXT PRIMARY KEY,
+    value INTEGER NOT NULL DEFAULT 0
+);
 """
 
 
@@ -62,14 +70,28 @@ class ResponseCache:
         conn.execute("PRAGMA journal_mode=WAL")
         return conn
 
+    def _bump(self, name: str) -> None:
+        """Increment a durable counter. Never let bookkeeping break a cache read."""
+        try:
+            with self._connect() as conn:
+                conn.execute(
+                    "INSERT INTO counters (name, value) VALUES (?, 1) "
+                    "ON CONFLICT(name) DO UPDATE SET value = value + 1",
+                    (name,),
+                )
+        except sqlite3.Error:  # noqa: BLE001 - a metric must never fail a lookup
+            pass
+
     def get(self, model: str, prompt: str, params: Mapping[str, Any] | None = None) -> str | None:
         key = cache_key(model, prompt, params)
         with self._lock, self._connect() as conn:
             row = conn.execute("SELECT value FROM responses WHERE key = ?", (key,)).fetchone()
         if row is None:
             self._misses += 1
+            self._bump("misses")
             return None
         self._hits += 1
+        self._bump("hits")
         return str(row[0])
 
     def set(self, model: str, prompt: str, params: Mapping[str, Any] | None, value: str) -> None:
@@ -110,10 +132,13 @@ class ResponseCache:
         """Feeds `cache_hit_rate` on GET /v1/metrics."""
         with self._lock, self._connect() as conn:
             entries = conn.execute("SELECT COUNT(*) FROM responses").fetchone()[0]
-        total = self._hits + self._misses
+            counted = dict(conn.execute("SELECT name, value FROM counters").fetchall())
+        hits = int(counted.get("hits", 0))
+        misses = int(counted.get("misses", 0))
+        total = hits + misses
         return {
-            "hits": self._hits,
-            "misses": self._misses,
-            "hit_rate": (self._hits / total) if total else 0.0,
+            "hits": hits,
+            "misses": misses,
+            "hit_rate": (hits / total) if total else 0.0,
             "entries": int(entries),
         }

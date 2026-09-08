@@ -71,3 +71,44 @@ def test_stores_json_values(tmp_path) -> None:
     payload = {"values": [{"label": "Emberdeep", "value": 1114}]}
     cache.set_json("vlm", "plate_01", {}, payload)
     assert cache.get_json("vlm", "plate_01", {}) == payload
+
+
+def test_hit_rate_survives_a_new_instance(tmp_path) -> None:
+    """GET /v1/metrics builds a fresh ResponseCache on every call, so an in-process
+    counter made `cache_hit_rate` unconditionally 0.0 - a reported, load-bearing
+    metric that was always wrong.
+
+    It is worse than a stale number here: the knowledge API serves /v1/metrics and the
+    reasoning service makes the LLM calls, and they are SEPARATE PROCESSES. An
+    in-memory counter could never have been right no matter how it was read.
+    """
+    db = tmp_path / "cache.sqlite"
+    cache = ResponseCache(db)
+
+    assert cache.get("m", "p", {}) is None  # miss
+    cache.set("m", "p", {}, "v")
+    assert cache.get("m", "p", {}) == "v"  # hit
+
+    reader = ResponseCache(db)  # stands in for the other process
+    stats = reader.stats()
+    assert stats["hits"] == 1
+    assert stats["misses"] == 1
+    assert stats["hit_rate"] == 0.5
+    assert stats["entries"] == 1
+
+
+def test_a_counter_failure_never_breaks_a_cache_read(tmp_path) -> None:
+    """Bookkeeping is not worth failing a lookup for.
+
+    Exercised by pointing the counter write at an unopenable path, rather than by
+    replacing _bump - replacing the method would also replace the try/except that is
+    the thing under test.
+    """
+    cache = ResponseCache(tmp_path / "cache.sqlite")
+    cache.set("m", "p", {}, "v")
+
+    cache.db_path = tmp_path  # a directory: sqlite cannot open it
+    cache._bump("hits")  # must not raise
+
+    cache.db_path = tmp_path / "cache.sqlite"
+    assert cache.get("m", "p", {}) == "v", "the value must still come back"

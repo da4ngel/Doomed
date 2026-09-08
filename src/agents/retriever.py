@@ -28,8 +28,42 @@ class Action(Frozen):
     query: str = ""
     k: int = Field(default=10, ge=1, le=100)
     rerank: bool = True
+    #: Graph expansion at the seam. Off by default so a hand-built Action behaves as
+    #: before; the orchestrator sets it per intent - see `tune_for_intent`.
+    expand: bool = False
+    expand_mode: str | None = None
     filters: SearchFilters = Field(default_factory=SearchFilters)
     args: dict[str, Any] = Field(default_factory=dict)
+
+
+#: Retrieval configuration per query intent, read off the recorded ablation rather than
+#: chosen. On multihop_1b, coverage@10: hybrid+rerank 0.143, hybrid 0.429, +graph expand
+#: 0.714 - so the reranker actively HURTS multi-hop while costing ~2.4s, and expansion is
+#: the single largest win available. On rich_1a the ordering inverts: rerank is the best
+#: row (nDCG 0.779 vs 0.715) because a figure question wants precision, not breadth.
+#: One global setting cannot serve both, and the previous default - rerank always on,
+#: expansion never - was the worst available row for the track that is the spine.
+_INTENT_POLICY: dict[str, tuple[bool, bool]] = {
+    # intent: (rerank, expand)
+    "multi_hop": (False, True),
+    "contradiction": (False, True),
+    "visual": (True, False),
+    "direct": (True, False),
+}
+
+
+def tune_for_intent(action: Action, intent: str) -> Action:
+    """Apply the measured retrieval policy for this intent.
+
+    Graph actions are left alone: they do not go through /v1/search and neither flag
+    means anything to them.
+    """
+    if action.action not in {"hybrid_search", "figure_search", "list_mentions"}:
+        return action
+    rerank, expand = _INTENT_POLICY.get(intent, (True, False))
+    return action.model_copy(
+        update={"rerank": rerank, "expand": expand, "expand_mode": "graph" if expand else None}
+    )
 
 
 class Evidence(Frozen):
@@ -106,14 +140,17 @@ class RetrievalAgent:
         filters = action.filters.model_dump(exclude_none=True)
         if action.action == "figure_search":
             filters["source_type"] = ["figure_plate", "wiki_image"]
-        query = action.args.get("entity_name", action.query)
-        body = {
+        query = action.query
+        body: dict[str, Any] = {
             "query": query,
             "k": action.k,
             "filters": filters,
             "rerank": action.rerank,
             "mode": "hybrid",
         }
+        if action.expand:
+            body["expand"] = True
+            body["expand_mode"] = action.expand_mode or "graph"
         warnings: list[Warning] = []
         for mode, rerank in [("hybrid", action.rerank), ("hybrid", False), ("sparse", False)]:
             body.update(mode=mode, rerank=rerank)

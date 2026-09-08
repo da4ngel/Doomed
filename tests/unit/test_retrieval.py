@@ -221,3 +221,37 @@ def test_expansion_defaults_to_off_so_old_requests_behave_identically() -> None:
     request = SearchRequest(query="x")
     assert request.expand is False
     assert SearchResponse().expanded == 0
+
+
+# --------------------------------------------------------------------------
+# BM25 over-fetch depth
+# --------------------------------------------------------------------------
+
+
+def test_an_empty_filter_object_does_not_count_as_filtering() -> None:
+    """The 5x over-fetch is for filtered searches. It used to fire on every search.
+
+    SearchRequest.filters is built with default_factory, so it is never None, and a
+    plain pydantic model has no __bool__ - an empty SearchFilters is truthy. So
+    `k * 5 if filters else k` took the 5x branch always, on top of the 4x the caller
+    already asks for: every search ran BM25 at k*20 depth, filtered or not.
+    """
+    from src.api.schemas import SearchFilters
+    from src.indexing.bm25_store import BM25Store
+
+    assert (
+        bool(SearchFilters()) is True
+    ), "if this ever becomes falsy the bug is gone and this test can go with it"
+    assert BM25Store._is_active(SearchFilters()) is False
+    assert BM25Store._is_active(None) is False
+
+
+def test_a_real_filter_still_triggers_the_over_fetch() -> None:
+    """The guard must be narrow: filtering still needs the deeper candidate pool, or
+    post-filtering silently returns fewer than k results."""
+    from src.api.schemas import SearchFilters
+    from src.indexing.bm25_store import BM25Store
+
+    assert BM25Store._is_active(SearchFilters(authority_tier=[1])) is True
+    assert BM25Store._is_active(SearchFilters(source_type=["figure_plate"])) is True
+    assert BM25Store._is_active(SearchFilters(doc_id=["wiki/x.md"])) is True

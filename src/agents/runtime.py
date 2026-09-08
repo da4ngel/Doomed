@@ -127,13 +127,16 @@ class BoundedLLM:
 
     def complete(self, messages: list[dict[str, Any]], **params: Any) -> LLMResponse:
         model = params.get("model") or self.client.settings.llm_model_synthesis
-        # OpenRouter's provider/model IDs cannot be sent unchanged to other SDKs.
-        if (
-            "/" in model
-            and not model.startswith("arn:")
-            and "openrouter" in self.client.available_providers()
-        ):
+        # A model id belongs to one provider, and the ladder should not discover that by
+        # failing. "provider/model" is OpenRouter's shape; a bare "gpt-4o-mini" is
+        # OpenAI's and is a 404 on OpenRouter. Only the first half of this rule existed,
+        # so every bare-id call tried OpenRouter first and burned a guaranteed failure -
+        # a 402 per request until the circuit breaker opened after three of them.
+        available = self.client.available_providers()
+        if "/" in model and not model.startswith("arn:") and "openrouter" in available:
             params.setdefault("provider", "openrouter")
+        elif "/" not in model and not model.startswith("arn:") and "openai" in available:
+            params.setdefault("provider", "openai")
         return _within_budget(
             lambda: self.client.complete(messages, **params),
             self.budget,

@@ -50,6 +50,12 @@ CREATE TABLE IF NOT EXISTS relations (
 CREATE INDEX IF NOT EXISTS idx_relations_subject ON relations(subject_id);
 CREATE INDEX IF NOT EXISTS idx_relations_object  ON relations(object_id);
 CREATE INDEX IF NOT EXISTS idx_relations_pred    ON relations(predicate);
+-- `_resolve()` falls back to a name lookup on every graph request that does not already
+-- hold an entity_id, and `all_entities(entity_type=...)` filters by type. Neither column
+-- was indexed. LOWER() on the lookup would defeat an index on canonical_name, so the
+-- index is on the lowered expression the query actually uses.
+CREATE INDEX IF NOT EXISTS idx_entities_name_ci ON entities(LOWER(canonical_name));
+CREATE INDEX IF NOT EXISTS idx_entities_type    ON entities(type);
 """
 
 

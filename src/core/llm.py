@@ -474,8 +474,14 @@ class LLMClient:
             raise NoProviderConfiguredError
 
         prompt = self._cache_prompt(messages)
+        # The provider is part of the identity of a result: the same model string served
+        # by two providers can answer differently, and `provider` is documented above as
+        # semantically significant. It was absent from the key, so a future call reusing
+        # one id across two providers would have served one's answer as the other's, with
+        # no error. Kept out of `params` itself, which is sent verbatim to the provider.
+        cache_params = {**params, "__provider": provider} if provider else params
         if use_cache:
-            hit = self.cache.get_json(model, prompt, params)
+            hit = self.cache.get_json(model, prompt, cache_params)
             if hit is not None:
                 response = LLMResponse(**hit)
                 response.cached = True
@@ -502,7 +508,7 @@ class LLMClient:
             response.fallback_used = index > 0
             if use_cache:
                 payload = {k: v for k, v in response.__dict__.items() if k not in {"raw", "cached"}}
-                self.cache.set_json(model, prompt, params, payload)
+                self.cache.set_json(model, prompt, cache_params, payload)
             self.usage.append(response)
             return response
 

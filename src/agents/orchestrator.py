@@ -10,7 +10,7 @@ from src.agents.composer import AnswerComposer
 from src.agents.context import focused_chunks
 from src.agents.critic import Critique, SufficiencyCritic
 from src.agents.merger import merge_evidence
-from src.agents.retriever import Action, Evidence, RetrievalAgent
+from src.agents.retriever import Action, Evidence, RetrievalAgent, tune_for_intent
 from src.agents.router import route
 from src.agents.runtime import Budget, BudgetExceeded
 from src.agents.verifier import AnswerVerifier
@@ -38,6 +38,7 @@ class RunState:
     history: list[Action] = field(default_factory=list)
     warnings: list[Warning] = field(default_factory=list)
     stagnant: int = 0
+    intent: str = ""
     sequence: int = 0
     usage_offset: int = 0
     critique: Critique = field(default_factory=Critique)
@@ -100,6 +101,7 @@ class Orchestrator:
     ) -> AnswerPacket:
         self.budget.remaining()
         analysis = self.analyst.analyze(request.question, normalize=normalize)
+        state.intent = analysis.intent
         mode, action = route(analysis, request.mode)
         state.warnings.extend(Warning(type=w) for w in analysis.warnings)
         self._record(
@@ -236,6 +238,10 @@ class Orchestrator:
                 )
 
     def _retrieve(self, action: Action, trace_id: str, state: RunState) -> Evidence:
+        # Applied here rather than in the router so it reaches EVERY action, including
+        # the ones the critic proposes on later loop iterations - which are exactly the
+        # multi-hop follow-ups that need expansion most.
+        action = tune_for_intent(action, state.intent)
         result = self.retriever.execute(
             action,
             seen_chunks=set(state.chunks),
