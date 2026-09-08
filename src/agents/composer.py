@@ -7,7 +7,7 @@ import re
 from src.agents.merger import Bundle
 from src.agents.runtime import CompletionClient
 from src.api.schemas import AnswerMode, AnswerPacket, Claim, SearchHit, SupportLabel, Warning
-from src.synthesis.citations import citation_for
+from src.synthesis.citations import citation_for, find_verbatim_span
 from src.synthesis.claims import Draft, ProposedClaim
 from src.synthesis.extractive import numeric_figure_draft
 from src.synthesis.prompts import messages
@@ -135,15 +135,36 @@ class AnswerComposer:
         question: str,
         placement: dict[str, list[str]],
     ) -> None:
-        if any(
-            s.chunk_id not in sources or s.quote not in sources[s.chunk_id].text
-            for s in proposed.sources
-        ):
+        absent = [s.chunk_id for s in proposed.sources if s.chunk_id not in sources]
+        if absent:
             packet.warnings.append(
                 Warning(
                     type="claim_downgraded",
                     action="removed",
-                    detail="Proposed claim cites an absent chunk or fabricated quote",
+                    detail=f"Proposed claim cites chunks not in evidence: {absent}",
+                )
+            )
+            return
+
+        # Resolve each quote to the REAL span in its chunk. A quote that differs only by
+        # whitespace or by a curly apostrophe is recovered and replaced with the verbatim
+        # text; one that does not actually occur still fails. See find_verbatim_span.
+        #
+        # The two failures were previously one warning with no detail, so a fabricated
+        # quote and a stray line break were indistinguishable in a trace.
+        unmatched: list[str] = []
+        for ref in proposed.sources:
+            span = find_verbatim_span(ref.quote, sources[ref.chunk_id].text)
+            if span is None:
+                unmatched.append(ref.quote)
+            else:
+                ref.quote = span
+        if unmatched:
+            packet.warnings.append(
+                Warning(
+                    type="claim_downgraded",
+                    action="removed",
+                    detail=f"Quote not found in its cited chunk: {unmatched[0][:120]!r}",
                 )
             )
             return
