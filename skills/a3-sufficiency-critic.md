@@ -25,7 +25,7 @@ That is what `gain_per_step` measures and what the trace panel makes visible on 
   "evidence_so_far": [{ "chunk_id": "", "text": "", "authority_tier": 1, "from_step": 1 }],
   "entities_discovered": [{ "entity_id": "", "canonical_name": "", "first_seen_step": 2 }],
   "steps_taken": 2,
-  "budget": { "max_steps": 6, "max_tokens": 60000, "max_wall_ms": 25000 },
+  "budget": { "request_steps": 6, "max_steps": 12, "max_tokens": 200000, "max_wall_ms": 90000 },
   "steps_without_new_evidence": 0
 }
 ```
@@ -59,8 +59,9 @@ That is what `gain_per_step` measures and what the trace panel makes visible on 
 
 ## Stop rules
 Return `sufficient: true` when every sub-question is covered, **or** the orchestrator
-halts on any of: `steps_taken >= 6`, token cap, wall-clock cap, or
-`steps_without_new_evidence >= 2`.
+halts on any of: the request's step budget (6 for standard UI searches, up to 12 for
+opt-in Deep Semantic Search), the 12-step server ceiling, token cap, wall-clock cap,
+or `steps_without_new_evidence >= 2`.
 
 ## Failure modes and fallback
 
@@ -76,6 +77,7 @@ halts on any of: `steps_taken >= 6`, token cap, wall-clock cap, or
 - A 3-hop question does not return `sufficient` before step 2.
 - After a step yielding zero new chunks twice, the loop stops.
 - Budget exhaustion produces `partial: true` with non-empty `missing[]`.
+- A standard request stops at 6 steps while a deep request may continue through step 12.
 - `next_query` on a multi-hop question contains a term that first appeared in the
   previous step's results. **This is the test that proves the loop reasons rather
   than rephrases.**
