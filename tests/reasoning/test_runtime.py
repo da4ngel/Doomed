@@ -228,3 +228,38 @@ def test_a_reservation_never_undercounts_the_prompt(tmp_path):
     msgs = messages("Compose", {"evidence": "Greyfell Citadel garrison. " * 200})
     raw = _json.dumps(msgs)
     assert 0 < estimate_tokens(raw) <= len(raw.encode())
+
+
+def test_a_bare_model_id_is_pinned_to_openai(tmp_path):
+    """A model id belongs to one provider; the ladder should not learn that by failing.
+
+    Only half this rule existed: "provider/model" was pinned to OpenRouter, but a bare
+    "gpt-4o-mini" was left to the ladder, which tried OpenRouter first and earned a
+    guaranteed 402 on every single call until the circuit breaker opened after three.
+    """
+    seen = []
+
+    class P:
+        def __init__(self, name):
+            self.name = name
+
+        def available(self):
+            return True
+
+        def complete(self, model, messages, **params):
+            seen.append(self.name)
+            return LLMResponse(text="{}", model=model, provider=self.name)
+
+    client = LLMClient(
+        settings=Settings(_env_file=None),
+        cache=ResponseCache(tmp_path / "cache"),
+        providers=[P("openrouter"), P("openai")],
+    )
+    llm = BoundedLLM(client, Budget(max_wall_ms=10_000, max_tokens=100_000))
+
+    llm.complete(messages("Test", {}), model="gpt-4o-mini", max_tokens=8)
+    assert seen == ["openai"], f"a bare id must not be offered to openrouter: {seen}"
+
+    seen.clear()
+    llm.complete(messages("Test2", {}), model="deepseek/deepseek-chat", max_tokens=8)
+    assert seen == ["openrouter"], f"a slashed id stays with openrouter: {seen}"
