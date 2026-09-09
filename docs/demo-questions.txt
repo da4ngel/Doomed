@@ -1,0 +1,52 @@
+DEMO — EXACT STRINGS TO PASTE (do not retype; cache is warmed for these verbatim)
+================================================================================
+
+DEMO 1 — app — mode "Choose automatically" — Deep Semantic OFF — original wording UNCHECKED
+------------------------------------------------------------------------------------------
+According to the figure plate illustrating Emberdeep's forces, what is the recorded total of its garrison strength?
+
+  Expect: "Emberdeep: 1,114" + the bar-chart figure + one tier-1 citation (Plate 01).
+          NOT flagged partial. ~1 s from cache.
+  Backup if it misbehaves:
+  According to the official threat-classification plate, what numerical rating is assigned to the creature known as the Weeping Lurker?
+  Expect: "Weeping Lurker: 3" + figure + tier-1 citation. Clean.
+
+
+DEMO 2 — app — mode "Investigate" — Deep Semantic OFF — original wording UNCHECKED
+--------------------------------------------------------------------------------
+Which war was won by the organization that included Isolde Mournvale as one of its members?
+
+  Expect: two claims —
+    1. "The Silent Choir was victor of The War of Drowned Light."   [tier-1 citation]
+    2. "Isolde Mournvale is a member of The Silent Choir."          [tier-1 citation]
+  Trace: A1 analyze (intent: multi_hop) -> A2 hybrid_search -> A3 assess ("missing:
+  which war did they win?") -> A2 hybrid_search ("The Silent Choir") -> ... -> A4 merge
+  (19 chunks) -> A5 compose (2) -> A6 verify (0 removed).
+  It WILL show "Partial findings" + two follow-up questions + a note
+  "budget_exhausted: retrieval returned nothing new twice". This is expected — narrate it.
+  ~1 s from cache.
+
+
+DEMO 3 — Postman — collection "AshenEra" — folder "09 Assets"
+------------------------------------------------------------
+Request: "Emberdeep plate metadata - the planted chart trap"   (GET {{base_url}}/v1/assets/{{emberdeep_asset}}/meta)
+  Point at values[]: Old Imperial minimum 800 / Border-march standard 2,400 /
+  Great Keep standard 6,000 / Emberdeep 1,114.
+  Then open the "Test Results" tab — assertions pass.
+
+
+DEMO 4 — Postman — collection "AshenEra" — folder "03 Graph"
+-----------------------------------------------------------
+Request: "1b_013 - creature to lair to ruler"   (POST {{base_url}}/v1/graph/paths)
+  Body is already:  {"from":"Gravemaw Wyrm","to":"The Bleeding Crown","max_hops":3}
+  Point at paths[0]:
+    Gravemaw Wyrm  -lair_of->  Marrowwell Abbey   evidence: wiki/gravemaw_wyrm.md#infobox:Lair
+    Marrowwell Abbey  -ruled_by->  The Bleeding Crown   evidence: wiki/marrowwell_abbey.md#infobox:Ruled by
+  Then open the "Test Results" tab — assertions pass.
+
+
+DO NOT DEMO IN THE APP
+----------------------
+"Whose dominion encompasses the lair of the Gravemaw Wyrm?"  -> the reasoning loop
+currently fails this question (returns a wrong creature-description answer). It only
+works as the Postman graph-path request in Demo 4.
