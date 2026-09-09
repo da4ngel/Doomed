@@ -431,6 +431,61 @@ a truthful confidence number on this eval too.
 
 ---
 
+## Acted on, 9 September — what changed and what it bought
+
+Four of the ten recommendations were implemented and measured against this run. Every
+change was verified against the eight-question demo regression set, which still passes.
+
+| # | recommendation | outcome |
+|---|---|---|
+| 2 | A5: auto-bind the sole supporting figure | **done** — `1a_v11` FAIL to PASS, `1a_v12` borderline to PASS |
+| 7 | derive confidence from support + entailment | **done** — real values replace `0.0` everywhere |
+| 8 | stop echoing answered sub-questions | **done** — correct answers no longer marked partial |
+| 4 | churn guard | **attempted and reverted**, see below |
+
+### Recovered answers, verified against gold
+
+```
+1a_v11  gold 'a weeping eye'    -> 'a large open eye ... weeping golden'   1 claim, confidence 0.60
+1a_v12  gold 'two crossed keys' -> 'two crossed keys on an ornate shield'  1 claim, confidence 0.75
+1a_v06  gold 'a rolled scroll'  -> 'they are holding a rolled scroll'      1 claim, confidence 0.75
+```
+
+`1a_v07` still returns nothing, but for a different reason than before: the trace now
+shows `asset_rebound`, so the figure *was* bound and the claim was then rejected by the
+subject and value checks. That is the trap defence working, not the deletion bug.
+
+### The trap defence was strengthened, not relaxed
+
+The old test asserted that a visual claim with no `asset_id` must be discarded. That is
+a **proxy** for safety - the model remembering an id - rather than the safety property,
+which is that the value is bound to its subject. A new test now feeds a reference bar
+**and** a forgotten asset id together: auto-binding hands the claim its figure, and
+`bound_value` still refuses it. The Emberdeep trap in miniature, and it still holds.
+
+### Recommendation 4 was reverted, deliberately
+
+`1b_003` and `un_007` burn the full 90 s wall, and the obvious signal - the critic
+requesting the same missing evidence twice running - turns out not to be sound. P2's
+`SeventhStepCritic` test walks a list of records with an unchanging missing message
+while making genuine progress each round; the guard stopped it at 3 of 6 steps.
+Separating churn from progress needs the failing traces, which this run does not
+preserve at that granularity. Shipping a guess that breaks a working feature test two
+hours before a freeze is the wrong trade, so **finding 6 stays open**.
+
+What did land from it: every give-up exit from the retrieval loop now names its reason.
+Previously only the step-limit exit warned, so a run that stopped through stagnation was
+indistinguishable in the trace from one that had genuinely gathered enough.
+
+### Still open
+
+Recommendations **1** (A5 one citation per hop, A6 semantic entailment for figure
+descriptions), **3** (contradiction-intent retrieval), **5** (wh-word responsiveness),
+**6** (provider fallback), **9** and **10**. Recommendation 1 remains the highest-value
+of these and is the one most likely to move 1B.
+
+---
+
 ## Reproduce
 
 ```bash
