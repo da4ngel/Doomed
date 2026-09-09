@@ -75,3 +75,39 @@ def test_a_recovered_span_can_build_a_citation() -> None:
     assert span is not None
     citation = citation_for(hit, span)
     assert citation.excerpt in TEXT
+
+
+ELIDED = (
+    "No particular operation is attributed to Ederon Fellgard in the established "
+    "record. Ederon Fellgard is a member of [[The Iron-Ring Cartel]]. The membership "
+    "is a direct part of the character's canonical identity."
+)
+
+
+def test_an_elided_quote_is_recovered() -> None:
+    """Models quote the way people do, joining two real spans with an ellipsis.
+
+    Requiring contiguity rejected those outright, and it was the most common reason a
+    multi-hop claim was dropped: 1b_005 and 1b_007 both failed on quotes of the shape
+    'Isolde Mournvale... belongs to The Silent Choir.'
+    """
+    span = find_verbatim_span("attributed to Ederon Fellgard... is a member of", ELIDED)
+    assert span is not None
+    assert span in ELIDED, "the span must be sliced from the source"
+    assert "established record" in span, "the elided middle is included, not hidden"
+
+
+def test_an_ellipsis_attached_to_a_word_is_handled() -> None:
+    """'Sapper...' - the elision glued to the preceding token."""
+    assert find_verbatim_span("record. Ederon Fellgard... member of", ELIDED) is not None
+
+
+def test_an_ellipsis_cannot_stitch_unrelated_spans() -> None:
+    """The gap is bounded. Without that, 'A ... B' would match any A and any B in the
+    chunk and could support a claim neither fragment makes."""
+    assert find_verbatim_span("Ederon Fellgard... rules Gloamreach", ELIDED) is None
+
+
+def test_an_ellipsis_alone_matches_nothing() -> None:
+    assert find_verbatim_span("...", ELIDED) is None
+    assert find_verbatim_span("... ...", ELIDED) is None

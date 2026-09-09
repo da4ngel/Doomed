@@ -307,3 +307,71 @@ def test_partial_always_says_what_is_missing(chunk, asset):
         assert packet.missing_information, "partial with nothing listed as missing"
     if packet.claims and not packet.missing_information:
         assert not packet.partial, "an answered question with nothing outstanding is not partial"
+
+
+def _hit(cid, text):
+    from src.api.schemas import SearchHit
+
+    return SearchHit(
+        chunk_id=cid,
+        doc_id="ederon_fellgard",
+        title="Ederon Fellgard",
+        text=text,
+        score=1.0,
+        authority_tier=2,
+        source_type="wiki",
+    )
+
+
+SPLIT_SOURCES = {
+    "c0": _hit("c0", "Ederon Fellgard is a minor figure who serves as a Sapper in the field."),
+    "c2": _hit(
+        "c2", "No action is attributed. Ederon Fellgard is a member of the Iron-Ring Cartel."
+    ),
+}
+
+
+def test_a_quote_spanning_two_chunks_becomes_one_citation_each():
+    """The measured cause of the multi-hop failures.
+
+    A two-hop claim needs a fact from each hop, and the model states it as one elided
+    quote tagged with a single chunk id. On 1b_007 those fragments live in
+    ederon_fellgard:c0 and :c2, so no within-chunk match can succeed and the whole claim
+    was dropped - with all of its evidence present in the bundle.
+    """
+    from src.agents.composer import _split_across_chunks
+    from src.synthesis.claims import SourceQuote
+
+    out = _split_across_chunks(
+        SourceQuote(
+            chunk_id="c0",
+            quote="who serves as a Sapper... Ederon Fellgard is a member of the Iron-Ring Cartel",
+        ),
+        SPLIT_SOURCES,
+    )
+    assert out is not None and len(out) == 2
+    assert [s.chunk_id for s in out] == ["c0", "c2"], "one citation per hop, in order"
+    for s in out:
+        assert s.quote in SPLIT_SOURCES[s.chunk_id].text, "each span is verbatim in its own chunk"
+
+
+def test_splitting_never_invents_a_source():
+    """A fragment that is in no retrieved chunk means the claim still dies."""
+    from src.agents.composer import _split_across_chunks
+    from src.synthesis.claims import SourceQuote
+
+    assert (
+        _split_across_chunks(
+            SourceQuote(chunk_id="c0", quote="who serves as a Sapper... rules Gloamreach outright"),
+            SPLIT_SOURCES,
+        )
+        is None
+    )
+
+
+def test_a_fragment_too_short_to_identify_anything_is_refused():
+    """'the... a' would match every chunk in the corpus."""
+    from src.agents.composer import _split_across_chunks
+    from src.synthesis.claims import SourceQuote
+
+    assert _split_across_chunks(SourceQuote(chunk_id="c0", quote="the... a"), SPLIT_SOURCES) is None

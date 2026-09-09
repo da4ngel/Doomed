@@ -8,7 +8,7 @@ from src.agents.merger import Bundle
 from src.agents.runtime import CompletionClient
 from src.api.schemas import AnswerMode, AnswerPacket, Claim, SearchHit, SupportLabel, Warning
 from src.synthesis.citations import citation_for, find_verbatim_span
-from src.synthesis.claims import Draft, ProposedClaim
+from src.synthesis.claims import Draft, ProposedClaim, SourceQuote
 from src.synthesis.extractive import numeric_figure_draft
 from src.synthesis.prompts import messages
 from src.synthesis.render import render_packet
@@ -85,6 +85,14 @@ class AnswerComposer:
             # that is the whole point of missing_information.
             asked = _normalise_question(question)
             outstanding = [m for m in outstanding if _normalise_question(m) != asked]
+        if partial and packet.claims and not outstanding:
+            # A3 judged the evidence insufficient and A5 produced SOMETHING. That is not
+            # the same as having answered: on 1b_007 the claim resolves hop 1 (which
+            # faction) and never reaches hop 2 (which accord it won). Stripping the echo
+            # and clearing `partial` presented that as a complete answer to a question it
+            # did not address - a confident non-answer, which is worse than the refusal it
+            # replaced. Keep A3's verdict and say what is still open.
+            outstanding = ["The question was not fully resolved: " + question]
         packet.missing_information = outstanding
         if packet.claims and not outstanding:
             # Dropping the echoed question can empty missing_information while `partial`
@@ -183,13 +191,28 @@ class AnswerComposer:
         #
         # The two failures were previously one warning with no detail, so a fabricated
         # quote and a stray line break were indistinguishable in a trace.
+        resolved: list[SourceQuote] = []
         unmatched: list[str] = []
         for ref in proposed.sources:
             span = find_verbatim_span(ref.quote, sources[ref.chunk_id].text)
-            if span is None:
-                unmatched.append(ref.quote)
-            else:
-                ref.quote = span
+            if span is not None:
+                resolved.append(SourceQuote(chunk_id=ref.chunk_id, quote=span))
+                continue
+            split = _split_across_chunks(ref, sources)
+            if split:
+                resolved.extend(split)
+                packet.warnings.append(
+                    Warning(
+                        type="claim_downgraded",
+                        action="citation_split",
+                        detail=(
+                            f"Quote spanned {len(split)} chunks; cited each separately: "
+                            f"{[s.chunk_id for s in split]}"
+                        ),
+                    )
+                )
+                continue
+            unmatched.append(ref.quote)
         if unmatched:
             packet.warnings.append(
                 Warning(
@@ -199,6 +222,7 @@ class AnswerComposer:
                 )
             )
             return
+        proposed = proposed.model_copy(update={"sources": resolved})
         proposed = _portrait_quotes(proposed, sources, assets)
         citations = [citation_for(sources[s.chunk_id], s.quote) for s in proposed.sources]
         claim_id = f"claim_{len(packet.claims) + 1}"
@@ -270,6 +294,49 @@ def _support(citations: list) -> SupportLabel:
 def _normalise_question(text: str) -> str:
     """Compare questions by their words, so punctuation and spacing do not defeat it."""
     return " ".join(re.sub(r"[^\w\s]", " ", text).casefold().split())
+
+
+def _split_across_chunks(
+    ref: SourceQuote, sources: dict[str, SearchHit]
+) -> list[SourceQuote] | None:
+    """One quote drawn from several chunks, re-cited as one SourceQuote per chunk.
+
+    A multi-hop claim needs a fact from each hop, and the model states it as a single
+    elided quote - "...who serves as a Sapper... Ederon Fellgard is a member of..." -
+    tagged with one chunk id. Measured on 1b_007, those two fragments live in
+    `ederon_fellgard:c0` and `:c2`. No within-chunk match can succeed, and rejecting is
+    correct: the cited chunk really does not contain that quote.
+
+    Rather than discard a claim whose evidence is all present, each fragment is located
+    in whichever retrieved chunk actually holds it and cited separately. That is exactly
+    the "one citation per hop" shape A6 wants: given a citation per fact, the entailment
+    check accepts a two-fact claim it would otherwise reject.
+
+    Nothing is invented. Every fragment must be a genuine verbatim span of a genuinely
+    retrieved chunk, or this returns None and the claim is dropped as before. A6 still
+    has to find the claim entailed by the resulting citations.
+    """
+    fragments = [f.strip() for f in re.split(r"\.\.\.|…", ref.quote) if f.strip()]
+    if len(fragments) < 2:
+        return None
+
+    found: list[SourceQuote] = []
+    for fragment in fragments:
+        if len(fragment) < _MIN_FRAGMENT_CHARS:
+            # Too short to identify anything; a stray "the" would match every chunk.
+            return None
+        for chunk_id, chunk in sources.items():
+            span = find_verbatim_span(fragment, chunk.text)
+            if span is not None:
+                found.append(SourceQuote(chunk_id=chunk_id, quote=span))
+                break
+        else:
+            return None
+    return found
+
+
+#: A fragment shorter than this cannot identify a source; it would match anywhere.
+_MIN_FRAGMENT_CHARS = 20
 
 
 def _sole_supporting_asset(

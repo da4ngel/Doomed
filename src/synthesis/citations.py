@@ -34,9 +34,56 @@ def find_verbatim_span(quote: str, text: str) -> str | None:
     tokens = quote.split()
     if not tokens:
         return None
-    pattern = r"\s+".join(_flexible(token) for token in tokens)
+    pattern = _pattern_for(tokens)
+    if pattern is None:
+        return None
     match = re.search(pattern, text)
     return match.group(0) if match else None
+
+
+#: How much source text an ellipsis may skip over. A quotation elides a clause, not half
+#: a document: without a bound, "A ... B" would match any A and any B in the chunk and
+#: could stitch together a span supporting a claim neither part makes.
+_MAX_ELISION = 400
+
+_ELLIPSIS = re.compile(r"^(?:\.\.\.|…)[.…]*$")
+
+
+def _pattern_for(tokens: list[str]) -> str | None:
+    """Regex for these tokens, treating `...` as an elision the source may fill in.
+
+    Models quote the way people do - "he serves as a Sapper... and is a member of X" -
+    joining two real spans with an ellipsis. Requiring contiguity rejected those
+    outright, and it was the single most common reason a multi-hop claim was dropped.
+
+    The span returned still comes from the source and still CONTAINS the elided middle,
+    so the citation shows a reader everything between the fragments; nothing is hidden by
+    accepting the quote. The gap is bounded so an ellipsis cannot reach across a chunk.
+    """
+    parts: list[str] = []
+    for token in tokens:
+        stripped = token.strip(".…")
+        if _ELLIPSIS.match(token):
+            parts.append("GAP")
+        elif stripped and token != stripped and _ELLIPSIS.match(token[len(stripped) :]):
+            # "Sapper..." - a word with the elision attached to it.
+            parts.append(_flexible(stripped))
+            parts.append("GAP")
+        else:
+            parts.append(_flexible(token))
+    if all(part == "GAP" for part in parts):
+        return None
+
+    out: list[str] = []
+    for index, part in enumerate(parts):
+        if part == "GAP":
+            continue
+        if index and parts[index - 1] == "GAP":
+            out.append(rf"[\s\S]{{0,{_MAX_ELISION}}}?")
+        elif index:
+            out.append(r"\s+")
+        out.append(part)
+    return "".join(out)
 
 
 def _flexible(token: str) -> str:
