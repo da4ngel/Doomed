@@ -223,13 +223,25 @@ class Orchestrator:
                         detail="Coverage could not be validated",
                     )
                 )
-            if (
-                state.critique.sufficient
-                or state.stagnant >= 2
-                or state.critique.next_action is None
-            ):
+
+            # Every give-up exit from this loop now says why. Previously only the
+            # step-limit exit warned, so a run that stopped through stagnation or a null
+            # next_action was indistinguishable in the trace from one that succeeded.
+            def gave_up(reason: str) -> None:
+                state.warnings.append(
+                    Warning(type="budget_exhausted", action="loop_stopped", detail=reason)
+                )
+
+            if state.critique.sufficient:
                 break
-            action = state.critique.next_action
+            if state.stagnant >= 2:
+                gave_up("retrieval returned nothing new twice")
+                break
+            next_action = state.critique.next_action
+            if next_action is None:
+                gave_up("the critic proposed no further action")
+                break
+            action = next_action
         if not state.critique.sufficient:
             state.critique.missing = state.critique.missing or list(analysis.sub_questions)
             if len(state.history) >= limit:
