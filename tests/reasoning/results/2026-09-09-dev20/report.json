@@ -1,5 +1,5 @@
 {
-  "started_at": "2026-09-09T14:42:00.178608+00:00",
+  "started_at": "2026-09-09T15:01:23.580372+00:00",
   "preflight": {
     "checks": {
       "knowledge": {
@@ -76,19 +76,17 @@
       ],
       "gold_document_recall": 1.0,
       "gold_document_coverage": true,
-      "trace_id": "tr_dd58b0c9f1ce47cb",
-      "latency_ms": 531
+      "trace_id": "tr_54bf4ae1a54c46b4",
+      "latency_ms": 468
     },
     {
       "qid": "1a_009",
-      "structural_errors": [
-        "partial_without_missing_information"
-      ],
+      "structural_errors": [],
       "lexical_answer_match": true,
       "groundedness": 1.0,
       "claims": 1,
       "empty_answer": false,
-      "partial": true,
+      "partial": false,
       "citation_recall": 1.0,
       "citation_precision": 1.0,
       "iterations": 1,
@@ -131,8 +129,8 @@
       ],
       "gold_document_recall": 1.0,
       "gold_document_coverage": true,
-      "trace_id": "tr_fbfea615c43f4a00",
-      "latency_ms": 547
+      "trace_id": "tr_21a4592345cc450c",
+      "latency_ms": 485
     },
     {
       "qid": "1a_008",
@@ -184,8 +182,8 @@
       ],
       "gold_document_recall": 1.0,
       "gold_document_coverage": true,
-      "trace_id": "tr_0b6f6f110b3c45a4",
-      "latency_ms": 719
+      "trace_id": "tr_87c90baf235f49e2",
+      "latency_ms": 453
     },
     {
       "qid": "1a_004",
@@ -254,8 +252,8 @@
       ],
       "gold_document_recall": 1.0,
       "gold_document_coverage": true,
-      "trace_id": "tr_49b988a583464b9b",
-      "latency_ms": 984
+      "trace_id": "tr_9ee78034541d486d",
+      "latency_ms": 547
     },
     {
       "qid": "1a_007",
@@ -307,8 +305,8 @@
       ],
       "gold_document_recall": 1.0,
       "gold_document_coverage": true,
-      "trace_id": "tr_af234dc9307d412b",
-      "latency_ms": 953
+      "trace_id": "tr_aefb1fc8904a4513",
+      "latency_ms": 937
     },
     {
       "qid": "1a_013",
@@ -360,8 +358,8 @@
       ],
       "gold_document_recall": 1.0,
       "gold_document_coverage": true,
-      "trace_id": "tr_ea8e604aafa04af5",
-      "latency_ms": 985
+      "trace_id": "tr_e53edc8e572a4d07",
+      "latency_ms": 797
     },
     {
       "qid": "1a_v06",
@@ -413,8 +411,8 @@
       ],
       "gold_document_recall": 0.5,
       "gold_document_coverage": false,
-      "trace_id": "tr_03b6dc4c41b34dde",
-      "latency_ms": 1000
+      "trace_id": "tr_33019554bc9f46ff",
+      "latency_ms": 781
     },
     {
       "qid": "1a_v07",
@@ -466,8 +464,8 @@
       ],
       "gold_document_recall": 0.5,
       "gold_document_coverage": false,
-      "trace_id": "tr_f6af271a79da4bdd",
-      "latency_ms": 1000
+      "trace_id": "tr_ab4252edb6054b5d",
+      "latency_ms": 797
     },
     {
       "qid": "1a_v12",
@@ -519,19 +517,17 @@
       ],
       "gold_document_recall": 0.5,
       "gold_document_coverage": false,
-      "trace_id": "tr_76ee887bf2ef413e",
-      "latency_ms": 953
+      "trace_id": "tr_b4c66d7e65b04a44",
+      "latency_ms": 985
     },
     {
       "qid": "1a_v11",
-      "structural_errors": [
-        "partial_without_missing_information"
-      ],
+      "structural_errors": [],
       "lexical_answer_match": true,
       "groundedness": 1.0,
       "claims": 1,
       "empty_answer": false,
-      "partial": true,
+      "partial": false,
       "citation_recall": 0.5,
       "citation_precision": 1.0,
       "iterations": 2,
@@ -597,19 +593,17 @@
       ],
       "gold_document_recall": 0.5,
       "gold_document_coverage": false,
-      "trace_id": "tr_9605a25634de4d2d",
-      "latency_ms": 984
+      "trace_id": "tr_4eb36c5e65534b9d",
+      "latency_ms": 953
     },
     {
       "qid": "1a_v21",
-      "structural_errors": [
-        "partial_without_missing_information"
-      ],
+      "structural_errors": [],
       "lexical_answer_match": true,
       "groundedness": 1.0,
       "claims": 1,
       "empty_answer": false,
-      "partial": true,
+      "partial": false,
       "citation_recall": 0.5,
       "citation_precision": 1.0,
       "iterations": 1,
@@ -652,8 +646,8 @@
       ],
       "gold_document_recall": 0.5,
       "gold_document_coverage": false,
-      "trace_id": "tr_4cf5e1765c814cfe",
-      "latency_ms": 3953
+      "trace_id": "tr_f6580977c2054128",
+      "latency_ms": 968
     },
     {
       "qid": "1b_006",
@@ -709,8 +703,8 @@
       ],
       "gold_document_recall": 1.0,
       "gold_document_coverage": true,
-      "trace_id": "tr_5ecdaa18d0c442fc",
-      "latency_ms": 938
+      "trace_id": "tr_32ce81c8d8694787",
+      "latency_ms": 1047
     },
     {
       "qid": "1b_005",
@@ -817,8 +811,8 @@
       ],
       "gold_document_recall": 1.0,
       "gold_document_coverage": true,
-      "trace_id": "tr_06f1badeec3248bd",
-      "latency_ms": 1031
+      "trace_id": "tr_a297e1bbf6aa4ec5",
+      "latency_ms": 922
     },
     {
       "qid": "1b_022",
@@ -873,7 +867,7 @@
       ],
       "gold_document_recall": 0.3333333333333333,
       "gold_document_coverage": false,
-      "trace_id": "tr_3d46cc632e874ba8",
+      "trace_id": "tr_3a6ce0c8753f44bf",
       "latency_ms": 922
     },
     {
@@ -952,8 +946,8 @@
       ],
       "gold_document_recall": 1.0,
       "gold_document_coverage": true,
-      "trace_id": "tr_97835ae42a764503",
-      "latency_ms": 1016
+      "trace_id": "tr_8dba7a7869574574",
+      "latency_ms": 906
     },
     {
       "qid": "1b_009",
@@ -1056,8 +1050,8 @@
       ],
       "gold_document_recall": 1.0,
       "gold_document_coverage": true,
-      "trace_id": "tr_03da14938b844c13",
-      "latency_ms": 1937
+      "trace_id": "tr_b190f683546748d4",
+      "latency_ms": 953
     },
     {
       "qid": "1b_013",
@@ -1118,8 +1112,8 @@
       ],
       "gold_document_recall": 0.5,
       "gold_document_coverage": false,
-      "trace_id": "tr_035166471a8c4fee",
-      "latency_ms": 922
+      "trace_id": "tr_c296db82fa784793",
+      "latency_ms": 782
     },
     {
       "qid": "1b_003",
@@ -1253,8 +1247,8 @@
       ],
       "gold_document_recall": 1.0,
       "gold_document_coverage": true,
-      "trace_id": "tr_33cf712fcd0447d9",
-      "latency_ms": 1046
+      "trace_id": "tr_f0a76faa46bc40bc",
+      "latency_ms": 2015
     },
     {
       "qid": "1c_000",
@@ -1339,8 +1333,8 @@
       ],
       "gold_document_recall": 1.0,
       "gold_document_coverage": true,
-      "trace_id": "tr_69c457e18e5d496e",
-      "latency_ms": 1047
+      "trace_id": "tr_f4084fc4edef48c1",
+      "latency_ms": 1828
     },
     {
       "qid": "1c_003",
@@ -1409,8 +1403,8 @@
       ],
       "gold_document_recall": 1.0,
       "gold_document_coverage": true,
-      "trace_id": "tr_e0bede2da0e044a3",
-      "latency_ms": 860
+      "trace_id": "tr_6e13eae6a97146af",
+      "latency_ms": 1000
     }
   ]
 }

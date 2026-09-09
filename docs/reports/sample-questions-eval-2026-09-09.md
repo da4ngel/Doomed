@@ -62,7 +62,8 @@ figure attached; 1B: full hop-chain resolved and the question's own constraint r
 ## Scoreboard
 
 | qid | track | verdict | correct 0–3 | /100 | grounded | cited docs vs gold | iters | wall s | taxonomy |
-|---|---|---|---|---|---|---|---|---|---|
+|---|---|
+---|---|---|---|---|---|---|---|
 | 1a_001 | 1A fig | ✅ PASS | 3 | 90 | 1.00 | plate ✓ | 1 | 2.7 | — |
 | 1a_004 | 1A fig | ✅ PASS | 3 | 82 | 1.00 | plate ✓ | 9 | 36.4 | — (churn) |
 | 1a_007 | 1A fig | ✅ PASS | 3 | 95 | 1.00 | plate ✓ | 1 | 2.0 | — |
@@ -568,6 +569,54 @@ it was meant to fix, already passes.
 The A5 half stands: given two excerpts for a two-fact claim, both models returned
 `entailed`, so the fault is A5 attaching one citation to a two-hop claim, not A6
 rejecting it.
+
+---
+
+## Clean re-run on the shipped code — 20 dev questions
+
+Run against the code as submitted, on `gpt-4o-mini`, after the composer fixes. This is
+the number set to quote; the earlier figures in this document were measured with a
+`partial_without_missing_information` bug live.
+
+| | before | **after** |
+|---|---|---|
+| packets with claims | 16/20 | **16/20** |
+| empty answers | 4 | **4** |
+| mean groundedness | 0.800 | **0.800** |
+| gold coverage | 13/20 | **13/20** |
+| lexical match *(diagnostic)* | 14 | **14** |
+| **structural errors** | 3 | **0** |
+
+Every number except structural errors is byte-identical across the two runs. That is the
+point: the fix did exactly one thing and disturbed nothing else.
+
+Against the 7 September baseline the movement is real — claims 13 to 16, empty 7 to 4,
+groundedness 0.650 to 0.800 — and both 1C questions now answer *and* stay grounded.
+
+**Caveat on latency.** The LLM cache was at a 69.9% hit rate (1,259 hits / 541 misses),
+so the sub-second per-question times are not representative of a cold run. The answers
+are unaffected — a cached response is the same response — but the timings are not a
+benchmark. The durable cache counters added the same morning are the only reason this
+was visible at all.
+
+### The four remaining empty answers
+
+| qid | gold coverage | recall | reading |
+|---|---|---|---|
+| `1b_005` | **True** | 1.00 | retrieval found everything; composition produced nothing |
+| `1b_007` | **True** | 1.00 | same |
+| `1a_v07` | False | 0.50 | figure bound then rejected by the subject/value guard |
+| `1b_022` | False | 0.33 | genuine retrieval shortfall |
+
+`1b_005` and `1b_007` are the ones that matter. Gold coverage `True` means the harness
+confirmed the documents containing the answer *were* retrieved. The evidence was in
+hand and A5 still wrote nothing — which is why neither better search, a larger model,
+nor a knowledge graph would move them. It is recommendation 1: A5 attaches **one**
+citation to a claim spanning **two** facts, so the claim cannot be supported and is
+dropped.
+
+Nothing implemented on 9 September touched that path, and these two are unchanged
+across every run today. It remains the single highest-value open item.
 
 ---
 
