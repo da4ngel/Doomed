@@ -39,7 +39,6 @@ class Settings(BaseSettings):
 
     # --- model routing: two tiers only, per ADR-001 ----------------------
     llm_model_synthesis: str = "deepseek/deepseek-chat"
-    llm_model_cheap: str = "meta-llama/llama-3.3-70b-instruct:free"
     llm_model_vision: str = "qwen/qwen2.5-vl-72b-instruct:free"
 
     # --- stores ----------------------------------------------------------

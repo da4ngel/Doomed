@@ -525,10 +525,16 @@ class LLMClient:
         **params: Any,
     ) -> LLMResponse:
         """One vision call. Cached on image bytes, so re-runs of ingestion are free."""
+        vision_model = model or self.settings.llm_model_vision
+        if not vision_model:
+            # Empty used to fall through to the synthesis model, silently. On a fresh
+            # clone that is `deepseek/deepseek-chat`, which cannot see an image at all,
+            # so all 70 figure descriptions would have been produced by a text model -
+            # and 1A, the track that depends on them, is over half the dev set.
+            raise ValueError(
+                "LLM_MODEL_VISION is not set. A vision call will not silently fall back "
+                "to the synthesis model, which may be text-only. Set it in .env "
+                "(default: qwen/qwen2.5-vl-72b-instruct:free)."
+            )
         messages = [{"role": "user", "parts": [text_part(instruction), image_part(image_path)]}]
-        return self.complete(
-            messages,
-            model=model or self.settings.llm_model_vision,
-            provider=provider,
-            **params,
-        )
+        return self.complete(messages, model=vision_model, provider=provider, **params)

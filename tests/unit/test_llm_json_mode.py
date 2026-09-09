@@ -79,3 +79,37 @@ def test_no_system_message_still_gets_the_word() -> None:
     _require_json_word(messages)
 
     assert any("json" in str(m["content"]).lower() for m in messages)
+
+
+def test_a_vision_call_refuses_to_run_without_a_vision_model(tmp_path) -> None:
+    """An unset LLM_MODEL_VISION used to fall through to the synthesis model in silence.
+
+    On a fresh clone following .env.example that is `deepseek/deepseek-chat`, which
+    cannot see an image at all — so every one of the 70 figure descriptions would have
+    been produced by a text-only model, and 1A is over half the dev set. Failing loudly
+    is the only safe behaviour.
+    """
+    import pytest
+
+    from src.core.cache import ResponseCache
+    from src.core.config import Settings
+    from src.core.llm import LLMClient
+
+    client = LLMClient(
+        settings=Settings(_env_file=None, llm_model_vision=""),
+        cache=ResponseCache(tmp_path / "cache"),
+    )
+    with pytest.raises(ValueError, match="LLM_MODEL_VISION"):
+        client.describe_image(tmp_path / "nope.png", "Describe this plate.")
+
+
+def test_the_shipped_example_env_names_a_vision_model() -> None:
+    """The reproducibility path must work as shipped: a judge who copies .env.example and
+    runs `make images` should not silently get a text model."""
+    from src.core.config import Settings
+
+    assert Settings(
+        _env_file=".env.example"
+    ).llm_model_vision, (
+        ".env.example must set LLM_MODEL_VISION, or an empty value overrides the default"
+    )
