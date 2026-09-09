@@ -1,6 +1,6 @@
-I could not establish an answer from the retrieved evidence.
+Ederon Fellgard is a member of The Iron-Ring Cartel.
+
+[cite_b51c24f739e6fccc] [cite_ab2a48eb927520ec]
 
 Still unresolved:
-- Which accord was ultimately won by the faction of which Ederon Fellgard is a member?
-- No proposed claim had valid supporting evidence: Which accord was ultimately won by the faction of which Ederon Fellgard is a member?
-- One or more requested facts could not be verified against their cited evidence.
+- The question was not fully resolved: Which accord was ultimately won by the faction of which Ederon Fellgard is a member?

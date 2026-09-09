@@ -48,6 +48,7 @@ class AnswerComposer:
         missing: list[str],
         partial: bool,
         requires_visual: bool = False,
+        intent: str = "",
     ) -> AnswerPacket:
         packet = AnswerPacket(
             trace_id=trace_id,
@@ -86,6 +87,10 @@ class AnswerComposer:
             asked = _normalise_question(question)
             outstanding = [m for m in outstanding if _normalise_question(m) != asked]
         if partial and packet.claims and not outstanding:
+            # Deliberately NOT gated on `intent`: A1 classifies 1b_007 - plainly a two-hop
+            # question - as "direct", and 1b_003 as "exploratory". Trusting that label let
+            # exactly the half-answers this guard exists for slip through as complete.
+            #
             # A3 judged the evidence insufficient and A5 produced SOMETHING. That is not
             # the same as having answered: on 1b_007 the claim resolves hop 1 (which
             # faction) and never reaches hop 2 (which accord it won). Stripping the echo

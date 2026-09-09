@@ -158,6 +158,7 @@ class Orchestrator:
             missing=state.critique.missing,
             partial=not state.critique.sufficient,
             requires_visual=analysis.requires_visual,
+            intent=analysis.intent,
         )
         self._record(
             trace_id,

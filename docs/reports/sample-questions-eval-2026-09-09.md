@@ -620,6 +620,79 @@ across every run today. It remains the single highest-value open item.
 
 ---
 
+## Multi-hop citations fixed — final 20-question run
+
+| | this morning | **final** |
+|---|---|---|
+| packets with claims | 16/20 | **18/20** |
+| empty answers | 4 | **2** |
+| lexical match *(diagnostic)* | 14 | **16** |
+| **mean groundedness** | 0.800 | **0.900** |
+| structural errors | 0 | **0** |
+| partial | 10 | 12 |
+
+Gained `1a_v07`, `1b_007`, `1b_003`. Nothing lost. All eight demo cases unchanged.
+
+### The cause was one quote spanning two chunks
+
+Not the verifier, and not elision. A two-hop claim needs a fact per hop, and the model
+states it as ONE elided quote tagged with ONE chunk id:
+
+```
+"...who serves as a Sapper... Ederon Fellgard is a member of..."
+      ederon_fellgard:c0            ederon_fellgard:c2
+```
+
+No within-chunk match can succeed, so the claim died with all of its evidence sitting
+in the bundle. Each fragment is now located in whichever retrieved chunk holds it and
+cited separately — the one-citation-per-hop shape A6 wants. Nothing is invented: every
+fragment must be a genuine verbatim span of a genuinely retrieved chunk.
+
+### The first version of the fix was worse than the bug
+
+`1b_007` went 0 to 1 claim, and the claim answered **hop 1 only** — *"Ederon Fellgard
+is a member of The Iron-Ring Cartel"* to a question asking which **accord** that
+faction won — while `partial` was False. The metrics improved at the exact moment the
+behaviour got worse: a confident non-answer is worse than the honest refusal it
+replaced. Caught by reading the answer, not the numbers.
+
+A3's insufficiency verdict is now respected, so the packet keeps hop 1, stays partial,
+and names what is still open.
+
+### A1's intent labels are not trustworthy — a finding in their own right
+
+Scoping that guard to multi-hop intents was tried and reverted, because A1 mislabels
+the very questions it needed to catch:
+
+| question | true shape | A1 says |
+|---|---|---|
+| `1b_007` | two-hop | **`direct`** |
+| `1b_003` | multi-hop | **`exploratory`** |
+| `1b_009` | multi-hop | `multi_hop` |
+
+This matters beyond this fix: the per-intent retrieval policy keys off the same field,
+so a 1B question labelled `direct` is being served the single-lookup configuration —
+rerank on, graph expansion off — which is the worst measured row for multi-hop.
+**Open, and probably the highest-value remaining item.**
+
+The cost of reverting is that three correct answers (`1a_009`, `1a_v11`, `1a_v21`) are
+flagged partial when they are complete. That is a presentation flaw; presenting a
+half-answer as finished is a correctness failure. The conservative choice ships.
+
+### Still empty, and correctly so
+
+`1b_005` cites `the_ballad_concerning_the_war_of_drowned_light:c0`, a chunk not in the
+bundle at all — fabrication, correctly refused. `1b_022` has gold coverage 0.33: a
+genuine retrieval shortfall.
+
+`1b_007`'s second hop also still fails, and that rejection is right. The model wrote
+*"The declared victor of the [[The Leaden Accord]] was..."* where the novel reads
+*"The Iron-Ring Cartel is declared victor of The Leaden Accord," Sabelle said* —
+a paraphrase with invented wikilink brackets. Accepting it would destroy the one
+property this system exists to guarantee.
+
+---
+
 ## Reproduce
 
 ```bash
