@@ -293,3 +293,17 @@ def test_portrait_citation_includes_its_real_subject_caption(chunk, asset):
         requires_visual=True,
     )
     assert not packet.claims
+
+
+def test_partial_always_says_what_is_missing(chunk, asset):
+    """A packet that claims to be incomplete must say in what way.
+
+    The acceptance runner calls the violation `partial_without_missing_information`, and
+    it appeared on three questions after the composer began dropping the echoed question
+    from missing_information: the entry went, the `partial` flag it had set did not.
+    """
+    packet = compose(chunk, [asset], visual_ids=[asset["asset_id"]], requires_visual=True)
+    if packet.partial:
+        assert packet.missing_information, "partial with nothing listed as missing"
+    if packet.claims and not packet.missing_information:
+        assert not packet.partial, "an answered question with nothing outstanding is not partial"

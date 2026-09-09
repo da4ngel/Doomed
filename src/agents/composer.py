@@ -86,7 +86,15 @@ class AnswerComposer:
             asked = _normalise_question(question)
             outstanding = [m for m in outstanding if _normalise_question(m) != asked]
         packet.missing_information = outstanding
-        packet.partial = packet.partial or bool(packet.missing_information)
+        if packet.claims and not outstanding:
+            # Dropping the echoed question can empty missing_information while `partial`
+            # is still set from the incoming A3 verdict, which leaves a packet that says
+            # the answer is incomplete without saying in what way. The acceptance runner
+            # calls that `partial_without_missing_information`, and it is right to: an
+            # answered question with nothing outstanding is not a partial answer.
+            packet.partial = False
+        else:
+            packet.partial = packet.partial or bool(outstanding)
         if not packet.claims:
             return self._refuse(packet, question, "No proposed claim had valid supporting evidence")
         if re.search(r"\byear\b", question, re.I) and not any(

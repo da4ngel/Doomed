@@ -1,0 +1,1416 @@
+{
+  "started_at": "2026-09-09T14:42:00.178608+00:00",
+  "preflight": {
+    "checks": {
+      "knowledge": {
+        "status": "ready",
+        "chunks": 2474,
+        "entities": 198,
+        "warm": true,
+        "images_described": 70
+      },
+      "vocabulary": {
+        "total": 198,
+        "returned": 198,
+        "named_entities": 93
+      },
+      "chat": {
+        "title": "Ashen Era \u2014 Reasoning",
+        "jobs": true
+      }
+    },
+    "blockers": [],
+    "ready": true
+  },
+  "suite": "dev",
+  "question_source": "checked-in human-authored gold suite text",
+  "status": "manual_review_required",
+  "results": [
+    {
+      "qid": "1a_001",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": false,
+      "citation_recall": 1.0,
+      "citation_precision": 1.0,
+      "iterations": 1,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "images/plate_00_location_marrowwatch.png",
+        "images/plate_01_location_emberdeep.png",
+        "images/plate_02_conflict_the_accord_of_mournthrone.png",
+        "images/plate_03_location_crookgate_keep.png",
+        "images/plate_05_location_embercrag_fortress.png",
+        "images/plate_06_location_hollowreach.png",
+        "images/plate_09_location_greyfell_citadel.png",
+        "images/plate_11_location_mournwatch.png",
+        "images/plate_12_location_thorncairn.png",
+        "wiki/images/atmo_creature_creature_ashfall_colossus.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "images/plate_00_location_marrowwatch.png",
+            "images/plate_01_location_emberdeep.png",
+            "images/plate_02_conflict_the_accord_of_mournthrone.png",
+            "images/plate_03_location_crookgate_keep.png",
+            "images/plate_05_location_embercrag_fortress.png",
+            "images/plate_06_location_hollowreach.png",
+            "images/plate_09_location_greyfell_citadel.png",
+            "images/plate_11_location_mournwatch.png",
+            "images/plate_12_location_thorncairn.png",
+            "wiki/images/atmo_creature_creature_ashfall_colossus.png"
+          ],
+          "new_gold_documents": [
+            "images/plate_01_location_emberdeep.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_dd58b0c9f1ce47cb",
+      "latency_ms": 531
+    },
+    {
+      "qid": "1a_009",
+      "structural_errors": [
+        "partial_without_missing_information"
+      ],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": true,
+      "citation_recall": 1.0,
+      "citation_precision": 1.0,
+      "iterations": 1,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "images/plate_00_location_marrowwatch.png",
+        "images/plate_01_location_emberdeep.png",
+        "images/plate_02_conflict_the_accord_of_mournthrone.png",
+        "images/plate_03_location_crookgate_keep.png",
+        "images/plate_05_location_embercrag_fortress.png",
+        "images/plate_06_location_hollowreach.png",
+        "images/plate_09_location_greyfell_citadel.png",
+        "images/plate_11_location_mournwatch.png",
+        "images/plate_12_location_thorncairn.png",
+        "wiki/images/atmo_landscape_location_ironfell_citadel.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "images/plate_00_location_marrowwatch.png",
+            "images/plate_01_location_emberdeep.png",
+            "images/plate_02_conflict_the_accord_of_mournthrone.png",
+            "images/plate_03_location_crookgate_keep.png",
+            "images/plate_05_location_embercrag_fortress.png",
+            "images/plate_06_location_hollowreach.png",
+            "images/plate_09_location_greyfell_citadel.png",
+            "images/plate_11_location_mournwatch.png",
+            "images/plate_12_location_thorncairn.png",
+            "wiki/images/atmo_landscape_location_ironfell_citadel.png"
+          ],
+          "new_gold_documents": [
+            "images/plate_09_location_greyfell_citadel.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_fbfea615c43f4a00",
+      "latency_ms": 547
+    },
+    {
+      "qid": "1a_008",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": false,
+      "citation_recall": 1.0,
+      "citation_precision": 1.0,
+      "iterations": 1,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "images/plate_02_conflict_the_accord_of_mournthrone.png",
+        "images/plate_08_creature_weeping_lurker.png",
+        "images/plate_10_creature_marsh_revenant.png",
+        "images/plate_11_location_mournwatch.png",
+        "images/plate_12_location_thorncairn.png",
+        "images/plate_14_creature_thorn_wraith.png",
+        "wiki/images/atmo_creature_creature_lantern_moth_swarm.png",
+        "wiki/images/atmo_creature_creature_vault_chitin.png",
+        "wiki/images/atmo_creature_creature_weeping_lurker.png",
+        "wiki/images/atmo_heraldry_faction_the_ashen_vanguard.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "images/plate_02_conflict_the_accord_of_mournthrone.png",
+            "images/plate_08_creature_weeping_lurker.png",
+            "images/plate_10_creature_marsh_revenant.png",
+            "images/plate_11_location_mournwatch.png",
+            "images/plate_12_location_thorncairn.png",
+            "images/plate_14_creature_thorn_wraith.png",
+            "wiki/images/atmo_creature_creature_lantern_moth_swarm.png",
+            "wiki/images/atmo_creature_creature_vault_chitin.png",
+            "wiki/images/atmo_creature_creature_weeping_lurker.png",
+            "wiki/images/atmo_heraldry_faction_the_ashen_vanguard.png"
+          ],
+          "new_gold_documents": [
+            "images/plate_08_creature_weeping_lurker.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_0b6f6f110b3c45a4",
+      "latency_ms": 719
+    },
+    {
+      "qid": "1a_004",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": true,
+      "citation_recall": 1.0,
+      "citation_precision": 1.0,
+      "iterations": 2,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+        "images/plate_00_location_marrowwatch.png",
+        "images/plate_02_conflict_the_accord_of_mournthrone.png",
+        "images/plate_04_artifact_the_thrice_bound_edge.png",
+        "images/plate_06_location_hollowreach.png",
+        "images/plate_07_artifact_the_thrice_bound_lantern.png",
+        "images/plate_12_location_thorncairn.png",
+        "the_ashen_chronicles_volume_iii_a_crown_of_cinders",
+        "the_thrice_bound_edge",
+        "trial_transcript_concerning_the_thrice_bound_edge",
+        "wiki/images/atmo_creature_creature_ashfall_colossus.png",
+        "wiki/images/atmo_relic_artifact_edge_of_gloamreach.png",
+        "wiki/images/atmo_relic_artifact_the_thrice_bound_edge.png",
+        "wiki/images/atmo_relic_artifact_the_thrice_bound_lantern.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "images/plate_00_location_marrowwatch.png",
+            "images/plate_02_conflict_the_accord_of_mournthrone.png",
+            "images/plate_04_artifact_the_thrice_bound_edge.png",
+            "images/plate_06_location_hollowreach.png",
+            "images/plate_07_artifact_the_thrice_bound_lantern.png",
+            "images/plate_12_location_thorncairn.png",
+            "wiki/images/atmo_creature_creature_ashfall_colossus.png",
+            "wiki/images/atmo_relic_artifact_edge_of_gloamreach.png",
+            "wiki/images/atmo_relic_artifact_the_thrice_bound_edge.png",
+            "wiki/images/atmo_relic_artifact_the_thrice_bound_lantern.png"
+          ],
+          "new_gold_documents": [
+            "images/plate_04_artifact_the_thrice_bound_edge.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 4,
+          "new_documents": [
+            "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+            "the_ashen_chronicles_volume_iii_a_crown_of_cinders",
+            "the_thrice_bound_edge",
+            "trial_transcript_concerning_the_thrice_bound_edge"
+          ],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_49b988a583464b9b",
+      "latency_ms": 984
+    },
+    {
+      "qid": "1a_007",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": false,
+      "citation_recall": 1.0,
+      "citation_precision": 1.0,
+      "iterations": 1,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "images/plate_02_conflict_the_accord_of_mournthrone.png",
+        "images/plate_04_artifact_the_thrice_bound_edge.png",
+        "images/plate_07_artifact_the_thrice_bound_lantern.png",
+        "images/plate_09_location_greyfell_citadel.png",
+        "images/plate_13_artifact_the_cinder_wrought_aegis.png",
+        "wiki/images/atmo_creature_creature_lantern_moth_swarm.png",
+        "wiki/images/atmo_creature_creature_vault_chitin.png",
+        "wiki/images/atmo_portrait_character_halvard_vane_the_grave_sworn.png",
+        "wiki/images/atmo_relic_artifact_the_thrice_bound_edge.png",
+        "wiki/images/atmo_relic_artifact_the_thrice_bound_lantern.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "images/plate_02_conflict_the_accord_of_mournthrone.png",
+            "images/plate_04_artifact_the_thrice_bound_edge.png",
+            "images/plate_07_artifact_the_thrice_bound_lantern.png",
+            "images/plate_09_location_greyfell_citadel.png",
+            "images/plate_13_artifact_the_cinder_wrought_aegis.png",
+            "wiki/images/atmo_creature_creature_lantern_moth_swarm.png",
+            "wiki/images/atmo_creature_creature_vault_chitin.png",
+            "wiki/images/atmo_portrait_character_halvard_vane_the_grave_sworn.png",
+            "wiki/images/atmo_relic_artifact_the_thrice_bound_edge.png",
+            "wiki/images/atmo_relic_artifact_the_thrice_bound_lantern.png"
+          ],
+          "new_gold_documents": [
+            "images/plate_07_artifact_the_thrice_bound_lantern.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_af234dc9307d412b",
+      "latency_ms": 953
+    },
+    {
+      "qid": "1a_013",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": false,
+      "citation_recall": 1.0,
+      "citation_precision": 1.0,
+      "iterations": 1,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "images/plate_02_conflict_the_accord_of_mournthrone.png",
+        "images/plate_04_artifact_the_thrice_bound_edge.png",
+        "images/plate_07_artifact_the_thrice_bound_lantern.png",
+        "images/plate_13_artifact_the_cinder_wrought_aegis.png",
+        "wiki/images/atmo_creature_creature_ashfall_colossus.png",
+        "wiki/images/atmo_creature_creature_cinder_shrike.png",
+        "wiki/images/atmo_creature_creature_marsh_revenant.png",
+        "wiki/images/atmo_creature_creature_thorn_wraith.png",
+        "wiki/images/atmo_portrait_character_malchior_cindervale_the_flame_touched.png",
+        "wiki/images/atmo_relic_artifact_the_cinder_wrought_aegis.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "images/plate_02_conflict_the_accord_of_mournthrone.png",
+            "images/plate_04_artifact_the_thrice_bound_edge.png",
+            "images/plate_07_artifact_the_thrice_bound_lantern.png",
+            "images/plate_13_artifact_the_cinder_wrought_aegis.png",
+            "wiki/images/atmo_creature_creature_ashfall_colossus.png",
+            "wiki/images/atmo_creature_creature_cinder_shrike.png",
+            "wiki/images/atmo_creature_creature_marsh_revenant.png",
+            "wiki/images/atmo_creature_creature_thorn_wraith.png",
+            "wiki/images/atmo_portrait_character_malchior_cindervale_the_flame_touched.png",
+            "wiki/images/atmo_relic_artifact_the_cinder_wrought_aegis.png"
+          ],
+          "new_gold_documents": [
+            "images/plate_13_artifact_the_cinder_wrought_aegis.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_ea8e604aafa04af5",
+      "latency_ms": 985
+    },
+    {
+      "qid": "1a_v06",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": false,
+      "citation_recall": 0.5,
+      "citation_precision": 1.0,
+      "iterations": 1,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "wiki/images/atmo_creature_creature_ashfall_colossus.png",
+        "wiki/images/atmo_creature_creature_thorn_wraith.png",
+        "wiki/images/atmo_portrait_character_aldous_wrenfield_the_last_warden.png",
+        "wiki/images/atmo_portrait_character_cerys_sablewood_the_ashen.png",
+        "wiki/images/atmo_portrait_character_halvard_vane_the_grave_sworn.png",
+        "wiki/images/atmo_portrait_character_ignatz_ashgrove_the_oathless.png",
+        "wiki/images/atmo_portrait_character_isolde_fellgard_the_unforgiven.png",
+        "wiki/images/atmo_portrait_character_malchior_cindervale_the_flame_touched.png",
+        "wiki/images/atmo_portrait_character_morwenna_ashgrove.png",
+        "wiki/images/atmo_relic_artifact_chalice_of_ashdeep.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "wiki/images/atmo_creature_creature_ashfall_colossus.png",
+            "wiki/images/atmo_creature_creature_thorn_wraith.png",
+            "wiki/images/atmo_portrait_character_aldous_wrenfield_the_last_warden.png",
+            "wiki/images/atmo_portrait_character_cerys_sablewood_the_ashen.png",
+            "wiki/images/atmo_portrait_character_halvard_vane_the_grave_sworn.png",
+            "wiki/images/atmo_portrait_character_ignatz_ashgrove_the_oathless.png",
+            "wiki/images/atmo_portrait_character_isolde_fellgard_the_unforgiven.png",
+            "wiki/images/atmo_portrait_character_malchior_cindervale_the_flame_touched.png",
+            "wiki/images/atmo_portrait_character_morwenna_ashgrove.png",
+            "wiki/images/atmo_relic_artifact_chalice_of_ashdeep.png"
+          ],
+          "new_gold_documents": [
+            "wiki/images/atmo_portrait_character_ignatz_ashgrove_the_oathless.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.5,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 0.5,
+      "gold_document_coverage": false,
+      "trace_id": "tr_03b6dc4c41b34dde",
+      "latency_ms": 1000
+    },
+    {
+      "qid": "1a_v07",
+      "structural_errors": [],
+      "lexical_answer_match": false,
+      "groundedness": 0.0,
+      "claims": 0,
+      "empty_answer": true,
+      "partial": true,
+      "citation_recall": 0.0,
+      "citation_precision": null,
+      "iterations": 1,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "wiki/images/atmo_portrait_character_aldous_wrenfield_the_last_warden.png",
+        "wiki/images/atmo_portrait_character_cerys_sablewood_the_ashen.png",
+        "wiki/images/atmo_portrait_character_corvus_hollowmere_the_pale.png",
+        "wiki/images/atmo_portrait_character_halvard_vane_the_grave_sworn.png",
+        "wiki/images/atmo_portrait_character_ignatz_ashgrove_the_oathless.png",
+        "wiki/images/atmo_portrait_character_isolde_fellgard_the_unforgiven.png",
+        "wiki/images/atmo_portrait_character_malchior_cindervale_the_flame_touched.png",
+        "wiki/images/atmo_portrait_character_morwenna_ashgrove.png",
+        "wiki/images/atmo_portrait_character_sabelle_mournvale_the_twice_crowned.png",
+        "wiki/images/atmo_relic_artifact_gauntlet_of_sorrowfell.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "wiki/images/atmo_portrait_character_aldous_wrenfield_the_last_warden.png",
+            "wiki/images/atmo_portrait_character_cerys_sablewood_the_ashen.png",
+            "wiki/images/atmo_portrait_character_corvus_hollowmere_the_pale.png",
+            "wiki/images/atmo_portrait_character_halvard_vane_the_grave_sworn.png",
+            "wiki/images/atmo_portrait_character_ignatz_ashgrove_the_oathless.png",
+            "wiki/images/atmo_portrait_character_isolde_fellgard_the_unforgiven.png",
+            "wiki/images/atmo_portrait_character_malchior_cindervale_the_flame_touched.png",
+            "wiki/images/atmo_portrait_character_morwenna_ashgrove.png",
+            "wiki/images/atmo_portrait_character_sabelle_mournvale_the_twice_crowned.png",
+            "wiki/images/atmo_relic_artifact_gauntlet_of_sorrowfell.png"
+          ],
+          "new_gold_documents": [
+            "wiki/images/atmo_portrait_character_aldous_wrenfield_the_last_warden.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.5,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 0.5,
+      "gold_document_coverage": false,
+      "trace_id": "tr_f6af271a79da4bdd",
+      "latency_ms": 1000
+    },
+    {
+      "qid": "1a_v12",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": false,
+      "citation_recall": 0.5,
+      "citation_precision": 1.0,
+      "iterations": 1,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "wiki/images/atmo_battle_painting_conflict_the_leaden_accord.png",
+        "wiki/images/atmo_battle_painting_conflict_the_purge_of_blackport.png",
+        "wiki/images/atmo_battle_painting_conflict_the_war_of_drowned_light.png",
+        "wiki/images/atmo_heraldry_faction_house_morvain.png",
+        "wiki/images/atmo_heraldry_faction_the_ashen_vanguard.png",
+        "wiki/images/atmo_heraldry_faction_the_iron_ring_cartel.png",
+        "wiki/images/atmo_heraldry_faction_the_silent_choir.png",
+        "wiki/images/atmo_relic_artifact_chalice_of_ashdeep.png",
+        "wiki/images/atmo_relic_artifact_the_hollow_edge.png",
+        "wiki/images/atmo_relic_artifact_the_thrice_bound_lantern.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "wiki/images/atmo_battle_painting_conflict_the_leaden_accord.png",
+            "wiki/images/atmo_battle_painting_conflict_the_purge_of_blackport.png",
+            "wiki/images/atmo_battle_painting_conflict_the_war_of_drowned_light.png",
+            "wiki/images/atmo_heraldry_faction_house_morvain.png",
+            "wiki/images/atmo_heraldry_faction_the_ashen_vanguard.png",
+            "wiki/images/atmo_heraldry_faction_the_iron_ring_cartel.png",
+            "wiki/images/atmo_heraldry_faction_the_silent_choir.png",
+            "wiki/images/atmo_relic_artifact_chalice_of_ashdeep.png",
+            "wiki/images/atmo_relic_artifact_the_hollow_edge.png",
+            "wiki/images/atmo_relic_artifact_the_thrice_bound_lantern.png"
+          ],
+          "new_gold_documents": [
+            "wiki/images/atmo_heraldry_faction_house_morvain.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.5,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 0.5,
+      "gold_document_coverage": false,
+      "trace_id": "tr_76ee887bf2ef413e",
+      "latency_ms": 953
+    },
+    {
+      "qid": "1a_v11",
+      "structural_errors": [
+        "partial_without_missing_information"
+      ],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": true,
+      "citation_recall": 0.5,
+      "citation_precision": 1.0,
+      "iterations": 2,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "cerys_sablewood_the_ashen",
+        "contract_concerning_the_accord_of_mournthrone",
+        "embermarch",
+        "morwenna_ashgrove",
+        "the_annals_of_the_ashen_era",
+        "the_ashen_chronicles_volume_iii_a_crown_of_cinders",
+        "the_ashen_vanguard",
+        "wiki/images/atmo_battle_painting_conflict_the_leaden_accord.png",
+        "wiki/images/atmo_battle_painting_conflict_the_purge_of_blackport.png",
+        "wiki/images/atmo_battle_painting_conflict_the_war_of_drowned_light.png",
+        "wiki/images/atmo_battle_painting_conflict_the_winter_reckoning.png",
+        "wiki/images/atmo_heraldry_faction_house_morvain.png",
+        "wiki/images/atmo_heraldry_faction_the_ashen_vanguard.png",
+        "wiki/images/atmo_heraldry_faction_the_iron_ring_cartel.png",
+        "wiki/images/atmo_heraldry_faction_the_silent_choir.png",
+        "wiki/images/atmo_portrait_character_cerys_sablewood_the_ashen.png",
+        "wiki/images/atmo_relic_artifact_the_hollow_edge.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "wiki/images/atmo_battle_painting_conflict_the_leaden_accord.png",
+            "wiki/images/atmo_battle_painting_conflict_the_purge_of_blackport.png",
+            "wiki/images/atmo_battle_painting_conflict_the_war_of_drowned_light.png",
+            "wiki/images/atmo_battle_painting_conflict_the_winter_reckoning.png",
+            "wiki/images/atmo_heraldry_faction_house_morvain.png",
+            "wiki/images/atmo_heraldry_faction_the_ashen_vanguard.png",
+            "wiki/images/atmo_heraldry_faction_the_iron_ring_cartel.png",
+            "wiki/images/atmo_heraldry_faction_the_silent_choir.png",
+            "wiki/images/atmo_portrait_character_cerys_sablewood_the_ashen.png",
+            "wiki/images/atmo_relic_artifact_the_hollow_edge.png"
+          ],
+          "new_gold_documents": [
+            "wiki/images/atmo_heraldry_faction_the_ashen_vanguard.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.5,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 4,
+          "new_documents": [
+            "cerys_sablewood_the_ashen",
+            "contract_concerning_the_accord_of_mournthrone",
+            "embermarch",
+            "morwenna_ashgrove",
+            "the_annals_of_the_ashen_era",
+            "the_ashen_chronicles_volume_iii_a_crown_of_cinders",
+            "the_ashen_vanguard"
+          ],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 0.5,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 0.5,
+      "gold_document_coverage": false,
+      "trace_id": "tr_9605a25634de4d2d",
+      "latency_ms": 984
+    },
+    {
+      "qid": "1a_v21",
+      "structural_errors": [
+        "partial_without_missing_information"
+      ],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": true,
+      "citation_recall": 0.5,
+      "citation_precision": 1.0,
+      "iterations": 1,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "wiki/images/atmo_portrait_character_aldous_wrenfield_the_last_warden.png",
+        "wiki/images/atmo_portrait_character_brannoc_ironmere_the_red_handed.png",
+        "wiki/images/atmo_portrait_character_gareth_ironmere.png",
+        "wiki/images/atmo_relic_artifact_chalice_of_ashdeep.png",
+        "wiki/images/atmo_relic_artifact_diadem_of_sorrowgate.png",
+        "wiki/images/atmo_relic_artifact_gauntlet_of_sorrowfell.png",
+        "wiki/images/atmo_relic_artifact_the_psalter_of_seven_sorrows.png",
+        "wiki/images/atmo_relic_artifact_the_silent_psalter.png",
+        "wiki/images/atmo_relic_artifact_the_thrice_bound_edge.png",
+        "wiki/images/atmo_relic_artifact_the_thrice_bound_lantern.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "wiki/images/atmo_portrait_character_aldous_wrenfield_the_last_warden.png",
+            "wiki/images/atmo_portrait_character_brannoc_ironmere_the_red_handed.png",
+            "wiki/images/atmo_portrait_character_gareth_ironmere.png",
+            "wiki/images/atmo_relic_artifact_chalice_of_ashdeep.png",
+            "wiki/images/atmo_relic_artifact_diadem_of_sorrowgate.png",
+            "wiki/images/atmo_relic_artifact_gauntlet_of_sorrowfell.png",
+            "wiki/images/atmo_relic_artifact_the_psalter_of_seven_sorrows.png",
+            "wiki/images/atmo_relic_artifact_the_silent_psalter.png",
+            "wiki/images/atmo_relic_artifact_the_thrice_bound_edge.png",
+            "wiki/images/atmo_relic_artifact_the_thrice_bound_lantern.png"
+          ],
+          "new_gold_documents": [
+            "wiki/images/atmo_relic_artifact_gauntlet_of_sorrowfell.png"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.5,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 0.5,
+      "gold_document_coverage": false,
+      "trace_id": "tr_4cf5e1765c814cfe",
+      "latency_ms": 3953
+    },
+    {
+      "qid": "1b_006",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": true,
+      "citation_recall": 0.5,
+      "citation_precision": 1.0,
+      "iterations": 2,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "letter_concerning_the_silent_choir",
+        "sermon_concerning_the_war_of_drowned_light",
+        "the_annals_of_the_ashen_era",
+        "the_ashen_chronicles_volume_i_the_kindling_years",
+        "the_ashen_vanguard",
+        "the_silent_choir",
+        "the_war_of_drowned_light"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "sermon_concerning_the_war_of_drowned_light",
+            "the_annals_of_the_ashen_era",
+            "the_ashen_vanguard",
+            "the_silent_choir",
+            "the_war_of_drowned_light"
+          ],
+          "new_gold_documents": [
+            "the_silent_choir",
+            "the_war_of_drowned_light"
+          ],
+          "gold_gain": 2,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 4,
+          "new_documents": [
+            "letter_concerning_the_silent_choir",
+            "the_ashen_chronicles_volume_i_the_kindling_years"
+          ],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_5ecdaa18d0c442fc",
+      "latency_ms": 938
+    },
+    {
+      "qid": "1b_005",
+      "structural_errors": [],
+      "lexical_answer_match": false,
+      "groundedness": 0.0,
+      "claims": 0,
+      "empty_answer": true,
+      "partial": true,
+      "citation_recall": 0.0,
+      "citation_precision": null,
+      "iterations": 6,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "aldous_wrenfield_the_last_warden",
+        "auction_catalogue_concerning_isolde_mournvale",
+        "ballad_concerning_the_war_of_drowned_light",
+        "isolde_mournvale",
+        "stormmarch",
+        "the_annals_of_the_ashen_era",
+        "the_ashen_chronicles_volume_i_the_kindling_years",
+        "the_ashen_vanguard",
+        "the_silent_choir",
+        "the_war_of_drowned_light",
+        "the_war_of_endless_vigil",
+        "the_winter_reckoning",
+        "vharencrag_fortress"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 0.0,
+          "graph_evidence_chunk_ids": [
+            "wiki/isolde_mournvale.md#infobox:Born",
+            "wiki/isolde_mournvale.md#infobox:Member of",
+            "wiki/isolde_mournvale.md#infobox:Serves at",
+            "wiki/isolde_mournvale.md#prose"
+          ]
+        },
+        {
+          "step": 4,
+          "new_documents": [
+            "aldous_wrenfield_the_last_warden",
+            "isolde_mournvale",
+            "the_annals_of_the_ashen_era",
+            "the_silent_choir",
+            "the_war_of_drowned_light",
+            "the_war_of_endless_vigil",
+            "the_winter_reckoning",
+            "vharencrag_fortress"
+          ],
+          "new_gold_documents": [
+            "isolde_mournvale",
+            "the_silent_choir",
+            "the_war_of_drowned_light"
+          ],
+          "gold_gain": 3,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 6,
+          "new_documents": [
+            "ballad_concerning_the_war_of_drowned_light",
+            "the_ashen_chronicles_volume_i_the_kindling_years",
+            "the_ashen_vanguard"
+          ],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 8,
+          "new_documents": [
+            "auction_catalogue_concerning_isolde_mournvale",
+            "stormmarch"
+          ],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 10,
+          "new_documents": [],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 12,
+          "new_documents": [],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_06f1badeec3248bd",
+      "latency_ms": 1031
+    },
+    {
+      "qid": "1b_022",
+      "structural_errors": [],
+      "lexical_answer_match": false,
+      "groundedness": 0.0,
+      "claims": 0,
+      "empty_answer": true,
+      "partial": true,
+      "citation_recall": 0.0,
+      "citation_precision": null,
+      "iterations": 2,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "morwenna_ashgrove",
+        "quartermaster_ledger_concerning_bryony_nightbrook",
+        "ravena_stormwell",
+        "the_annals_of_the_ashen_era",
+        "the_iron_ring_cartel",
+        "the_leaden_accord",
+        "the_winter_reckoning"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "ravena_stormwell",
+            "the_annals_of_the_ashen_era",
+            "the_leaden_accord",
+            "the_winter_reckoning"
+          ],
+          "new_gold_documents": [
+            "ravena_stormwell"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.3333333333333333,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 4,
+          "new_documents": [
+            "morwenna_ashgrove",
+            "quartermaster_ledger_concerning_bryony_nightbrook",
+            "the_iron_ring_cartel"
+          ],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 0.3333333333333333,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 0.3333333333333333,
+      "gold_document_coverage": false,
+      "trace_id": "tr_3d46cc632e874ba8",
+      "latency_ms": 922
+    },
+    {
+      "qid": "1b_007",
+      "structural_errors": [],
+      "lexical_answer_match": false,
+      "groundedness": 0.0,
+      "claims": 0,
+      "empty_answer": true,
+      "partial": true,
+      "citation_recall": 0.0,
+      "citation_precision": null,
+      "iterations": 3,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "auction_catalogue_concerning_lucan_hollowmere",
+        "ederon_fellgard",
+        "isolde_fellgard_the_unforgiven",
+        "lantern_moth_swarm",
+        "morwenna_ashgrove",
+        "quartermaster_ledger_concerning_bryony_nightbrook",
+        "the_annals_of_the_ashen_era",
+        "the_ashen_chronicles_volume_i_the_kindling_years",
+        "the_ashen_chronicles_volume_iv_the_silent_accounting",
+        "the_bleeding_crown",
+        "the_iron_ring_cartel",
+        "the_leaden_accord"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "auction_catalogue_concerning_lucan_hollowmere",
+            "ederon_fellgard",
+            "isolde_fellgard_the_unforgiven",
+            "morwenna_ashgrove",
+            "the_annals_of_the_ashen_era",
+            "the_bleeding_crown"
+          ],
+          "new_gold_documents": [
+            "ederon_fellgard"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.3333333333333333,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 4,
+          "new_documents": [
+            "quartermaster_ledger_concerning_bryony_nightbrook",
+            "the_iron_ring_cartel"
+          ],
+          "new_gold_documents": [
+            "the_iron_ring_cartel"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.6666666666666666,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 6,
+          "new_documents": [
+            "lantern_moth_swarm",
+            "the_ashen_chronicles_volume_i_the_kindling_years",
+            "the_ashen_chronicles_volume_iv_the_silent_accounting",
+            "the_leaden_accord"
+          ],
+          "new_gold_documents": [
+            "the_leaden_accord"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_97835ae42a764503",
+      "latency_ms": 1016
+    },
+    {
+      "qid": "1b_009",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 2,
+      "empty_answer": false,
+      "partial": true,
+      "citation_recall": 0.5,
+      "citation_precision": 0.25,
+      "iterations": 5,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "crookvale",
+        "ederon_coldwater",
+        "halvard_vane_the_grave_sworn",
+        "house_morvain",
+        "ironfell_citadel",
+        "letter_concerning_the_purge_of_blackport",
+        "maelis_greyfen",
+        "the_annals_of_the_ashen_era",
+        "the_ashen_chronicles_volume_iv_the_silent_accounting",
+        "the_iron_ring_cartel",
+        "the_purge_of_blackport",
+        "the_war_of_endless_vigil"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 0.0,
+          "graph_evidence_chunk_ids": [
+            "the_ashen_chronicles_volume_i_the_kindling_years:c271",
+            "the_ashen_chronicles_volume_i_the_kindling_years:c275",
+            "the_ashen_chronicles_volume_i_the_kindling_years:c293",
+            "the_ashen_chronicles_volume_ii_the_long_reprisal:c30",
+            "the_ashen_chronicles_volume_ii_the_long_reprisal:c40",
+            "wiki/house_morvain.md#infobox:Belligerent in",
+            "wiki/the_iron_ring_cartel.md#infobox:Belligerent in",
+            "wiki/the_purge_of_blackport.md#infobox:Concealed truth",
+            "wiki/the_purge_of_blackport.md#infobox:Conflict",
+            "wiki/the_purge_of_blackport.md#infobox:Major setting",
+            "wiki/the_purge_of_blackport.md#infobox:Victor"
+          ]
+        },
+        {
+          "step": 4,
+          "new_documents": [
+            "crookvale",
+            "ederon_coldwater",
+            "halvard_vane_the_grave_sworn",
+            "house_morvain",
+            "ironfell_citadel",
+            "maelis_greyfen",
+            "the_annals_of_the_ashen_era",
+            "the_iron_ring_cartel",
+            "the_war_of_endless_vigil"
+          ],
+          "new_gold_documents": [
+            "the_iron_ring_cartel"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.5,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 6,
+          "new_documents": [
+            "letter_concerning_the_purge_of_blackport",
+            "the_ashen_chronicles_volume_iv_the_silent_accounting",
+            "the_purge_of_blackport"
+          ],
+          "new_gold_documents": [
+            "the_purge_of_blackport"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 8,
+          "new_documents": [],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 10,
+          "new_documents": [],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_03da14938b844c13",
+      "latency_ms": 1937
+    },
+    {
+      "qid": "1b_013",
+      "structural_errors": [],
+      "lexical_answer_match": false,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": true,
+      "citation_recall": 0.5,
+      "citation_precision": 1.0,
+      "iterations": 2,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+        "gravemaw_wyrm",
+        "greythrone",
+        "lantern_moth_swarm",
+        "mournwatch",
+        "sermon_concerning_vault_chitin",
+        "stormmarch",
+        "the_bleeding_crown",
+        "the_crown_of_burned_names",
+        "wiki/images/atmo_creature_creature_gravemaw_wyrm.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+            "gravemaw_wyrm",
+            "wiki/images/atmo_creature_creature_gravemaw_wyrm.png"
+          ],
+          "new_gold_documents": [
+            "gravemaw_wyrm"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.5,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 4,
+          "new_documents": [
+            "greythrone",
+            "lantern_moth_swarm",
+            "mournwatch",
+            "sermon_concerning_vault_chitin",
+            "stormmarch",
+            "the_bleeding_crown",
+            "the_crown_of_burned_names"
+          ],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 0.5,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 0.5,
+      "gold_document_coverage": false,
+      "trace_id": "tr_035166471a8c4fee",
+      "latency_ms": 922
+    },
+    {
+      "qid": "1b_003",
+      "structural_errors": [],
+      "lexical_answer_match": false,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": true,
+      "citation_recall": 0.5,
+      "citation_precision": 1.0,
+      "iterations": 6,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "aldous_wrenfield_the_last_warden",
+        "ballad_concerning_edge_of_gloamreach",
+        "cerys_sablewood_the_ashen",
+        "codex_vaeloria_i_gazetteer_of_the_sundered_realms",
+        "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+        "contract_concerning_the_cinder_wrought_aegis",
+        "contract_concerning_the_sceptre_of_final_winter",
+        "contract_concerning_thessaly_coldwater",
+        "edge_of_gloamreach",
+        "field_report_concerning_cerys_sablewood_the_ashen",
+        "field_report_concerning_gloamreach",
+        "field_report_concerning_vharencrag_fortress",
+        "gloammarch",
+        "gloamreach",
+        "images/plate_13_artifact_the_cinder_wrought_aegis.png",
+        "interrogation_record_concerning_brannoc_palefroth",
+        "morwenna_ashgrove",
+        "muster_roll_concerning_the_thrice_bound_lantern",
+        "sermon_concerning_brannoc_ironmere_the_red_handed",
+        "the_annals_of_the_ashen_era",
+        "the_ashen_chronicles_volume_i_the_kindling_years",
+        "the_ashen_chronicles_volume_ii_the_long_reprisal",
+        "the_cinder_wrought_aegis",
+        "the_leaden_accord",
+        "trial_transcript_concerning_edge_of_gloamreach",
+        "trial_transcript_concerning_gloamreach",
+        "wiki/images/atmo_relic_artifact_edge_of_gloamreach.png",
+        "wiki/images/atmo_relic_artifact_the_cinder_wrought_aegis.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "cerys_sablewood_the_ashen",
+            "field_report_concerning_cerys_sablewood_the_ashen",
+            "interrogation_record_concerning_brannoc_palefroth",
+            "muster_roll_concerning_the_thrice_bound_lantern",
+            "the_annals_of_the_ashen_era",
+            "the_ashen_chronicles_volume_i_the_kindling_years",
+            "the_ashen_chronicles_volume_ii_the_long_reprisal"
+          ],
+          "new_gold_documents": [
+            "cerys_sablewood_the_ashen"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 0.5,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 4,
+          "new_documents": [
+            "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+            "contract_concerning_the_cinder_wrought_aegis",
+            "field_report_concerning_vharencrag_fortress",
+            "images/plate_13_artifact_the_cinder_wrought_aegis.png",
+            "the_cinder_wrought_aegis",
+            "wiki/images/atmo_relic_artifact_the_cinder_wrought_aegis.png"
+          ],
+          "new_gold_documents": [
+            "the_cinder_wrought_aegis"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 6,
+          "new_documents": [
+            "ballad_concerning_edge_of_gloamreach",
+            "contract_concerning_the_sceptre_of_final_winter",
+            "contract_concerning_thessaly_coldwater",
+            "edge_of_gloamreach",
+            "field_report_concerning_gloamreach",
+            "gloamreach",
+            "morwenna_ashgrove",
+            "sermon_concerning_brannoc_ironmere_the_red_handed",
+            "trial_transcript_concerning_edge_of_gloamreach",
+            "trial_transcript_concerning_gloamreach"
+          ],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 8,
+          "new_documents": [
+            "aldous_wrenfield_the_last_warden",
+            "the_leaden_accord"
+          ],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 10,
+          "new_documents": [
+            "codex_vaeloria_i_gazetteer_of_the_sundered_realms",
+            "gloammarch",
+            "wiki/images/atmo_relic_artifact_edge_of_gloamreach.png"
+          ],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 12,
+          "new_documents": [],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_33cf712fcd0447d9",
+      "latency_ms": 1046
+    },
+    {
+      "qid": "1c_000",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": false,
+      "citation_recall": 1.0,
+      "citation_precision": 1.0,
+      "iterations": 4,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "ashreach",
+        "ballad_concerning_edge_of_gloamreach",
+        "blackford",
+        "codex_vaeloria_i_gazetteer_of_the_sundered_realms",
+        "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+        "contract_concerning_the_sceptre_of_final_winter",
+        "contract_concerning_thessaly_coldwater",
+        "edge_of_gloamreach",
+        "gloamreach",
+        "house_morvain",
+        "isolde_nightbrook",
+        "maelis_wrenfield",
+        "petition_concerning_gloamreach",
+        "the_cinder_wrought_aegis"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "ashreach",
+            "ballad_concerning_edge_of_gloamreach",
+            "blackford",
+            "contract_concerning_the_sceptre_of_final_winter",
+            "contract_concerning_thessaly_coldwater",
+            "edge_of_gloamreach",
+            "gloamreach",
+            "house_morvain",
+            "maelis_wrenfield",
+            "the_cinder_wrought_aegis"
+          ],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 0.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 4,
+          "new_documents": [],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 0.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 6,
+          "new_documents": [
+            "codex_vaeloria_i_gazetteer_of_the_sundered_realms",
+            "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+            "isolde_nightbrook",
+            "petition_concerning_gloamreach"
+          ],
+          "new_gold_documents": [
+            "codex_vaeloria_i_gazetteer_of_the_sundered_realms"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 8,
+          "new_documents": [],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_69c457e18e5d496e",
+      "latency_ms": 1047
+    },
+    {
+      "qid": "1c_003",
+      "structural_errors": [],
+      "lexical_answer_match": true,
+      "groundedness": 1.0,
+      "claims": 1,
+      "empty_answer": false,
+      "partial": true,
+      "citation_recall": 1.0,
+      "citation_precision": 1.0,
+      "iterations": 4,
+      "manual_review_required": true,
+      "retrieval_metrics_available": true,
+      "retrieved_document_ids": [
+        "auction_catalogue_concerning_thorncairn",
+        "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+        "gauntlet_of_sorrowfell",
+        "interrogation_record_concerning_gauntlet_of_sorrowfell",
+        "quartermaster_ledger_concerning_gauntlet_of_sorrowfell",
+        "wiki/images/atmo_relic_artifact_gauntlet_of_sorrowfell.png"
+      ],
+      "retrieval_steps": [
+        {
+          "step": 2,
+          "new_documents": [
+            "auction_catalogue_concerning_thorncairn",
+            "codex_vaeloria_ii_armory_of_relics_and_bestiary",
+            "gauntlet_of_sorrowfell",
+            "interrogation_record_concerning_gauntlet_of_sorrowfell",
+            "quartermaster_ledger_concerning_gauntlet_of_sorrowfell"
+          ],
+          "new_gold_documents": [
+            "codex_vaeloria_ii_armory_of_relics_and_bestiary"
+          ],
+          "gold_gain": 1,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 4,
+          "new_documents": [
+            "wiki/images/atmo_relic_artifact_gauntlet_of_sorrowfell.png"
+          ],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 6,
+          "new_documents": [],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        },
+        {
+          "step": 8,
+          "new_documents": [],
+          "new_gold_documents": [],
+          "gold_gain": 0,
+          "cumulative_gold_recall": 1.0,
+          "graph_evidence_chunk_ids": []
+        }
+      ],
+      "gold_document_recall": 1.0,
+      "gold_document_coverage": true,
+      "trace_id": "tr_e0bede2da0e044a3",
+      "latency_ms": 860
+    }
+  ]
+}
