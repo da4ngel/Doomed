@@ -510,7 +510,25 @@ it corroborated is a **`gpt-4o` artefact**, not a defect in the contradiction la
 the same code on `gpt-4o-mini` returns the tier-1 year. The rest of finding 4 (both 1C
 packets carrying `conflicts: []`) still stands.
 
-### `gpt-5.6-luna` shows no measurable advantage
+### `gpt-5.6-luna` end to end - worst of the three
+
+The component tests below were run first and were **not sufficient**: they measured
+isolated entailment calls and latency, never the whole pipeline. Corrected by running
+the eight-question demo set on each model, same questions, same index:
+
+| model | demo set | fails |
+|---|---|---|
+| **`gpt-4o-mini`** | **8/8** | - |
+| `gpt-4o` | 6/8 | `1a_004` (0 claims), `1c_000` (286 AS, tier 4) |
+| `gpt-5.6-luna` | **5/8** | `1a_004`, `1c_000`, `1c_003` (all 0 claims) |
+
+Luna's three failures carry `budget_exhausted` and `tool_failure`, and `1a_004` also
+`asset_unresolved` - it is not answering wrongly so much as failing to complete the
+loop within budget. Newer and larger is not better here; the smallest model wins
+outright.
+
+### Component tests on luna, which pointed the wrong way
+
 
 It exists on the key, with `gpt-5.6-sol` and `gpt-5.6-terra`. Three hypotheses tested,
 all negative:
