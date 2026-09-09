@@ -486,6 +486,73 @@ of these and is the one most likely to move 1B.
 
 ---
 
+## Model comparison, 9 September — measured, not assumed
+
+Two questions were put after this run: would fine-tuning help, and is `gpt-5.6-luna`
+better than `gpt-4o`. Both were tested rather than answered from opinion, and the
+answer to each is **no**.
+
+### `gpt-4o-mini` beats `gpt-4o` on this system
+
+The headline result, and the opposite of the obvious assumption. Two questions, two
+runs each, no caching between models:
+
+| question | gold | `gpt-4o` | `gpt-4o-mini` |
+|---|---|---|---|
+| `1a_004` Thrice-Bound Edge | 94 | **0 claims**, twice | **94**, twice |
+| `1c_000` Gloamreach | 246 AS (tier 1) | **286 AS**, twice - the tier-4 value | **246 AS**, twice |
+
+This run was recorded on `gpt-4o`, so **it understates the system**. On `gpt-4o-mini`
+all eight demo cases pass, including both that `gpt-4o` gets wrong.
+
+It also reclassifies part of finding 4. `1c_000` returning the tier-4 year and calling
+it corroborated is a **`gpt-4o` artefact**, not a defect in the contradiction layer -
+the same code on `gpt-4o-mini` returns the tier-1 year. The rest of finding 4 (both 1C
+packets carrying `conflicts: []`) still stands.
+
+### `gpt-5.6-luna` shows no measurable advantage
+
+It exists on the key, with `gpt-5.6-sol` and `gpt-5.6-terra`. Three hypotheses tested,
+all negative:
+
+| hypothesis | result |
+|---|---|
+| better entailment | **no** - and the apparent gap was a mislabelled test: `contradicted` is a stronger rejection than `unsupported`, and `verifier.py` rejects on both |
+| faster | **no** - warm median 1,983 ms (`gpt-4o`) vs 2,122 ms (luna); the 15.2 s first seen for `gpt-4o` was connection warmup |
+| fixes the figure-entailment failure | **no** - both fail the same case identically |
+
+One early sample showed `gpt-4o` answering `unsupported` where luna said `entailed`.
+**It did not reproduce.** Recorded because a single sample like that is exactly how a
+false claim gets into a report.
+
+### Fine-tuning is the wrong move, on principle
+
+CLAUDE.md's thesis is that the world is invented and anything the model *knows* about it
+is hallucinated by definition - answers must come only from retrieved evidence. Training
+the corpus into the weights destroys exactly that: **groundedness stops being
+measurable**, because a retrieved answer and a memorised one become indistinguishable
+and `claims[].support` means nothing. It would contradict the ADRs judges are reading as
+the team's reasoning.
+
+It would also not address the failures. They are structural - a forgotten `asset_id`, one
+citation for a two-fact claim, a composer naming a place when asked for a person - not
+gaps in what the model knows.
+
+### Recommendation 1 was re-examined and is NOT being built as written
+
+The A6 half of it - semantic rather than literal entailment for figure descriptions -
+does not survive testing. An image-aware entailment prompt scores identically to the
+current one (4/5 on five cases), and the shared failure is `gpt-4o` rejecting *"two
+crossed **skeleton** keys"* against a description reading *"two crossed keys"* - which is
+A6 being **correct**, since "skeleton" is an unsupported addition. `1a_v12`, the question
+it was meant to fix, already passes.
+
+The A5 half stands: given two excerpts for a two-fact claim, both models returned
+`entailed`, so the fault is A5 attaching one citation to a two-hop claim, not A6
+rejecting it.
+
+---
+
 ## Reproduce
 
 ```bash
