@@ -327,6 +327,46 @@ something a retrieval or matching change can reach.
 
 ---
 
+## Freeze-morning verification, 9 September
+
+### Qdrant 1.15.4 -> 1.19.0, upgraded and verified
+
+`qdrant-client` was already 1.19.0 and warned on every connection that the server was
+1.15.4 - a mismatch this project treats as a silent-wrong-answer risk. The server is now
+aligned.
+
+Done in an order where failure costs nothing: **pull first, then recreate**, so a failed
+download leaves the running container untouched. Storage is a named volume
+(`doomed_qdrant_storage`), not container-internal, and v1.15.4 remained on disk, so
+rollback was an image swap rather than a download.
+
+| check | result |
+|---|---|
+| vectors before | 2,474 |
+| vectors after | **2,474** - index survived |
+| client/server version warning | **gone** |
+| live `/v1/search` with graph expansion | 5 hits, 2 expanded, correct Greyfell plate on top |
+
+The running API reconnected across the container restart without intervention.
+
+### `max_steps` 6 -> 12 costs nothing measurable
+
+The UI's Deep Semantic Search option raised the server ceiling to twelve. The concern was
+that it would double multi-hop latency on top of the 90 s / 200 k budgets. It does not:
+
+| question | latency | iterations | ceiling |
+|---|---|---|---|
+| 1a_001 | 1,857 ms | 1 | 12 |
+| 1b_007 | 5,869 ms | 3 | 12 |
+| 1c_000 | 199 ms *(cached)* | 4 | 12 |
+
+The loop stops on sufficiency or stagnation long before the ceiling, so raising it raised
+a limit nothing was reaching. No revert needed. Single samples with warm caches, so the
+latencies are indicative rather than a benchmark - but the iteration counts are the point,
+and they are nowhere near twelve.
+
+---
+
 ## What this run does not establish
 
 - **No correctness score.** Five lexical matches is a substring count. Groundedness of
