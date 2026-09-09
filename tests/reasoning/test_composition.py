@@ -44,19 +44,61 @@ def test_figure_has_bound_citation_and_inline_marker(chunk, asset):
     assert result.verification.claims_downgraded == 0
 
 
-@pytest.mark.parametrize("mutation", ["wrong_subject", "reference_bar", "no_asset"])
+@pytest.mark.parametrize("mutation", ["wrong_subject", "reference_bar"])
 def test_chart_decoys_cannot_be_answers(chunk, asset, mutation):
+    """The two real trap defences: the figure must be ABOUT the subject, and the value
+    must be bound to it rather than lifted off a reference bar."""
     text, quote = chunk.text, chunk.text
-    ids = [asset["asset_id"]]
     if mutation == "wrong_subject":
         asset["subject"], asset["entity_link"] = "Ironfell Citadel", "ent_ironfell_citadel"
     if mutation == "reference_bar":
         chunk.text += "\nGreat Keep standard: 6,000."
         text, quote = "Greyfell Citadel: 6,000.", "Great Keep standard: 6,000."
-    if mutation == "no_asset":
-        ids = []
-    packet = compose(chunk, [asset], text=text, quote=quote, visual_ids=ids, requires_visual=True)
+    packet = compose(
+        chunk, [asset], text=text, quote=quote, visual_ids=[asset["asset_id"]], requires_visual=True
+    )
     assert not packet.claims
+    assert packet.partial and packet.missing_information
+
+
+def test_a_forgotten_asset_id_is_recovered_not_fatal(chunk, asset):
+    """A correct claim used to be deleted because the model forgot to echo the asset id.
+
+    Measured cost of the old behaviour: 1a_v07, 1a_v11 and un_002 all retrieved the right
+    image and composed nothing from it, while the SAME model bound the figure correctly on
+    1a_v06 and 1a_v21 - same prompt, same run. The omission is model noise, not evidence
+    that the answer is wrong.
+
+    This replaces the old `no_asset` decoy case, which asserted a PROXY for safety - that
+    the model remembers an id - rather than the safety property itself. The property is
+    that the value is bound to the subject, and the test below proves it still holds.
+    """
+    packet = compose(chunk, [asset], visual_ids=[], requires_visual=True)
+
+    assert packet.claims, "a correct claim must survive a forgotten asset id"
+    assert packet.visuals and packet.visuals[0].id == asset["asset_id"]
+    assert any(
+        w.action == "asset_rebound" for w in packet.warnings
+    ), "the recovery must be visible in the trace, not silent"
+
+
+def test_recovery_does_not_rescue_a_reference_bar(chunk, asset):
+    """The trap defence has to survive the recovery, or the recovery is a hole.
+
+    A decoy value AND a forgotten asset id together: auto-binding hands the claim its
+    figure, and bound_value must still reject it because 6,000 is a reference standard
+    rather than Greyfell's own reading. This is the Emberdeep trap in miniature.
+    """
+    chunk.text += "\nGreat Keep standard: 6,000."
+    packet = compose(
+        chunk,
+        [asset],
+        text="Greyfell Citadel: 6,000.",
+        quote="Great Keep standard: 6,000.",
+        visual_ids=[],
+        requires_visual=True,
+    )
+    assert not packet.claims, "a reference bar must not become an answer via auto-binding"
     assert packet.partial and packet.missing_information
 
 

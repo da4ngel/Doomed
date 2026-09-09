@@ -38,6 +38,21 @@ class Verified(Frozen):
     verification: Verification = Field(default_factory=Verification)
 
 
+#: Confidence for a claim A6 has verified as entailed, by how its support was labelled.
+#: Derived from what the system established rather than from the model's self-report -
+#: see the `else` branch in `verify`. Corroboration by two independent documents is worth
+#: more than one source; a disputed claim is worth less than either.
+_ENTAILED_CONFIDENCE = {
+    "corroborated": 0.90,
+    "single_source": 0.75,
+    "disputed": 0.60,
+}
+
+#: A claim whose citations did not survive entailment. Low, but not zero: the evidence
+#: was retrieved and cited, it just could not be shown to entail the claim.
+_INFERRED_CONFIDENCE = 0.30
+
+
 class AnswerVerifier:
     def __init__(self, llm: CompletionClient | None = None) -> None:
         self.llm = llm
@@ -67,11 +82,20 @@ class AnswerVerifier:
                 )
                 continue
             if verdict != "entailed" or len(claim.citation_ids) != original_count:
-                claim.support, claim.confidence = "inferred", min(claim.confidence, 0.3)
+                # Was min(claim.confidence, 0.3). The model's self-reported confidence is
+                # 0.0 - it copies the literal from the prompt's schema example - so the
+                # min() propagated that zero instead of capping anything.
+                claim.support, claim.confidence = "inferred", _INFERRED_CONFIDENCE
                 report.claims_downgraded += 1
                 packet.warnings.append(
                     Warning(type="claim_downgraded", action="inferred", detail=claim.claim_id)
                 )
+            else:
+                # A6 has just PROVED this claim entailed by its citations. That is a far
+                # better basis for a confidence number than asking the model to score
+                # itself, which it does not do: every claim arrives at 0.0, so nine
+                # correct verified answers displayed 0% confidence to the user.
+                claim.confidence = _ENTAILED_CONFIDENCE.get(claim.support, 0.70)
             kept.append(claim)
         packet.claims = kept
         used = {c for claim in kept for c in claim.citation_ids}

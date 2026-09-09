@@ -72,7 +72,20 @@ class AnswerComposer:
             )
             return self._refuse(packet, question, "Composition could not be verified")
         placement = self._accept_draft(packet, draft, bundle, assets, question, requires_visual)
-        packet.missing_information = list(dict.fromkeys(missing + draft.missing_information))
+        outstanding = list(dict.fromkeys(missing + draft.missing_information))
+        if packet.claims:
+            # A3 lists the question itself as unresolved while it is still investigating.
+            # If A5 then answers it, echoing it back marks a correct, verified answer
+            # "Still unresolved" and flips the packet to partial for no reason - it did
+            # that to 1a_001, 1a_004 and 1b_006, all of which were right.
+            #
+            # Deliberately narrow: only an entry that IS the question is dropped. A
+            # genuinely unanswered part of a multi-part question is phrased differently
+            # ("What are the powers of The Silent Psalter?") and must survive, because
+            # that is the whole point of missing_information.
+            asked = _normalise_question(question)
+            outstanding = [m for m in outstanding if _normalise_question(m) != asked]
+        packet.missing_information = outstanding
         packet.partial = packet.partial or bool(packet.missing_information)
         if not packet.claims:
             return self._refuse(packet, question, "No proposed claim had valid supporting evidence")
@@ -98,14 +111,24 @@ class AnswerComposer:
         placement: dict[str, list[str]] = {}
         for proposed in draft.claims:
             if requires_visual and not proposed.asset_ids and not _is_table(proposed.text):
+                recovered = _sole_supporting_asset(proposed, sources, assets)
+                if recovered is None:
+                    packet.warnings.append(
+                        Warning(
+                            type="claim_downgraded",
+                            action="removed",
+                            detail="Visual question requires a supporting figure",
+                        )
+                    )
+                    continue
+                proposed = proposed.model_copy(update={"asset_ids": [recovered]})
                 packet.warnings.append(
                     Warning(
                         type="claim_downgraded",
-                        action="removed",
-                        detail="Visual question requires a supporting figure",
+                        action="asset_rebound",
+                        detail=f"Claim omitted its figure; bound the sole candidate {recovered}",
                     )
                 )
-                continue
             self._accept(packet, proposed, sources, assets, question, placement)
         return placement
 
@@ -234,6 +257,38 @@ def _support(citations: list) -> SupportLabel:
     docs = {c.doc_id for c in citations}
     texts = {" ".join(c.excerpt.split()).casefold() for c in citations}
     return "corroborated" if len(docs) > 1 and len(texts) > 1 else "single_source"
+
+
+def _normalise_question(text: str) -> str:
+    """Compare questions by their words, so punctuation and spacing do not defeat it."""
+    return " ".join(re.sub(r"[^\w\s]", " ", text).casefold().split())
+
+
+def _sole_supporting_asset(
+    proposed: ProposedClaim, sources: dict[str, SearchHit], assets: list[dict]
+) -> str | None:
+    """The one candidate asset carried by this claim's own cited chunks, if exactly one.
+
+    WHY: a visual claim with no asset_ids used to be deleted outright, taking a correct
+    answer with it. The model reliably finds the right evidence and unreliably remembers
+    to echo the asset id back - it bound the figure on 1a_v06 and 1a_v21 and forgot on
+    1a_v07 and 1a_v11, same prompt, same run.
+
+    This does not invent a binding. It only supplies an id the cited chunk already
+    carries, and only when the choice is unambiguous - one candidate asset across all
+    cited chunks. Everything downstream is unchanged: `_visuals` still requires the
+    subject to match and the value to be bound, so a wrong figure is still rejected. The
+    guard stops discarding the answer when the evidence was right there.
+    """
+    candidates = {a["asset_id"] for a in assets}
+    found = {
+        asset_id
+        for ref in proposed.sources
+        if ref.chunk_id in sources
+        for asset_id in sources[ref.chunk_id].asset_ids
+        if asset_id in candidates
+    }
+    return found.pop() if len(found) == 1 else None
 
 
 def _is_table(text: str) -> bool:
