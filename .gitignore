@@ -45,6 +45,16 @@ node_modules/
 :memory:*
 *.ses
 
+# graphify: the report, the interactive graph and the graph JSON are deliverables and
+# ARE committed. The Obsidian vault is 983 files regenerable with one command, and the
+# submission ships the full .git - 983 blobs there would be permanent.
+graphify-out/obsidian/
+graphify-out/.graphify_*
+graphify-out/manifest.json
+# graphify also writes an AST cache beside whatever path it scans.
+**/graphify-out/cache/
+src/graphify-out/
+
 # Misc
 *.log
 .DS_Store
