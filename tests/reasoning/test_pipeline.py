@@ -12,6 +12,7 @@ from src.agents.runtime import Budget
 from src.agents.verifier import AnswerVerifier
 from src.api.routes.chat import build_orchestrator, create_app, get_traces
 from src.api.schemas import AnswerPacket, ChatRequest, Entity
+from src.core.config import Settings
 from src.core.trace import TraceStore
 from tests.reasoning.conftest import ScriptedLLM
 
@@ -97,6 +98,21 @@ class SearchingCritic:
         )
 
 
+class SeventhStepCritic:
+    def assess(self, analysis, chunks, latest, step, history):
+        if step == 7:
+            return Critique(sufficient=True)
+        return Critique(
+            missing=["The seventh record has not been reached."],
+            next_action=Action(query=f"archive record {step + 1}"),
+        )
+
+
+def test_reasoning_settings_allow_opt_in_deep_budget(monkeypatch):
+    monkeypatch.delenv("MAX_STEPS", raising=False)
+    assert Settings(_env_file=None).max_steps == 12
+
+
 def test_two_empty_steps_stop_without_churn(tmp_path, knowledge, chunk, asset):
     agent, _ = engine(tmp_path, knowledge, chunk, asset)
     agent.retriever = RetrievalAgent(knowledge(lambda r: httpx.Response(200, json={"hits": []})))
@@ -114,6 +130,54 @@ def test_step_budget_is_hard_and_returns_missing(tmp_path, knowledge, chunk, ass
     assert packet.iterations == 1 and packet.partial
     assert packet.missing_information
     assert any(w.type == "budget_exhausted" for w in packet.warnings)
+
+
+def test_deep_request_can_continue_beyond_standard_six_steps(tmp_path, knowledge, chunk, asset):
+    question = "Find the seventh archive record."
+
+    class Analyst:
+        def analyze(self, question, **kwargs):
+            return Analysis(normalized=question, intent="direct", sub_questions=[question])
+
+    def run(requested_steps):
+        agent, _ = engine(tmp_path, knowledge, chunk, asset)
+        agent.analyst = Analyst()
+        agent.critic = SeventhStepCritic()
+        agent.budget.max_steps = 12
+        count = 0
+
+        def handler(request):
+            nonlocal count
+            count += 1
+            result = chunk.model_copy(
+                update={
+                    "chunk_id": f"record:{count}",
+                    "doc_id": f"record-{count}",
+                    "text": f"Archive record {count}.",
+                    "asset_ids": [],
+                }
+            )
+            return httpx.Response(200, json={"hits": [result.model_dump()]})
+
+        agent.retriever = RetrievalAgent(knowledge(handler, agent.budget))
+        composer_llm = ScriptedLLM(
+            {
+                "claims": [
+                    {
+                        "text": "Archive record 1.",
+                        "sources": [{"chunk_id": "record:1", "quote": "Archive record 1."}],
+                    }
+                ]
+            }
+        )
+        agent.composer = AnswerComposer(composer_llm)
+        agent.verifier = AnswerVerifier(composer_llm)
+        return agent.run(ChatRequest(question=question, mode="agent", budget=requested_steps))
+
+    standard = run(6)
+    deep = run(12)
+    assert standard.iterations == 6 and standard.partial
+    assert deep.iterations == 7 and not deep.partial
 
 
 def test_chat_and_job_routes(tmp_path, knowledge, chunk, asset):
@@ -138,7 +202,12 @@ def test_chat_and_job_routes(tmp_path, knowledge, chunk, asset):
     assert (
         client.post("/v1/chat", json={"question": "x", "conversation_id": "old"}).status_code == 422
     )
-    assert "Follow the evidence" in client.get("/").text
+    html = client.get("/").text
+    assert "DOOMED ARCHIVE" in html
+    assert "Truth leaves ashes" in html
+    assert "DOOMED ARCHIVE - Team Space Matrix - 2026" in html
+    assert 'id="semantic-toggle"' in html and 'aria-pressed="false"' in html
+    assert "budget:currentRunSemantic?12:6" in html
 
 
 def test_three_hop_trace_searches_new_entities(tmp_path, knowledge, chunk):

@@ -60,7 +60,10 @@ class Settings(BaseSettings):
     rerank_model_local: str = "Xenova/ms-marco-MiniLM-L-6-v2"
 
     # --- budgets (A3 stop rules) -----------------------------------------
-    max_steps: int = Field(default=6, ge=1)
+    # The UI submits six steps normally and twelve only when Deep Semantic Search is
+    # selected. Keeping the server ceiling at twelve makes that opt-in meaningful while
+    # ChatRequest.budget remains the per-request guard.
+    max_steps: int = Field(default=12, ge=1)
     # Sized from a measured 20-question run, not guessed. A single-lookup 1A question
     # finishes in ~5s and one LLM call; a multi-hop 1B question runs A2/A3 three times
     # over and merges 16-30 chunks, and was observed at 20-27s. The old 25s ceiling cut
